@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TableLayout
+        android:layout_width="0dp"
+        android:layout_height="319dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button8"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#0B0B3B"
+            android:weightSum="7">
+            <TextView
+                android:id="@+id/vt00"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="0.005"
+                />
+
+            <Button
+                android:id="@+id/vt0"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/prev" />
+            <TextView
+                android:id="@+id/vt1"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:textSize="10dp"
+                android:gravity="center"
+                android:layout_weight="4"
+                android:textColor="@color/white"
+                android:text="Most Runs" />
+
+            <Button
+                android:id="@+id/vt01"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/next" />
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="7">
+            <TextView
+                android:id="@+id/vt21"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="3"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt22"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="2"
+                android:text="TEAM" />
+            <TextView
+                android:id="@+id/vt23"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="Matches" />
+            <TextView
+                android:id="@+id/vt24"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="Runs" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="7">
+            <TextView
+                android:id="@+id/vt31"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="3"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt32"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="2"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt33"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt34"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="7">
+            <TextView
+                android:id="@+id/vt41"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="3"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt42"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="2"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt43"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt44"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="7">
+            <TextView
+                android:id="@+id/vt51"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="3"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt52"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="2"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt53"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt54"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="7">
+            <TextView
+                android:id="@+id/vt61"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="3"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt62"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="2"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt63"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt64"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="7">
+            <TextView
+                android:id="@+id/vt71"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="3"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt72"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="2"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt73"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt74"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="7">
+            <TextView
+                android:id="@+id/vt81"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="3"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt82"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="2"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt83"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt84"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="7">
+            <TextView
+                android:id="@+id/vt91"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="3"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt92"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="2"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt93"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt94"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="7">
+            <TextView
+                android:id="@+id/vt101"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="3"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt102"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="2"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt103"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt104"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="7">
+            <TextView
+                android:id="@+id/vt111"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="3"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt112"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="2"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt113"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt114"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="7">
+            <TextView
+                android:id="@+id/vt121"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="3"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt122"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="2"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt123"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt124"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="7">
+            <TextView
+                android:id="@+id/vt131"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="3"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt132"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="2"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt133"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt134"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="7">
+            <TextView
+                android:id="@+id/vt141"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="3"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt142"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="2"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt143"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+            <TextView
+                android:id="@+id/vt144"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:text="" />
+
+        </TableRow>
+
+
+    </TableLayout>
+
+
+</android.support.constraint.ConstraintLayout>

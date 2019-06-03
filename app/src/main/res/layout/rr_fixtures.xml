@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/vt0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/prev"
+        app:layout_constraintRight_toLeftOf="@+id/vt1"
+        android:layout_marginRight="18dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="18dp" />
+    <TextView
+        android:id="@+id/vt1"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:textSize="35dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:text="FIXTURES"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="216dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="216dp" />
+
+    <Button
+        android:id="@+id/vt01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/next"
+        app:layout_constraintLeft_toRightOf="@+id/vt1"
+        android:layout_marginLeft="19dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="19dp" />
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:layout_weight="1"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        tools:layout_editor_absoluteY="-7dp"
+        tools:layout_editor_absoluteX="3dp">
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:id="@+id/tableLayout1"
+        app:layout_constraintTop_toBottomOf="@+id/vt1"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="0dp"
+        >
+
+    </TableLayout>
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>

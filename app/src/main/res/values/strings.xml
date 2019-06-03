@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string-array name="TeamId">
+        <item>AUS</item>
+        <item>BAN</item>
+        <item>ENG</item>
+        <item>IND</item>
+        <item>NZL</item>
+        <item>SAF</item>
+        <item>WIN</item>
+        <item>PAK</item>
+        <item>AFG</item>
+        <item>SLK</item>
+    </string-array>
+    <string-array name="bowl">
+        <item>Y</item>
+        <item>N</item>
+    </string-array>
+</resources>

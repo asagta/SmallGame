@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorTransparent">
+
+    <TableLayout
+        android:layout_width="568dp"
+        android:layout_height="188dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.822"
+        tools:layout_editor_absoluteX="8dp">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <TextView
+                android:id="@+id/tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:background="@color/blueTransparent"
+                android:text="Time"
+                android:textColor="@color/white"
+                android:textSize="40dp" />
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <TextView
+                android:id="@+id/tva1"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:background="@color/greenTransparent"
+                android:text="7th Career 100"
+                android:textColor="@color/white"
+                android:textSize="40dp" />
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient"
+            >
+            <TextView
+                android:id="@+id/tv2"
+                android:layout_height="30dp"
+                android:layout_weight="0"
+                android:text="Runs"
+                android:textSize="20dp" />
+            <TextView
+                android:id="@+id/tv3"
+                android:layout_height="30dp"
+                android:layout_weight="0.4"
+                android:text="Balls"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/tv4"
+                android:layout_height="30dp"
+                android:layout_weight="0.2"
+                android:text="Fours"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/tv5"
+                android:layout_height="30dp"
+                android:layout_weight="0.2"
+                android:text="Sixes"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/tv6"
+                android:layout_height="30dp"
+                android:layout_weight="0.2"
+                android:text="S.R."
+                android:textSize="20dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient"
+            >
+
+            <TextView
+                android:id="@+id/tvf5"
+                android:layout_height="30dp"
+                android:layout_weight="0"
+                android:text="1"
+                android:textSize="25dp" />
+            <TextView
+                android:id="@+id/tvf6"
+                android:layout_height="30dp"
+                android:layout_weight="0.4"
+                android:text="1"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/tvf7"
+                android:layout_height="30dp"
+                android:layout_weight="0.2"
+                android:text="1"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/tvf8"
+                android:layout_height="30dp"
+                android:layout_weight="0.2"
+                android:text="2"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/tvf9"
+                android:layout_height="30dp"
+                android:layout_weight="0.2"
+                android:text="2"
+                android:textSize="25dp" />
+        </TableRow>
+    </TableLayout>
+</android.support.constraint.ConstraintLayout>

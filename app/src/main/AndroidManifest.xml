@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.asaram.smallGame">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_balls"
+        android:label="HomeCric"
+        android:supportsRtl="true"
+        android:largeHeap="true"
+        android:hardwareAccelerated="false"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.TeamSelect"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.TournamentCentral">
+
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.MainActivity">
+
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.PlayersSelect">
+
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.TourWinner">
+
+    </activity>
+
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.StatsBatting">
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.TossTeams">
+
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.TossDecision">
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.Bowling">
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.RoundRobinCentral">
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.RoundRobinStats">
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.RoundRobinWinner">
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.QuickPlay">
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.SquadMgmt">
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.IPLCentral">
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.IPLStats">
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.IPLWinner">
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.IplAuction"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <service android:name="MusicService" android:enabled="true"></service>
+
+</application>
+
+</manifest>
