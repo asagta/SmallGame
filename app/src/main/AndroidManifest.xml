@@ -55,6 +55,8 @@
         </activity>
         <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.IPLWinner">
         </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.CelebrationAnimations">
+        </activity>
         <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.IplAuction"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>

@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#80E91205"
+    android:background="#80F08080"
     android:layout_height="match_parent">
 
 
@@ -12,7 +12,7 @@
         android:id="@+id/textView14"
         android:layout_width="581dp"
         android:layout_height="71dp"
-        android:text="Played Wrongly and Gone"
+        android:text="Congrats"
         android:gravity="center"
         android:textSize="31dp"
         android:textStyle="bold"
@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
                 android:layout_weight="5"
-                android:background="#E91205"
+                android:background="#F1700B"
                 android:text="Time"
                 android:textColor="@color/white"
                 android:textSize="40dp" />

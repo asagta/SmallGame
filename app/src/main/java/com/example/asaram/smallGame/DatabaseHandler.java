@@ -166,9 +166,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
         db.execSQL("DELETE FROM curr_match");
         if(tf.equalsIgnoreCase("I"))
-          selectQuery = "SELECT fran_id FROM franchise_pool where fran_name in ('"+t1+"')";
+            selectQuery = "SELECT fran_id FROM franchise_pool where fran_name in ('"+t1+"')";
         else
-          selectQuery = "SELECT team_id FROM teams where team_name in ('"+t1+"')";
+            selectQuery = "SELECT team_id FROM teams where team_name in ('"+t1+"')";
         Log.d("TEAM-ID QRY::",selectQuery);
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToFirst();
@@ -186,7 +186,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.d("ID ADDED::",s1+"  "+s2);
         db.execSQL("DELETE FROM curr_game");
         if(tf.equalsIgnoreCase("Y"))
-          db.execSQL("insert into curr_game values(0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,"+maxBalls+","+maxOvers+",0,1,0)");
+            db.execSQL("insert into curr_game values(0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,"+maxBalls+","+maxOvers+",0,1,0)");
         else if(tf.equalsIgnoreCase("R"))
             db.execSQL("insert into curr_game values(0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,"+maxBalls+","+maxOvers+",0,2,0)");
         else if(tf.equalsIgnoreCase("I"))
@@ -325,7 +325,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToFirst();
         try{
-        sc=cursor.getString(0);}
+            sc=cursor.getString(0);}
         catch(Exception e){
             Log.d("EXPETION CAUGHT",e.toString());
             sc="";
@@ -344,7 +344,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToFirst();
         try{
-        ov=cursor.getString(0);}
+            ov=cursor.getString(0);}
         catch(Exception e)
         {
             Log.d("EXPETION IS::",e.toString());
@@ -432,29 +432,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String bb=cursor.getString(0);
         int bwic;
         int i1=0;
-try {
-    while (bb.charAt(i1) != '/') {
-        i1++;
-    }
+        try {
+            while (bb.charAt(i1) != '/') {
+                i1++;
+            }
 
-    bwic = Character.getNumericValue(bb.charAt(i1 + 1));
-    if (bwic < data[6])
-        db.execSQL("UPDATE " + tab_name + " SET BB='" + data[5] + "/" + data[6] + "' where player_name='" + pName + "'");
-    else {
+            bwic = Character.getNumericValue(bb.charAt(i1 + 1));
+            if (bwic < data[6])
+                db.execSQL("UPDATE " + tab_name + " SET BB='" + data[5] + "/" + data[6] + "' where player_name='" + pName + "'");
+            else {
 
-    }}
-catch(Exception ex)
-{ Log.d("THE_EXCEPTION:",""+ex);}
-    //updating highScore
-    selectQuery = "SELECT highest FROM " + tab_name + " where player_name='" + pName + "'";
-    Log.d("QUERY::", selectQuery);
-    cursor = db.rawQuery(selectQuery, null);
-    cursor.moveToFirst();
-    int hs = cursor.getInt(0);
-    if (hs < data[0])
-        db.execSQL("UPDATE " + tab_name + " SET Highest=" + data[0] + " where player_name='" + pName + "'");
-    //updating balls
-    db.execSQL("UPDATE " + tab_name + " SET Balls=Balls+" + data[1] + " where player_name='" + pName + "'");
+            }}
+        catch(Exception ex)
+        { Log.d("THE_EXCEPTION:",""+ex);}
+        //updating highScore
+        selectQuery = "SELECT highest FROM " + tab_name + " where player_name='" + pName + "'";
+        Log.d("QUERY::", selectQuery);
+        cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        int hs = cursor.getInt(0);
+        if (hs < data[0])
+            db.execSQL("UPDATE " + tab_name + " SET Highest=" + data[0] + " where player_name='" + pName + "'");
+        //updating balls
+        db.execSQL("UPDATE " + tab_name + " SET Balls=Balls+" + data[1] + " where player_name='" + pName + "'");
         db.close();
         cursor.close();
 
@@ -533,6 +533,7 @@ catch(Exception ex)
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToFirst();
         mtch[0]=cursor.getInt(0);mtch[1]=cursor.getInt(1);mtch[2]=cursor.getInt(2);
+        Log.d("Fifty Count of "+pName+"::",""+mtch[1]);
         db.close();
         cursor.close();
         return mtch;
@@ -550,37 +551,37 @@ catch(Exception ex)
         cursor.close();
         return mtch;
     }
-  public void updatePlayerID(String a,String b)
-  {
-      String mtch[]=new String[2];
-      String selectQuery="";
-      SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
-      if(IPLCentral.tour_flag.equalsIgnoreCase("I"))
-          selectQuery = "SELECT franchise_id FROM players_pool where player_name in('"+a+"','"+b+"')";
-      else
-          selectQuery = "SELECT player_id FROM players where player_name in('"+a+"','"+b+"')";
-      Log.d("QUERY::",selectQuery);
-      Cursor cursor = db.rawQuery(selectQuery, null);
-      cursor.moveToFirst();
-      mtch[0]=cursor.getString(0);
-      cursor.moveToNext();
-      mtch[1]=cursor.getString(0);
-      if(IPLCentral.tour_flag.equalsIgnoreCase("I")) {
-          db.execSQL("UPDATE players_pool SET franchise_id='" + mtch[1] + "'" + " where player_name='" + a + "'");
-          db.execSQL("UPDATE players_pool SET franchise_id='" + mtch[0] + "'" + " where player_name='" + b + "'");
-      }
-      else{
-          db.execSQL("UPDATE players SET player_id='" + mtch[1] + "'" + " where player_name='" + a + "'");
-          db.execSQL("UPDATE players SET player_id='" + mtch[0] + "'" + " where player_name='" + b + "'");
-      }
-      String q2="UPDATE players SET player_id='" + mtch[1]+"'" + " where player_name='"+a+"'";
-      String qry="UPDATE players SET player_id='" + mtch[0]+"'" + " where player_name='"+b+"'";
-      Log.d("Scores Query::",qry);
-      Log.d("Scores Query::",q2);
-      db.close();
-  }
+    public void updatePlayerID(String a,String b)
+    {
+        String mtch[]=new String[2];
+        String selectQuery="";
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        if(IPLCentral.tour_flag.equalsIgnoreCase("I"))
+            selectQuery = "SELECT franchise_id FROM players_pool where player_name in('"+a+"','"+b+"')";
+        else
+            selectQuery = "SELECT player_id FROM players where player_name in('"+a+"','"+b+"')";
+        Log.d("QUERY::",selectQuery);
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        mtch[0]=cursor.getString(0);
+        cursor.moveToNext();
+        mtch[1]=cursor.getString(0);
+        if(IPLCentral.tour_flag.equalsIgnoreCase("I")) {
+            db.execSQL("UPDATE players_pool SET franchise_id='" + mtch[1] + "'" + " where player_name='" + a + "'");
+            db.execSQL("UPDATE players_pool SET franchise_id='" + mtch[0] + "'" + " where player_name='" + b + "'");
+        }
+        else{
+            db.execSQL("UPDATE players SET player_id='" + mtch[1] + "'" + " where player_name='" + a + "'");
+            db.execSQL("UPDATE players SET player_id='" + mtch[0] + "'" + " where player_name='" + b + "'");
+        }
+        String q2="UPDATE players SET player_id='" + mtch[1]+"'" + " where player_name='"+a+"'";
+        String qry="UPDATE players SET player_id='" + mtch[0]+"'" + " where player_name='"+b+"'";
+        Log.d("Scores Query::",qry);
+        Log.d("Scores Query::",q2);
+        db.close();
+    }
 
-  //SAVED GAME STATS
+    //SAVED GAME STATS
     public int getCurrData(String var)
     {
         int mtch;
@@ -662,10 +663,10 @@ catch(Exception ex)
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
         if(i==0)
-           db.execSQL("UPDATE tour_vars SET sno=0");
+            db.execSQL("UPDATE tour_vars SET sno=0");
         else
             db.execSQL("UPDATE tour_vars SET sno=sno+1");
-       // String qry="UPDATE tour_vars SET sno=sno+1";
+        // String qry="UPDATE tour_vars SET sno=sno+1";
         //Log.d("CURRENT GAME Query::",qr);
         String selectQuery = "SELECT sno FROM tour_vars";
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -762,9 +763,9 @@ catch(Exception ex)
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToPosition(pos);
         for(int i=0;i<4;i++){
-        try
+            try
             {data[i]=""+cursor.getString(i);}
-        catch(Exception e)
+            catch(Exception e)
             {data[i]="";}
         }
         Log.d("PLAYERS ",data[0]+" "+data[1]+" "+data[2]+" "+data[3]);
@@ -859,25 +860,25 @@ catch(Exception ex)
         return data;
     }
 
-  public String[] getSummary(int ii)
-  {
-      SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
-      String selectQuery = "SELECT * FROM curr_scores";
-      Log.d("QUERY::",selectQuery);
-      String data[]=new String[3];
-      Cursor cursor = db.rawQuery(selectQuery, null);
-      cursor.moveToPosition(ii);
-      for(int i=0;i<3;i++){
-          try
-          {data[i]=""+cursor.getString(i);}
-          catch(Exception e)
-          {data[i]="";}
-      }
-      Log.d("PLAYERS ",data[0]+" "+data[1]+" "+data[2]);
-      db.close();
-      cursor.close();
-      return data;
-  }
+    public String[] getSummary(int ii)
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "SELECT * FROM curr_scores";
+        Log.d("QUERY::",selectQuery);
+        String data[]=new String[3];
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToPosition(ii);
+        for(int i=0;i<3;i++){
+            try
+            {data[i]=""+cursor.getString(i);}
+            catch(Exception e)
+            {data[i]="";}
+        }
+        Log.d("PLAYERS ",data[0]+" "+data[1]+" "+data[2]);
+        db.close();
+        cursor.close();
+        return data;
+    }
     public String[] getTopPlayers(String team,int pos)
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
@@ -993,8 +994,8 @@ catch(Exception ex)
         Log.d("QUERY::",selectQuery);
         Cursor cursor = db.rawQuery(selectQuery, null);
         try{
-        cursor.moveToPosition(j);
-        str=cursor.getString(0);}
+            cursor.moveToPosition(j);
+            str=cursor.getString(0);}
         catch(Exception ex){str="";}
         db.close();cursor.close();
         return str;
@@ -1309,10 +1310,10 @@ catch(Exception ex)
             data[i]=getTeamNameFromId(cursor.getString(0));
         }
         Log.d("TEAMS ",data[0]+" "+data[1]+" "+data[2]+" "+data[3]);
-        db.execSQL("update rr_matches set T1='"+data[0]+"' where sno=29");
-        db.execSQL("update rr_matches set T2='"+data[1]+"' where sno=29");
-        db.execSQL("update rr_matches set T1='"+data[2]+"' where sno=30");
-        db.execSQL("update rr_matches set T2='"+data[3]+"' where sno=30");
+        db.execSQL("update rr_matches set T1='"+data[0]+"' where sno=57");
+        db.execSQL("update rr_matches set T2='"+data[1]+"' where sno=57");
+        db.execSQL("update rr_matches set T1='"+data[2]+"' where sno=58");
+        db.execSQL("update rr_matches set T2='"+data[3]+"' where sno=58");
         db.close();
         cursor.close();
     }
@@ -1338,7 +1339,7 @@ catch(Exception ex)
     public void updateRRFinals()
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
-        String selectQuery = "select res from rr_matches where sno in(29,30)";
+        String selectQuery = "select res from rr_matches where sno in(57,58)";
         Log.d("QUERY::",selectQuery);
         String data[]=new String[2];
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -1347,10 +1348,10 @@ catch(Exception ex)
             data[i]=getTeamNameFromId(cursor.getString(0));
         }
         Log.d("TEAMS ",data[0]+" "+data[1]);
-      //  db.execSQL("update rr_matches set T1='"+data[0]+"' where sno=29");
-       // db.execSQL("update rr_matches set T2='"+data[1]+"' where sno=29");
-        db.execSQL("update rr_matches set T1='"+data[0]+"' where sno=31");
-        db.execSQL("update rr_matches set T2='"+data[1]+"' where sno=31");
+        //  db.execSQL("update rr_matches set T1='"+data[0]+"' where sno=29");
+        // db.execSQL("update rr_matches set T2='"+data[1]+"' where sno=29");
+        db.execSQL("update rr_matches set T1='"+data[0]+"' where sno=59");
+        db.execSQL("update rr_matches set T2='"+data[1]+"' where sno=59");
         db.close();
         cursor.close();
     }
@@ -1451,7 +1452,7 @@ catch(Exception ex)
             {Log.d("FOUND AT I=::",""+i);
                 break;}
             else
-             cursor.moveToNext();
+                cursor.moveToNext();
         }
         return i;
     }
@@ -1482,14 +1483,15 @@ catch(Exception ex)
         String pid=tm+""+z;
         cursor.close();
         db.execSQL("insert into players values('"+tm+"','"+pid+"','"+p+"',0,0,0.0,0,0,0,0,0,0,0,0,'"+b+"',0,0,0,0,0,0,'0/0',0)");
+        db.execSQL("insert into players_pool values('"+p+"','"+tm+"','"+b+"','','','','','','')");
         db.close();
     }
     public String getPlayerIpl(String colname,int j)
     {
-       String str="Hanuma";
+        String str="Hanuma";
         //Random rand = new Random();
         int n,n2;
-       SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
         String selectQuery = "SELECT player_name from players_pool where category='"+colname+"' and franchise=''";
         Log.d("QUERY::",selectQuery);
         Cursor cursor = db.rawQuery(selectQuery, null);

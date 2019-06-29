@@ -46,7 +46,7 @@ public class RoundRobinCentral extends AppCompatActivity {
         showFixtures();
         showStandings();
         int i= db1.getTourMatchSno();
-        if(i==60)
+        if(i==59)
         {
             Intent intent = new Intent(getBaseContext(), RoundRobinWinner.class);
             intent.putExtra("winner", db1.giveRRWinner());
@@ -223,7 +223,7 @@ else {
                 Log.d("CURRENT-MATCH::",values[0]+" "+values[1]);
                 tour_flag="R";
                 //db1.insertCurrMatch(value1,value2,"N",maxovers);
-                db1.insertCurrMatch(values[0],values[1],tour_flag,50);
+                db1.insertCurrMatch(values[0],values[1],tour_flag,20);
                 startActivity(new Intent(RoundRobinCentral.this, PlayersSelect.class));
             }});
 

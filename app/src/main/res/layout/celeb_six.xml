@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="#801C02AF"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="581dp"
+        android:layout_height="71dp"
+        android:text="Blasted in Air"
+        android:textSize="31dp"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:textColor="@color/goldy"
+        android:fontFamily="serif"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/textView26"
+        android:layout_width="306dp"
+        android:layout_height="133dp"
+        android:text="Sixer!!!"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:fontFamily="cursive"
+        android:layout_marginLeft="270dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp" />
+</android.support.constraint.ConstraintLayout>
