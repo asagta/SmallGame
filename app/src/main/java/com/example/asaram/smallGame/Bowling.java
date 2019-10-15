@@ -36,6 +36,7 @@ public class Bowling extends AppCompatActivity {
     private TextView finalB;
     private TextView overs,bowler,b_overs,b_runs,b_wick;
     private TextView equation,teamName;
+    private TextView thisover,thisover0;
     private double rpo,reqrpo;
     public WindowManager.LayoutParams layoutParams;
     public static Dialog dialog,dialog2;
@@ -44,15 +45,17 @@ public class Bowling extends AppCompatActivity {
     static float nrr,nrr2;
     static int[][] rball;static String match[];
     static int b4,b6,r4,r6,nextScore,drid,drid2,freq,freq5,pbowler,bowl_bowls,bowl_runs,bowl_wick,bowl_over,bowl_dots,cfb,cfr,chb,chr;
-    static int b,r,row,col,strike,runs,runsLeft,maxOvers,maxWick,n,run,wick,flagBat,ind,aus,over,ball,ind2,over2,tballs;
+    static int rover,b,r,row,col,strike,runs,runsLeft,maxOvers,maxWick,n,run,wick,flagBat,ind,aus,over,ball,ind2,over2,tballs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        eq="";
+        eq="";rover=0;
         bat=(TextView)findViewById(R.id.textView22);
         bowl=(TextView)findViewById(R.id.textView23);
         score=(TextView)findViewById(R.id.textView16);
+        thisover=(TextView)findViewById(R.id.textView21);
+        thisover0=(TextView)findViewById(R.id.textView20);
         ib=(Button)findViewById(R.id.button);
         zero=(Button)findViewById(R.id.b0);
         one=(Button)findViewById(R.id.b1);
@@ -159,12 +162,14 @@ public class Bowling extends AppCompatActivity {
         if (maxOvers == 20 || over > 32) {
             Random rand = new Random();
             n = rand.nextInt(8) + 1;
+            thisover0.setText("This Over");
             bat.setText("" + n);
             bowl.setText("" + s);
 
             if (s == n && s > 0 && s != 5 && s != 1) {
                 disableThat(s);
                 wick = wick + 1;
+                thisover.setText(""+thisover.getText()+" W");
                 bowl_wick = db1.getBowlStats("bwick", (String) bowler.getText()) + 1;
                 b_wick.setText("" + bowl_wick);
                 db1.updateBowlStats("bwick", (String) bowler.getText(), 1);
@@ -236,6 +241,7 @@ public class Bowling extends AppCompatActivity {
                 else if (n == 7) run = 6;
                 else if (n == 8) run = 4;
                 else run = 0;
+                thisover.setText(""+thisover.getText()+" "+run);
                 if (run == 6) {
                     run = 6;
                     Log.d("SIXES_STRIKE::", "" + strike);
@@ -265,6 +271,7 @@ public class Bowling extends AppCompatActivity {
                     }
                 }
                 runs = runs + run;
+                rover=rover+run;
                 db1.updateCurrGame("runs", runs);
                 db1.updateCurrGame("run", run);
                 if (strike == 0) {
@@ -370,6 +377,8 @@ public class Bowling extends AppCompatActivity {
                 } else {
                     run = 6;
                 }
+                thisover.setText(""+thisover.getText()+" "+run);
+                rover=rover+run;
                 db1.updateCurrGame("run", run);
                 if (run == 6) {
                     run = 6;
@@ -558,7 +567,9 @@ public class Bowling extends AppCompatActivity {
                     over = over + 1;
                     db1.updateCurrGame("Overs", over);
                     //db1.updateBowlStats("bovers",(String)bowler.getText(),1);
-
+                    thisover.setText("");
+                    thisover0.setText("LAST OVER : "+rover);
+                    rover=0;
                     bowl_bowls = 0;
                     bowl_runs = 0;
                     bowl_wick = 0;
@@ -643,6 +654,7 @@ public class Bowling extends AppCompatActivity {
         else{
             Random rand = new Random();
             n = rand.nextInt(9);
+            thisover0.setText("This Over");
             bat.setText("" + n);
             bowl.setText("" + s);
 
@@ -651,6 +663,7 @@ public class Bowling extends AppCompatActivity {
                 wick = wick + 1;
                 bowl_wick = db1.getBowlStats("bwick", (String) bowler.getText()) + 1;
                 b_wick.setText("" + bowl_wick);
+                thisover.setText(""+thisover.getText()+" W");
                 db1.updateBowlStats("bwick", (String) bowler.getText(), 1);
                 db1.updateCurrGame("Wickets", wick);//For saving the gaem
                 //result.setText("OUT");
@@ -750,6 +763,8 @@ public class Bowling extends AppCompatActivity {
                 runs = runs + run;
                 db1.updateCurrGame("runs", runs);
                 db1.updateCurrGame("run", run);
+                rover=rover+run;
+                thisover.setText(""+thisover.getText()+" "+run);
                 if (strike == 0) {
                     rball[row][col] += run;
                     db1.updateCurrGame("batter_run", rball[row][col]);
@@ -801,7 +816,6 @@ public class Bowling extends AppCompatActivity {
                 }
 
                 score.setText("" + runs + "-" + wick);
-
                 bowl_runs = db1.getBowlStats("bruns", (String) bowler.getText()) + run;
                 b_runs.setText("" + bowl_runs);
                 db1.updateBowlStats("bruns", (String) bowler.getText(), run);
@@ -871,6 +885,8 @@ public class Bowling extends AppCompatActivity {
                 else if((n==8) && (s==3||s==4||s==6))
                    run=1;
                 db1.updateCurrGame("run", run);
+                thisover.setText(""+thisover.getText()+" "+run);
+                rover=rover+run;
                 if (run == 6) {
                     run = 6;
                     Log.d("SIXES_STRIKE::", "" + strike);
@@ -1057,6 +1073,9 @@ public class Bowling extends AppCompatActivity {
                 if (ball > 5) {
                     over = over + 1;
                     db1.updateCurrGame("Overs", over);
+                    thisover.setText("");
+                    thisover0.setText("LAST OVER : "+rover);
+                    rover=0;
                     //db1.updateBowlStats("bovers",(String)bowler.getText(),1);
 
                     bowl_bowls = 0;
@@ -1358,6 +1377,8 @@ public class Bowling extends AppCompatActivity {
         {
             db1.updatePlayersStat(match[0],i,"players");
             db1.updatePlayersStat(match[1],i,"players");
+            db1.updatePrevPerf(match[1],match[0],i);
+            db1.updatePrevPerf(match[0],match[1],i);
         }
 
         //code for updating match summary
@@ -1449,14 +1470,42 @@ public class Bowling extends AppCompatActivity {
                 //Log.d("IND VARIABLE IS: ",""+ind);
                 if(db1.getCurrData("aus")==1)
                 {
-                    db1.updateTourMatches(winner);
-                    if(db1.getTourMatchSno()==7)
+                    for(int i=1;i<12;i++)
                     {
-                        startActivity(new Intent(Bowling.this, TourWinner.class));
+                        db1.updatePlayersStat(match[0],i,"mc_stats");
+                        db1.updatePlayersStat(match[1],i,"mc_stats");
                     }
+                    if(db1.getTourMatchSno()==45)
+                    {
+                        //update for Round 2 Super 6
+                        db1.updateMC(winner,db1.getTourMatchSno());
+                        db1.updateMCPointsTable(winner,looser,nrr,nrr2,"mc_standings_r1");
+                        //now update new round in mc_fixtures and mc_standings_r2
+                        MixedCupRoundTwo mcr2=new MixedCupRoundTwo();
+                        mcr2.InitTourDataMC(Bowling.this);
+                        startActivity(new Intent(Bowling.this, MixedCupHome.class));
+                    }
+                    else if(db1.getTourMatchSno()==60)//updating both semi finals fixtures
+                    {
+                        db1.updateMC(winner,db1.getTourMatchSno());
+                        db1.updateMCPointsTable(winner,looser,nrr,nrr2,"mc_standings_r2");
+                        db1.updateMCSemiFinals();
+                        startActivity(new Intent(Bowling.this, MixedCupHome.class));
+                    }
+                    else if(db1.getTourMatchSno()==62)//updating finals
+                    {
+                        db1.updateMC(winner,db1.getTourMatchSno());
+                        db1.updateMCFinals();
+                        startActivity(new Intent(Bowling.this, MixedCupHome.class));
+                    }
+
                     else {
-                        db1.updateNextRound(winner);
-                        startActivity(new Intent(Bowling.this, TournamentCentral.class));
+                        db1.updateMC(winner,db1.getTourMatchSno());
+                        if(db1.getTourMatchSno()>45)//update round 2 standings
+                            db1.updateMCPointsTable(winner,looser,nrr,nrr2,"mc_standings_r2");
+                        else //update round 1 standings
+                            db1.updateMCPointsTable(winner,looser,nrr,nrr2,"mc_standings_r1");
+                        startActivity(new Intent(Bowling.this, MixedCupHome.class));
                     }
                 }
                 else if(db1.getCurrData("aus")==2)
@@ -1541,6 +1590,10 @@ public class Bowling extends AppCompatActivity {
     }
     void AusWins()
     {
+        float rr1=db1.setRunRate(winner);
+        float rr2=db1.setRunRate(looser);
+        nrr=rr1-rr2;
+        nrr2=rr2-rr1;
         ball=0;bowl_bowls=0;
         freq=0;freq5=0;
         cfb=0;chb=0;cfr=0;chr=0;
@@ -1552,6 +1605,8 @@ public class Bowling extends AppCompatActivity {
         {
             db1.updatePlayersStat(match[0],i,"players");
             db1.updatePlayersStat(match[1],i,"players");
+            db1.updatePrevPerf(match[1],match[0],i);
+            db1.updatePrevPerf(match[0],match[1],i);
         }
 
         //code for updating match summary
@@ -1643,14 +1698,41 @@ public class Bowling extends AppCompatActivity {
                 //Log.d("IND VARIABLE IS: ",""+ind);*/
                 if(db1.getCurrData("aus")==1)
                 {
-                    db1.updateTourMatches(winner);
-                    if(db1.getTourMatchSno()==7)
+                    for(int i=1;i<12;i++)
                     {
-                        startActivity(new Intent(Bowling.this, TourWinner.class));
+                        db1.updatePlayersStat(match[0],i,"mc_stats");
+                        db1.updatePlayersStat(match[1],i,"mc_stats");
+                    }
+                    if(db1.getTourMatchSno()==45)
+                    {
+                        //update for Round 2 Super 6
+                        db1.updateMC(winner,db1.getTourMatchSno());
+                        db1.updateMCPointsTable(winner,looser,nrr,nrr2,"mc_standings_r1");
+                        //now update new round in mc_fixtures and mc_standings_r2
+                        MixedCupRoundTwo mcr2=new MixedCupRoundTwo();
+                        mcr2.InitTourDataMC(Bowling.this);
+                        startActivity(new Intent(Bowling.this, MixedCupHome.class));
+                    }
+                    else if(db1.getTourMatchSno()==60)//updating both semi finals fixtures
+                    {
+                        db1.updateMC(winner,db1.getTourMatchSno());
+                        db1.updateMCPointsTable(winner,looser,nrr,nrr2,"mc_standings_r2");
+                        db1.updateMCSemiFinals();
+                        startActivity(new Intent(Bowling.this, MixedCupHome.class));
+                    }
+                    else if(db1.getTourMatchSno()==62)//updating finals
+                    {
+                        db1.updateMC(winner,db1.getTourMatchSno());
+                        db1.updateMCFinals();
+                        startActivity(new Intent(Bowling.this, MixedCupHome.class));
                     }
                     else {
-                        db1.updateNextRound(winner);
-                        startActivity(new Intent(Bowling.this, TournamentCentral.class));
+                        db1.updateMC(winner,db1.getTourMatchSno());
+                        if(db1.getTourMatchSno()>45)//update round 2 standings
+                            db1.updateMCPointsTable(winner,looser,nrr,nrr2,"mc_standings_r2");
+                        else //update round 1 standings
+                            db1.updateMCPointsTable(winner,looser,nrr,nrr2,"mc_standings_r1");
+                        startActivity(new Intent(Bowling.this, MixedCupHome.class));
                     }
                 }
                 else if(db1.getCurrData("aus")==2)

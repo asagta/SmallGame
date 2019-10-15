@@ -220,7 +220,6 @@ public static void  ShowThat(Context context,String pname) {
         layoutParams.height = dialogWindowHeight;
         dialog.getWindow().setAttributes(layoutParams);
         TextView tv2 = (TextView) dialog.findViewById(R.id.textView14);//code for initializing the components in dialog
-
         TextView bname=(TextView)dialog.findViewById(R.id.tv1);
         TextView ball=(TextView)dialog.findViewById(R.id.tv6);
         TextView four=(TextView)dialog.findViewById(R.id.tv7);

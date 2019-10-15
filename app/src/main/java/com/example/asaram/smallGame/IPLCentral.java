@@ -165,7 +165,6 @@ else {
             table.addView(row[i]);
             i++;
             // row[k].addView(spacerColumn, new TableRow.LayoutParams(12, 12));
-
         }
     }
     public void setKnockOutMatches()

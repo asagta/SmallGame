@@ -28,7 +28,7 @@ public class QuickPlay extends AppCompatActivity {
     static int maxovers;
 
     // Array of Image IDs to Show In ImageSwitcher
-    String imageIds[] = {"ind","eng","nzl","saf","aus","pak","ban","win"};
+    String imageIds[] = {"ind","eng","nzl","saf","aus","pak","ban","win","slk","afg"};
     int count = imageIds.length;
     // to keep current Index of ImageID array
     int currentIndex = -1;
@@ -143,8 +143,8 @@ public void setTeams(Button bn,Button bp,final ImageSwitcher is,final TextView t
             // TODO Auto-generated method stub
             currentIndex--;
             //  Check If index reaches minimum then reset it
-            if (currentIndex == 0)
-                currentIndex = 7;
+            if (currentIndex == -2 || currentIndex == -1)
+                currentIndex = 9;
             int drid=getResources().getIdentifier(imageIds[currentIndex]+"_logos", "drawable", getPackageName());
             is.setImageResource(drid);
             t.setText(db1.getTeamNameFromId(imageIds[currentIndex].toUpperCase()));

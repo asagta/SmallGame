@@ -33,7 +33,8 @@ public class SquadMgmt extends AppCompatActivity {
     public static Button b5, prev, next, b26,vt0,vt01;
     public static String tour_flag = "N";
     static int res[];
-    static int z;
+    static int z,z1;
+    static String[] tms,tms2;
     //public List<String> teams;
     static Spinner teamId, bowl;
     static EditText pname;
@@ -43,13 +44,15 @@ public class SquadMgmt extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.squad_mgmt);
         DatabaseHelper dbHelper = new DatabaseHelper(this, getFilesDir().getAbsolutePath());
+        tms=new String[]{"IND","ENG","PAK","AUS","WIN","SAF","NZL","BAN","SLK","AFG"};
+        tms2=new String[]{"INDIA","ENGLAND","PAKISTAN","AUSTRALIA","WEST INDIES","SOUTH AFRICA","NEW ZEALAND","BANGLADESH","SRI LANKA","AFGHANISTAN"};
         try {
             dbHelper.prepareDatabase();
         } catch (IOException e) {
             Log.d("ADD_EXPENSES:", e.getMessage());
         }
         db1 = new DatabaseHandler(this, getFilesDir().getAbsolutePath());
-        showSquadOnly();
+        showSquadOnly(0);
         res = new int[2];
         setClickonSwap();
         setClickonAddMore();
@@ -57,19 +60,31 @@ public class SquadMgmt extends AppCompatActivity {
     }
 public void showOtherTeams()
 {
-
+    next=(Button) findViewById(R.id.vt01);
+    prev=(Button) findViewById(R.id.vt0);
+    next.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+      z1=z1+1;
+      Log.d("TOUCHED:",""+z1);
+      if(z1==10) z1=0;
+      showSquadOnly(z1);
+        }
+    });
 }
-    public void showSquadOnly() {
+    public void showSquadOnly(int i1) {
         int i = 0, j = 0, ii = +1;
-        int tplay=db1.getTotalPlayers("IND");
+        int tplay=db1.getTotalPlayers(tms[i1]);
         TableLayout.LayoutParams params = new TableLayout.LayoutParams(270, 230);
         TableLayout table = (TableLayout) findViewById(R.id.tbl1);
-        //table.removeAllViews();
+        table.removeAllViews();
+        TextView title=(TextView)findViewById(R.id.vt1);
+        title.setText(""+tms2[i1]);
         TableRow[] row = new TableRow[tplay];
         TextView[] col = new TextView[tplay];
         String pl = new String();
         while (i < 16) {
-            pl = db1.getSquadPlayer(i);
+            pl = db1.getSquadPlayer(i,tms[i1]);
             row[i] = new TableRow(SquadMgmt.this);
             params.setMargins(0, 5, 8, 8);
             row[i].setLayoutParams(params);
@@ -77,7 +92,7 @@ public void showOtherTeams()
             col[i].setId(ii);
             col[i].setText(pl);
             col[i].setHeight(80);
-            col[i].setWidth(230);
+            col[i].setWidth(380);
             col[i].setGravity(Gravity.CENTER);
             col[i].setTextSize(14);
             setOnClicktoButton(col[i]);
@@ -95,15 +110,16 @@ public void showOtherTeams()
         tplay=tplay-16;
         int jj = +18;
         table = (TableLayout) findViewById(R.id.tbl2);
+        table.removeAllViews();
         while (i < tplay) {
-            pl = db1.getSquadPlayer(j);
+            pl = db1.getSquadPlayer(j,tms[i1]);
             row[i] = new TableRow(SquadMgmt.this);
             params.setMargins(0, 5, 8, 8);
             row[i].setLayoutParams(params);
             col[i] = new TextView(SquadMgmt.this);
             col[i].setText(pl);
             col[i].setHeight(80);
-            col[i].setWidth(230);
+            col[i].setWidth(380);
             col[i].setGravity(Gravity.CENTER);
             col[i].setTextSize(14);
             col[i].setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
@@ -157,6 +173,7 @@ public void showOtherTeams()
         Log.d("THe value in res::", "" + res[0] + " " + res[1]);
         pl1 = (TextView) findViewById(res[0]);
         pl2 = (TextView) findViewById(res[1]);
+
         //add_desc.setOnItemSelectedListener();
         bt.setOnClickListener(new View.OnClickListener() {
 

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -26,6 +27,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.myContext = context;
+        //write here external db saving code
+        filePath= Environment.getExternalStorageDirectory()+"/"+"HomeCric";
+        File f=new File(filePath);
+        if(!f.exists())
+            f.mkdir();
+
         Log.d("DEST-PATH-:",filePath.toString());
         pathToSaveDBFile = new StringBuffer(filePath).append("/").append(DATABASE_NAME).toString();
         Log.d("FILE IN CONSTRUCTOR",pathToSaveDBFile);
@@ -185,7 +192,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("insert into curr_match values('"+s2+"')");
         Log.d("ID ADDED::",s1+"  "+s2);
         db.execSQL("DELETE FROM curr_game");
-        if(tf.equalsIgnoreCase("Y"))
+        if(tf.equalsIgnoreCase("M"))
             db.execSQL("insert into curr_game values(0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,"+maxBalls+","+maxOvers+",0,1,0)");
         else if(tf.equalsIgnoreCase("R"))
             db.execSQL("insert into curr_game values(0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,"+maxBalls+","+maxOvers+",0,2,0)");
@@ -353,6 +360,42 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
         cursor.close();
         return ov;
+    }
+    public void updatePrevPerf(String team_id,String opponent,int i) {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "SELECT player_name,runs,balls,bovers,bruns,bwick,out FROM curr_players where team_id like '%" + team_id + "%' and border=" + i;
+        Log.d("PERF_QUERY::", selectQuery);
+        String data[] = new String[8];
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        data[0]=cursor.getString(0);
+        Log.d("PERF_QUERY_DATA::", data[0]);
+        for(int i1=1;i1<7;i1++)
+        {
+            try
+            {data[i1]=cursor.getString(i1);Log.d("PERF_QUERY::", data[i1]);}
+            catch(Exception e)
+            {data[i1]="-";}
+        }
+        data[7]=opponent;
+        //logic for updating prev_performance of players
+        selectQuery = "SELECT count(pname) FROM prev_perf where pname='"+data[0]+"'";
+        Log.d("PERF_QUERY::", selectQuery);
+        cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        int j=cursor.getInt(0);
+        if(j==0)
+        {
+            db.execSQL("insert into prev_perf values(1,'"+data[0]+"','"+data[7]+"','"+data[1]+"','"+data[2]+"','"+data[3]+"','"+data[4]+"','"+data[5]+"','"+data[6]+"')");
+        }
+        else
+        {
+            db.execSQL("update prev_perf set sno=sno+1 where pname='"+data[0]+"'");
+            try{ db.execSQL("delete from prev_perf where pname='"+data[0]+"' and sno=6");}
+            catch(Exception ex){Log.d("DELETE ERROR:",ex.toString());}
+            db.execSQL("insert into prev_perf values(1,'"+data[0]+"','"+data[7]+"','"+data[1]+"','"+data[2]+"','"+data[3]+"','"+data[4]+"','"+data[5]+"','"+data[6]+"')");
+        }
+        cursor.close();
     }
     public void updatePlayersStat(String team_id,int bat_order,String tab_name)
     {
@@ -554,30 +597,37 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void updatePlayerID(String a,String b)
     {
         String mtch[]=new String[2];
-        String selectQuery="";
+        String selectQuery="";String selectQuery2="";
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
-        if(IPLCentral.tour_flag.equalsIgnoreCase("I"))
-            selectQuery = "SELECT franchise_id FROM players_pool where player_name in('"+a+"','"+b+"')";
-        else
-            selectQuery = "SELECT player_id FROM players where player_name in('"+a+"','"+b+"')";
-        Log.d("QUERY::",selectQuery);
+        if(IPLCentral.tour_flag.equalsIgnoreCase("I")) {
+            selectQuery = "SELECT franchise_id FROM players_pool where player_name='"+a+"'";
+            selectQuery2 = "SELECT franchise_id FROM players_pool where player_name='"+b+"'";
+        }
+            else {
+            selectQuery = "SELECT player_id FROM players where player_name='"+a+"'";
+            selectQuery2 = "SELECT player_id FROM players where player_name='"+b+"'";
+        }
+            Log.d("QUERY::",selectQuery);Log.d("QUERY::",selectQuery2);
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToFirst();
         mtch[0]=cursor.getString(0);
-        cursor.moveToNext();
+        cursor = db.rawQuery(selectQuery2, null);
+        cursor.moveToFirst();
         mtch[1]=cursor.getString(0);
+        Log.d("THE PLAYER IDs:",mtch[0]+"  "+mtch[1]);
         if(IPLCentral.tour_flag.equalsIgnoreCase("I")) {
             db.execSQL("UPDATE players_pool SET franchise_id='" + mtch[1] + "'" + " where player_name='" + a + "'");
             db.execSQL("UPDATE players_pool SET franchise_id='" + mtch[0] + "'" + " where player_name='" + b + "'");
         }
         else{
+            Log.d("QUERY EXECUTED::","YES");
             db.execSQL("UPDATE players SET player_id='" + mtch[1] + "'" + " where player_name='" + a + "'");
             db.execSQL("UPDATE players SET player_id='" + mtch[0] + "'" + " where player_name='" + b + "'");
         }
         String q2="UPDATE players SET player_id='" + mtch[1]+"'" + " where player_name='"+a+"'";
         String qry="UPDATE players SET player_id='" + mtch[0]+"'" + " where player_name='"+b+"'";
-        Log.d("Scores Query::",qry);
-        Log.d("Scores Query::",q2);
+        Log.d("Scores Query1::",q2);
+        Log.d("Scores Query2::",qry);
         db.close();
     }
 
@@ -1018,6 +1068,61 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();cursor.close();
         return b2;
     }
+    public String[] getBowlStatsPlayer(String pname)
+    {
+        String[] bowls=new String[4];
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "SELECT bwick,`4Ws`,`5Ws`,BB from players where player_name='"+pname+"'";
+        Log.d("QUERY::",selectQuery);
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        for(int i=0;i<4;i++) {
+            try {
+                bowls[i] = cursor.getString(i);
+            } catch (Exception ex) {
+                Log.d("EXPECTION",ex.toString());
+                bowls[i] = "";
+            }
+        }
+        db.close();cursor.close();
+        return bowls;
+    }
+    public int getLast5Match(String pname)
+    {
+        int count=0;
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "SELECT count(pname) from prev_perf where pname='"+pname+"'";
+        Log.d("QUERY::",selectQuery);
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+            try {
+                count = cursor.getInt(0);
+            } catch (Exception ex) {
+                Log.d("EXPECTION",ex.toString());
+                count=0;
+            }
+        db.close();cursor.close();
+        return count;
+    }
+    public String[] getLast5MatchData(String pname,int i)
+    {
+        int count=0;
+        String str[]=new String[3];
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "SELECT versus,runs,balls,b_overs,b_runs,b_wick from prev_perf where pname='"+pname+"' and sno="+i;
+        Log.d("QUERY::",selectQuery);
+        Cursor cursor= db.rawQuery(selectQuery, null);;
+        try {
+            cursor.moveToFirst();
+            str[0] = cursor.getString(0);
+            str[1] = cursor.getString(1) + "(" + cursor.getString(2) + ")";
+            int zz = Integer.parseInt(cursor.getString(3)) / 6;
+            str[2] = cursor.getString(4) + "-" + cursor.getString(5) + " (" + zz + ")";
+        }
+        catch (Exception ex){str[0]="-";str[1]="-";str[2]="-";}
+            db.close();cursor.close();
+        return str;
+    }
     public void updateBowlStats(String att_name,String pname,int k)
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
@@ -1061,11 +1166,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM rr_stats");
         db.close();
     }
+    public void deletePrevTourMC()
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        db.execSQL("DELETE FROM mc_fixtures");
+        db.execSQL("DELETE FROM mc_standings_r1");
+        db.execSQL("DELETE FROM mc_standings_r2");
+        db.execSQL("DELETE FROM mc_stats");
+        db.close();
+    }
     public void setTourMatchesRR(int i)
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
         //db.execSQL("DELETE FROM tour_matches");
         db.execSQL("insert into rr_matches('sno') values("+i+")");
+        db.close();
+    }
+    public void setTourMatchesMC(int i)
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        //db.execSQL("DELETE FROM tour_matches");
+        db.execSQL("insert into mc_fixtures('sno') values("+i+")");
         db.close();
     }
     public void setTourMatchesIPL(int i)
@@ -1084,11 +1205,39 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("update rr_matches set T2='"+tm2+"' where sno="+i);
         db.close();
     }
+    public void addTourTeamsMC(String tm1,String tm2,int i)
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        //db.execSQL("DELETE FROM rr_matches");
+        db.execSQL("update mc_fixtures set T1='"+tm1+"' where sno="+i);
+        db.execSQL("update mc_fixtures set T2='"+tm2+"' where sno="+i);
+        db.close();
+    }
     public String[] getRRFixtures(int sno)
     {
         sno=sno+1;
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
         String selectQuery = "SELECT T1,T2,res FROM rr_matches where sno="+sno;
+        Log.d("QUERY::",selectQuery);
+        String data[]=new String[3];
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        for(int i=0;i<3;i++){
+            try
+            {data[i]=""+cursor.getString(i);}
+            catch(Exception e)
+            {data[i]="";}
+        }
+        Log.d("PLAYERS ",data[0]+" "+data[1]+" "+data[2]);
+        db.close();
+        cursor.close();
+        return data;
+    }
+    public String[] getMCFixtures(int sno)
+    {
+        sno=sno+1;
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "SELECT T1,T2,res FROM mc_fixtures where sno="+sno;
         Log.d("QUERY::",selectQuery);
         String data[]=new String[3];
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -1145,6 +1294,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("insert into rr_rankings values('"+i+"',0,0,0,0,0)");
         db.close();
     }
+    public void setRankingsMCR1(String i)
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        db.execSQL("insert into mc_standings_r1 values('"+i+"',0,0,0,0,0)");
+        db.close();
+    }
+    public void setRankingsMCR2(String i)
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        db.execSQL("insert into mc_standings_r2 values('"+i+"',0,0,0,0,0)");
+        db.close();
+    }
     public void updateRRMatches(String winner)
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
@@ -1156,6 +1317,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
         db.execSQL("UPDATE rr_matches SET res='"+win+"' where sno="+i);
+        db.close();
+    }
+    public void updateMC(String win,int i)
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        db.execSQL("UPDATE mc_fixtures SET res='"+win+"' where sno="+i);
         db.close();
     }
     public void updateIPL(String win,int i,String loose)
@@ -1208,6 +1375,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("UPDATE rr_rankings SET NRR=NRR+"+nr2+" where team='"+l+"'");
         db.close();
     }
+    public void updateMCPointsTable(String w,String l,float nr,float nr2,String tab)
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        db.execSQL("UPDATE "+tab+" SET Played=Played+1 where team='"+w+"'");
+        db.execSQL("UPDATE "+tab+" SET Win=Win+1 where team='"+w+"'");
+        db.execSQL("UPDATE "+tab+" SET NRR=NRR+"+nr+" where team='"+w+"'");
+        db.execSQL("UPDATE "+tab+" SET points=points+2 where team='"+w+"'");
+        db.execSQL("UPDATE "+tab+" SET Played=Played+1 where team='"+l+"'");
+        db.execSQL("UPDATE "+tab+" SET Loss=Loss+1 where team='"+l+"'");
+        db.execSQL("UPDATE "+tab+" SET NRR=NRR+"+nr2+" where team='"+l+"'");
+        db.close();
+    }
     public void updateIPLPointsTable(String w,String l,float nr,float nr2)
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
@@ -1245,11 +1424,56 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("update rr_stats set nouts=0");
         db.close();
     }
+    public void setMCStats()
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        db.execSQL("INSERT INTO mc_stats(player_name,team_id)SELECT player_name,team_id FROM players");
+        db.execSQL("update mc_stats set matches=0");
+        db.execSQL("update mc_stats set Runs=0");
+        db.execSQL("update mc_stats set `30s`=0");
+        db.execSQL("update mc_stats set `50s`=0");
+        db.execSQL("update mc_stats set `100s`=0");
+        db.execSQL("update mc_stats set `4s`=0");
+        db.execSQL("update mc_stats set `6s`=0");
+        db.execSQL("update mc_stats set Highest=0");
+        db.execSQL("update mc_stats set Balls=0");
+        db.execSQL("update mc_stats set can_bowl='U'");
+        db.execSQL("update mc_stats set bovers=0");
+        db.execSQL("update mc_stats set bruns=0");
+        db.execSQL("update mc_stats set bdots=0");
+        db.execSQL("update mc_stats set bwick=0");
+        db.execSQL("update mc_stats set `4Ws`=0");
+        db.execSQL("update mc_stats set `5Ws`=0");
+        db.execSQL("update mc_stats set BB='0/0'");
+        db.execSQL("update mc_stats set bat_rat=0");
+        db.execSQL("update mc_stats set nouts=0");
+        db.close();
+    }
     public String[] getRRStandings(int pos)
     {
         //SQLiteDatabase db = this.getWritableDatabase();
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
         String selectQuery = "select * from rr_rankings order by points desc,NRR desc";
+        Log.d("QUERY::",selectQuery);
+        String data[]=new String[6];
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToPosition(pos);
+        for(int i=0;i<6;i++){
+            try
+            {data[i]=""+cursor.getString(i);}
+            catch(Exception e)
+            {data[i]="";}
+        }
+        Log.d("PLAYERS ",data[0]+" "+data[1]+" "+data[2]+" "+data[3]);
+        db.close();
+        cursor.close();
+        return data;
+    }
+    public String[] getMCStandings(int pos,String tbl)
+    {
+        //SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "select * from "+tbl+" order by points desc,NRR desc";
         Log.d("QUERY::",selectQuery);
         String data[]=new String[6];
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -1317,6 +1541,41 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
         cursor.close();
     }
+    public void updateMCSemiFinals()
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "select team from mc_standings_r2 order by points desc,NRR desc";
+        Log.d("QUERY::",selectQuery);
+        String data[]=new String[4];
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        for(int i=0;i<4;i++) {
+            cursor.moveToPosition(i);
+            data[i]=getTeamNameFromId(cursor.getString(0));
+        }
+        Log.d("TEAMS ",data[0]+" "+data[1]+" "+data[2]+" "+data[3]);
+        db.execSQL("update mc_fixtures set T1='"+data[0]+"' where sno=61");
+        db.execSQL("update mc_fixtures set T2='"+data[1]+"' where sno=61");
+        db.execSQL("update mc_fixtures set T1='"+data[2]+"' where sno=62");
+        db.execSQL("update mc_fixtures set T2='"+data[3]+"' where sno=62");
+        db.close();
+        cursor.close();
+    }
+    public List<String> getMCTopR1Teams()
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "select team from mc_standings_r1 order by points desc,NRR desc";
+        Log.d("QUERY::",selectQuery);
+        List<String> data = new ArrayList<String>();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        for(int i=0;i<6;i++) {
+            cursor.moveToPosition(i);
+            data.add(getTeamNameFromId(cursor.getString(0)));
+        }
+        //Log.d("TEAMS ",data[0]+" "+data[1]+" "+data[2]+" "+data[3]);
+        db.close();
+        cursor.close();
+        return data;
+    }
     public void updateIPLPlayOffFixture()
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
@@ -1356,6 +1615,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
     }
 
+    public void updateMCFinals()
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "select res from mc_fixtures where sno in(61,62)";
+        Log.d("QUERY::",selectQuery);
+        String data[]=new String[2];
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        for(int i=0;i<2;i++) {
+            cursor.moveToPosition(i);
+            data[i]=getTeamNameFromId(cursor.getString(0));
+        }
+        Log.d("TEAMS ",data[0]+" "+data[1]);
+        //  db.execSQL("update rr_matches set T1='"+data[0]+"' where sno=29");
+        // db.execSQL("update rr_matches set T2='"+data[1]+"' where sno=29");
+        db.execSQL("update mc_fixtures set T1='"+data[0]+"' where sno=63");
+        db.execSQL("update mc_fixtures set T2='"+data[1]+"' where sno=63");
+        db.close();
+        cursor.close();
+    }
+
     public void updateIPLFinals()
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
@@ -1386,6 +1665,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         return data;
     }
+    public String giveMCWinner()
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "select res from mc_fixtures where sno = 63";
+        Log.d("QUERY::",selectQuery);
+        String data;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        data=cursor.getString(0);
+        String d2=getTeamNameFromId(data);
+        db.close();
+        cursor.close();
+        return d2;
+    }
     public String giveIPLWinner()
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
@@ -1402,7 +1695,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public String[] getEconomicBowlers(String teamID)
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
-        String selectQuery = "select player_name from curr_players where team_id='"+teamID+"' and can_bowl='Y' and bovers > 0 order by bruns/bovers";
+        String selectQuery = "select player_name from curr_players where team_id='"+teamID+"' and can_bowl='Y' and bovers > 0 order by bruns/(bovers/6)";
         Log.d("QUERY::",selectQuery);
         String data[]=new String[6];
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -1422,7 +1715,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public String[] getQuotaBowlers(String tname,String bname)
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
-        String selectQuery = "select player_name from curr_players where team_id='"+tname+"' and can_bowl='Y' and bovers < 10 and bovers > 0 and player_name not in ('"+bname+"') order by bruns/bovers";
+        String selectQuery = "select player_name from curr_players where team_id='"+tname+"' and can_bowl='Y' and bovers < 60 and bovers > 0 and player_name not in ('"+bname+"') order by bruns/(bovers/6)";
         Log.d("QUOTA_QUERY::",selectQuery);
         String data[]=new String[6];
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -1456,16 +1749,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         return i;
     }
-    public String getSquadPlayer(int j)
+    public String getSquadPlayer(int j,String team)
     {
         String str=new String();
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
-        String selectQuery = "select player_name from players where team_id='IND' order by player_id";
+        String selectQuery = "select player_name from players where team_id='"+team+"' order by player_id";
         Log.d("QUERY::",selectQuery);
         Cursor cursor = db.rawQuery(selectQuery, null);
         try {
             cursor.moveToPosition(j);
             str = cursor.getString(0);
+            Log.d("The player is: ",str);
         }
         catch(Exception ex){str="";}
         db.close();cursor.close();

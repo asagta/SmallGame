@@ -223,7 +223,7 @@ else {
                 Log.d("CURRENT-MATCH::",values[0]+" "+values[1]);
                 tour_flag="R";
                 //db1.insertCurrMatch(value1,value2,"N",maxovers);
-                db1.insertCurrMatch(values[0],values[1],tour_flag,20);
+                db1.insertCurrMatch(values[0],values[1],tour_flag,50);
                 startActivity(new Intent(RoundRobinCentral.this, PlayersSelect.class));
             }});
 

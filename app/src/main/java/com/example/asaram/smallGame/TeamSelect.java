@@ -31,7 +31,7 @@ public class TeamSelect extends AppCompatActivity {
     static int t;
     private TextView b1,t2;
     public Button b4,b7,b8,b9,b25;
-    public ImageButton b70;
+    public Button b70;
     //public static int tms[];
     private Spinner add_desc,add_desc2;
     private boolean mIsBound = false;
@@ -192,21 +192,20 @@ public class TeamSelect extends AppCompatActivity {
     }
     void startTournament()
     {
-        b70=(ImageButton) findViewById(R.id.button7);
+        b70=(Button) findViewById(R.id.button7);
         //add_desc.setOnItemSelectedListener();
         b70.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View view) {
                 Log.d("CLicked the button: ", "Yes its not null");
-                db1.deletePrevTour();
-
-                for(int i=1;i<8;i++)
-                    db1.setTourMatches(i);
-                InitTourData();
+                db1.deletePrevTourMC();
+                for(int i=1;i<64;i++)
+                    db1.setTourMatchesMC(i);
+                InitTourDataMC();
+                db1.setMCStats();
                 db1.setTourMatchSno(0);
-                startActivity(new Intent(TeamSelect.this, TournamentCentral.class));
-
+                startActivity(new Intent(TeamSelect.this, MixedCupHome.class));
             }});
     }
     public void InitTourData() {
@@ -283,8 +282,7 @@ public class TeamSelect extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d("CLicked the button: ", "Yes its not null");
-                startActivity(new Intent(TeamSelect.this, TournamentCentral.class));
-
+                startActivity(new Intent(TeamSelect.this, MixedCupHome.class));
             }});
     }
     void ResumeRR()
@@ -321,6 +319,47 @@ public class TeamSelect extends AppCompatActivity {
 
             }});
     }
+
+    public void InitTourDataMC() {
+        List<String> teams = db1.getAllTeams();
+        int tms[]=new int[45];
+        int a=45;
+        tms=randomNoReps(a);
+        String teams1[]=new String[45];
+        String teams2[]=new String[45];
+        int i = 0,j=1,j1=0,jz=0;
+        while(j1<45) {
+            for (i = 0; i < 10; i++) {
+                for (j = i + 1; j < 10; j++) {
+                    teams1[j1] = "" + i + "" + j;
+                    j1++;
+                }
+            }
+            // j1++;
+        }
+        i=0;
+        while(i<45)
+        {
+            Log.d("TMS::",""+teams1[i]);
+            teams2[i]=teams1[tms[i]];
+            i++;
+        }
+        i=0;
+        while (i < 45) {
+            Log.d("MC team::",""+teams2[i]);
+            Log.d("MC_Team1&2",teams.get(Character.getNumericValue(teams2[i].charAt(0)))+" "+teams.get(Character.getNumericValue(teams2[i].charAt(1))));
+            db1.addTourTeamsMC(teams.get(Character.getNumericValue(teams2[i].charAt(0))),teams.get(Character.getNumericValue(teams2[i].charAt(1))),i+1);
+            i++;
+        }
+        i=0;
+        while(i<10)
+        {
+            db1.setRankingsMCR1(db1.getTeamId(teams.get(i)));
+            i++;
+        }
+        //db1.addtourMatches("T1",teams.get(tms[0]).toString(),1);
+    }
+
     public void InitTourDataRR() {
         // database handler
         // Spinner Drop down elements

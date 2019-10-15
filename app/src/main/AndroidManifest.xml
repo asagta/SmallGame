@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.asaram.smallGame">
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_balls"
@@ -27,8 +28,13 @@
 
         </activity>
         <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.TourWinner">
-
     </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.MixedCupHome">
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.MixedCupStats">
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.MixedCupWinner">
+        </activity>
 
         <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.StatsBatting">
         </activity>

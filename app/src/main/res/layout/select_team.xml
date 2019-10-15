@@ -74,14 +74,6 @@ android:layout_height="fill_parent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Resume IPL" />
-            <ImageButton
-                android:id="@+id/button7"
-                android:layout_width="260dp"
-                android:layout_height="260dp"
-                android:background="@drawable/tournament"
-                app:srcCompat="@drawable/rounded_square"
-                android:layout_marginTop="70dp"
-                 />
 
             <Button
                 android:id="@+id/b8"
@@ -93,8 +85,13 @@ android:layout_height="fill_parent"
                 android:id="@+id/b9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Resume Tour" />
+                android:text="Resume Mixed Cup" />
 
+            <Button
+                android:id="@+id/button7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mixed Cup" />
             <Button
                 android:id="@+id/button24"
                 android:layout_width="wrap_content"
