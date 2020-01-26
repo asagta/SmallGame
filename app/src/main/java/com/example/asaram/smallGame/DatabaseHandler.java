@@ -140,7 +140,45 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         return i;
     }
-
+    public int getSixLimit(String team_id,int order)
+    {
+        //SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        order=order+1;
+        String selectQuery = "SELECT sixlimit FROM curr_players where team_id like '%"+team_id+"%' and border="+order;
+        Log.d("QUERY::",selectQuery);
+        Cursor cursor= db.rawQuery(selectQuery, null);;int i=2;
+        try{
+        cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        i=cursor.getInt(0);}
+        catch(Exception ex)
+        {
+           i=2;
+        }
+        db.close();
+        cursor.close();
+        return i;
+    }
+    public int getBowlerStatus(String bowl_id)
+    {
+        //SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "SELECT goodbowler FROM players where player_name like '%"+bowl_id+"%'";
+        Log.d("QUERY::",selectQuery);
+        Cursor cursor= db.rawQuery(selectQuery, null);;int i=2;
+        try{
+            cursor = db.rawQuery(selectQuery, null);
+            cursor.moveToFirst();
+            i=cursor.getInt(0);}
+        catch(Exception ex)
+        {
+            i=0;
+        }
+        db.close();
+        cursor.close();
+        return i;
+    }
 
     public List<String> getAllTeams(){
         List<String> names = new ArrayList<String>();
@@ -204,10 +242,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         //return i;
     }
-    public void insertCurrPlayers(String tname,String pid,int o,String cb)
+    public void insertCurrPlayers(String tname,String pid,int o,String cb,int sl)
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
-        db.execSQL("insert into curr_players('player_name','team_id','border','can_bowl') values('"+pid+"','"+tname+"',"+o+",'"+cb+"')");
+        db.execSQL("insert into curr_players('player_name','team_id','border','can_bowl','sixlimit') values('"+pid+"','"+tname+"',"+o+",'"+cb+"',"+sl+")");
         db.execSQL("update curr_players set bovers=0");
         db.execSQL("update curr_players set bruns=0");
         db.execSQL("update curr_players set bwick=0");
@@ -1036,6 +1074,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();cursor.close();
         return str;
     }
+    public int getLimitSix(String pname)
+    {
+        int str;
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "SELECT sixlimit from players where player_name='"+pname+"'";
+        Log.d("QUERY::",selectQuery);
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        try{
+            str=cursor.getInt(0);
+        }
+        catch(Exception e)
+        {str=2;}
+        db.close();cursor.close();
+        return str;
+    }
     public String getBowler(String mtch,int j)
     {
         String str;
@@ -1342,7 +1396,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         db.close();
     }
-    public float setRunRate(String team)
+    public double setRunRate(String team)
     {
         int runs,balls;float rr;
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
@@ -1356,14 +1410,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor = db.rawQuery(selectQuery, null);
         cursor.moveToFirst();
         balls=cursor.getInt(0);
-        rr=(float)runs/(balls/6);
-        float rrr;
-        rrr=(float)(rr*100)/100;
+        rr=(float)(runs*6)/(balls);
+        double rrr;
+        //rrr=(float)(rr*100)/100;
+        rrr = Math.round(rr * 100.0) / 100.0;
         db.close();
         cursor.close();
         return rrr;
     }
-    public void updateRRPointsTable(String w,String l,float nr,float nr2)
+    public void updateRRPointsTable(String w,String l,double nr,double nr2)
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
         db.execSQL("UPDATE rr_rankings SET Played=Played+1 where team='"+w+"'");
@@ -1375,7 +1430,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("UPDATE rr_rankings SET NRR=NRR+"+nr2+" where team='"+l+"'");
         db.close();
     }
-    public void updateMCPointsTable(String w,String l,float nr,float nr2,String tab)
+    public void updateMCPointsTable(String w,String l,double nr,double nr2,String tab)
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
         db.execSQL("UPDATE "+tab+" SET Played=Played+1 where team='"+w+"'");
@@ -1387,7 +1442,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("UPDATE "+tab+" SET NRR=NRR+"+nr2+" where team='"+l+"'");
         db.close();
     }
-    public void updateIPLPointsTable(String w,String l,float nr,float nr2)
+    public void updateIPLPointsTable(String w,String l,double nr,double nr2)
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
         db.execSQL("UPDATE ipl_rankings SET Played=Played+1 where team='"+w+"'");

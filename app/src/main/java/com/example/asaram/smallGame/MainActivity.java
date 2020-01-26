@@ -1,9 +1,11 @@
 package com.example.asaram.smallGame;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar.LayoutParams;
@@ -12,6 +14,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,26 +30,38 @@ import android.view.Window;
 public class MainActivity extends AppCompatActivity {
     DatabaseHandler db1;
     private Button zero,one,two,three,four,five,six,ib,prevTeam,nextTeam;
-    private TextView bat,bowl,score,result,overs,equation,teamName,bowler,b_overs,b_runs,b_wick;
-    private TextView thisover,thisover0;
+    private TextView team,bat,bowl,score,result,overs,bat1,bat2,bat1_run,bat2_run,teamName,bowler,b_overs,b_runs,b_wick;
+    private TextView thisover,thisover0,bowl_name,bowl_fig,float_fig;
     public WindowManager.LayoutParams layoutParams;
     public static Dialog dialog;
     static String[] ecoBowlrs;
-    static String eq="",winner,looser;
-    static float nrr,nrr2;
+    static String eq="",winner,looser,ftext,thover="",ftext2="";
+    static double nrr,nrr2;
     static int[][] rball;static String match[];
     static int cbowler,bowl_wick,bowl_runs,bowl_dots,bowl_over,bowl_bowls;
     static int b4,b6,r4,r6,nextScore,drid,drid2,freq6,freq5;
-    static int rover,b,r,row,col,strike,runs,runsLeft,maxOvers,maxWick,n,run,wick,flagBat,afb,ind,aus,over,ball,ind2,over2,tballs,cfb,cfr,chb,chr;
+    static int i7,i8,rover,b,r,row,col,strike,runs,runsLeft,maxOvers,maxWick,n,run,wick,flagBat,afb,ind,aus,over,ball,ind2,over2,tballs,cfb,cfr,chb,chr;
+    static int p_mode,p_freq,p_taken,blimit,rlimit,lb,lr;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        Configuration configuration = getResources().getConfiguration();
+        int screenWidthDp = configuration.screenWidthDp; //The current width of the available screen space, in dp units, corresponding to screen width resource qualifier.
+        int sm = configuration.smallestScreenWidthDp;
+        Log.d("CURR & SMALL WIDTH IS",""+screenWidthDp+" "+sm);
+        if(screenWidthDp>720)
+          setContentView(R.layout.main_activity2);
+        else
+            setContentView(R.layout.activity_main);
         eq="";
-        rover=0;
+        rover=0;lb=3;lr=3;
         bat=(TextView)findViewById(R.id.textView22);
         bowl=(TextView)findViewById(R.id.textView23);
+        bowl_name=(TextView)findViewById(R.id.tv2);
+        bowl_fig=(TextView)findViewById(R.id.tv3);
+        float_fig=(TextView)findViewById(R.id.ffig);
         score=(TextView)findViewById(R.id.textView16);
+        team=(TextView)findViewById(R.id.tm);
         ib=(Button)findViewById(R.id.button);
         zero=(Button)findViewById(R.id.b0);
         one=(Button)findViewById(R.id.b1);
@@ -54,11 +70,11 @@ public class MainActivity extends AppCompatActivity {
         four=(Button)findViewById(R.id.b4);
         five=(Button)findViewById(R.id.b5);
         six=(Button)findViewById(R.id.b6);
-        thisover=(TextView)findViewById(R.id.textView21);
-        thisover0=(TextView)findViewById(R.id.textView20);
+        thisover=(TextView)findViewById(R.id.tover);
         result=(TextView)findViewById(R.id.textView18);
         overs=(TextView)findViewById(R.id.textView17);
-        equation=(TextView)findViewById(R.id.textView19);
+        bat1=(TextView)findViewById(R.id.bat1);bat1_run=(TextView)findViewById(R.id.b1r);
+        bat2=(TextView)findViewById(R.id.bat2);bat2_run=(TextView)findViewById(R.id.b2r);
         bowler=(TextView)findViewById(R.id.vtt1);
         b_overs=(TextView)findViewById(R.id.vtt2);
         b_runs=(TextView)findViewById(R.id.vtt3);
@@ -103,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         runs=db1.getCurrData("runs");
         maxOvers=db1.getCurrData("maxOvers");maxWick=10;
         flagBat=db1.getCurrData("flagBat");tballs=db1.getCurrData("tballs");
+        team.setText(""+match[flagBat]);
         rball=new int[2][2];
         rball[0][0]=db1.getCurrData("batter_run");rball[0][1]=db1.getCurrData("batter_ball");
         rball[1][0]=db1.getCurrData("runner_run");rball[1][1]=db1.getCurrData("runner_ball");
@@ -112,53 +129,175 @@ public class MainActivity extends AppCompatActivity {
         runsLeft=db1.getCurrData("runsLeft");
         ind=db1.getCurrData("ind");
         if(ind>0)
-        { int id=ind+1;result.setText("TARGET "+id);}
+        { int id=ind+1;}//result.setText("TARGET "+id);}
         score.setText(""+runs+"-"+wick);
          drid=getResources().getIdentifier(match[flagBat].toLowerCase(), "drawable", getPackageName());
         if(flagBat==0)
             drid2=getResources().getIdentifier(match[flagBat+1].toLowerCase(), "drawable", getPackageName());
         else
             drid2=getResources().getIdentifier(match[flagBat-1].toLowerCase(), "drawable", getPackageName());
-        ImageView img=(ImageView)findViewById(R.id.imageView3);
+/*        ImageView img=(ImageView)findViewById(R.id.imageView3);
         img.setImageResource(drid);
         ImageView img2=(ImageView)findViewById(R.id.imageView4);
-        img2.setImageResource(drid2);
-        if(strike==0)
-            equation.setText("   *"+db1.getCurrPlayerName(match[flagBat],b)+" "+rball[row][col]+"("+rball[row][col+1]+")"+"\t"+db1.getCurrPlayerName(match[flagBat],r)+" "+rball[row+1][col]+"("+rball[row+1][col+1]+")");
-        else
-            equation.setText("   " + db1.getCurrPlayerName(match[flagBat],b) + " " + rball[row][col] + "(" + rball[row][col + 1] + ")" + "\t\t" + db1.getCurrPlayerName(match[flagBat],r) + " " + rball[row + 1][col] + "(" + rball[row + 1][col + 1] + ")*\n\n" + eq);
-        if(flagBat==0){afb=1;
-            bowler.setText(db1.getBowler(match[flagBat+1],cbowler));}
-        else{afb=0;
-            bowler.setText(db1.getBowler(match[flagBat-1],cbowler));}
-    }
-    void updateScoreCard(int s){
-     if(maxOvers==20 || over>37) {
+        img2.setImageResource(drid2);*/
+        blimit=db1.getSixLimit(match[flagBat],b);rlimit=db1.getSixLimit(match[flagBat],r);
 
+        if(strike==0) {
+            bat1.setText(db1.getCurrPlayerName(match[flagBat], b));
+            bat1_run.setText(""+rball[row][col]+"("+rball[row][col + 1]+")*");
+            bat2.setText(db1.getCurrPlayerName(match[flagBat], r)) ;
+            bat2_run.setText(""+rball[row+1][col]+"("+rball[row+1][col + 1]+")");
+        }
+        else
+        {
+            bat1.setText(db1.getCurrPlayerName(match[flagBat], b));
+            bat1_run.setText(""+rball[row][col]+"("+rball[row][col + 1]+")");
+            bat2.setText(db1.getCurrPlayerName(match[flagBat], r)) ;
+            bat2_run.setText(""+rball[row+1][col]+"("+rball[row+1][col + 1]+")*");
+        }
+        if(flagBat==0){afb=1;
+            bowler.setText(db1.getBowler(match[flagBat+1],cbowler));
+            bowl_name.setText(db1.getBowler(match[flagBat+1],cbowler));
+        }
+        else{afb=0;
+            bowler.setText(db1.getBowler(match[flagBat-1],cbowler));
+            bowl_name.setText(db1.getBowler(match[flagBat-1],cbowler));
+        }
+        ftext="Right Now : 0";
+        Thread thread = new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(12000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // update TextView here!
+                              i7=i7+1;i8=i8+1;
+                                Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_anim);
+                                animation.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.blblue));
+                                float_fig.startAnimation(animation);
+                              if(i7==4) i7=1;
+                                if(i8==3) i8=1;
+                              float_fig.setText(getFloatText(i7));
+                                thisover.setText(getFloatThisOverText(i8));
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+
+        thread.start();
+
+    }
+
+    String getFloatText(int flag)
+    {
+
+       if(i7==1)//code for updating net run rate
+       {
+           double f;
+           if(flagBat==0) {
+               f = db1.setRunRate(match[flagBat]);
+               ftext = "RR : " + f;
+           }
+           else{
+               double rr=(float)(runsLeft*6)/(tballs);
+               double rrr;
+               rrr = Math.round(rr * 100.0) / 100.0;
+               ftext = "Reqd RR : " + rrr;
+           }
+       }
+       else if (i7==2)
+       {
+           if(flagBat==0) {
+               double f;
+               f = db1.setRunRate(match[flagBat]);
+               int ps = (int) (f * maxOvers) + 8;
+               ftext = "Projected: " + ps;
+           }
+           else
+           {
+               int id= ind+1;
+               ftext = "TARGET: " + id;
+           }
+       }
+       else
+       {ftext="Created by A.S.";}
+     return ftext;
+    }
+    String getFloatThisOverText(int flag)
+    {
+
+        if(i8==2 && flagBat==1)
+        {
+            ftext2=eq;
+        }
+        else
+        {
+            ftext2=thover;
+        }
+        return ftext2;
+    }
+    void updateScoreCard(int s)
+    {
+    Log.d("P_MODE::",""+p_mode);
+    //automatic powerplay code
+    if(maxOvers==20&&over>13&&p_taken==0)
+            p_mode=1;
+    else if((maxOvers==50&&over>13&&p_taken==0)||(maxOvers==50&&over>43&&p_taken==1))
+        p_mode=1;
+    if(p_mode==1 && maxOvers==20)
+    {
+        p_freq++;
+        if(p_freq==36)
+        {
+            p_mode=0;
+            p_taken=1;
+            enableBowls();
+        }
+    }
+    else if(p_mode==1 && maxOvers==50){
+        p_freq++;
+        if(p_freq==36)
+        {
+            p_mode=0;
+            p_taken=p_taken+1;
+            p_freq=0;
+        }
+    }
+     if((maxOvers==20 && p_mode==0) || (maxOvers==50 && p_mode==1)) {
          Random rand = new Random();
          n = rand.nextInt(7) + 1;
          bat.setText("" + s);
          bowl.setText("" + n);
-         thisover0.setText("This Over");
          if (s == n && s != 5) {
-         //CelebrationAnimations ca=new CelebrationAnimations();
+             //CelebrationAnimations ca=new CelebrationAnimations();
              wick = wick + 1;
-             thisover.setText(""+thisover.getText()+" W");
+             thover=thover+" "+"W";
+             thisover.setText(getFloatThisOverText(i8));
              db1.updateCurrGame("Wickets", wick);
-             bowl_wick = db1.getBowlStats("bwick", (String) bowler.getText()) + 1;
+             bowl_wick = db1.getBowlStats("bwick", (String) bowl_name.getText()) + 1;
              b_wick.setText("" + bowl_wick);//For saving the gaem
-             db1.updateBowlStats("bwick", (String) bowler.getText(), 1);
+             db1.updateBowlStats("bwick", (String) bowl_name.getText(), 1);
              //result.setText("OUT");
              score.setText("" + runs + "-" + wick);
+             float_fig.setText(getFloatText(i7));
              db1.setScores(match[flagBat], (String) score.getText());
              if (strike == 0) {
                  rball[row][col + 1] += 1;
                  db1.updateCurrGame("batter_ball", rball[row][col + 1]);
-                     db1.updateBalls(db1.getCurrPlayerName(match[flagBat], b), rball[row][col + 1]);
-                     db1.updateRuns(db1.getCurrPlayerName(match[flagBat], b), rball[row][col]);
-                     db1.updateOut(db1.getCurrPlayerName(match[flagBat], b));
-                     CelebrationAnimations.showBatOutDialog(MainActivity.this,db1.getCurrPlayerName(match[flagBat], b), rball[row][col], rball[row][col + 1], b6, b4);
-                 rball[row][col] = 0;cfb=0;chb=0;
+                 db1.updateBalls(db1.getCurrPlayerName(match[flagBat], b), rball[row][col + 1]);
+                 db1.updateRuns(db1.getCurrPlayerName(match[flagBat], b), rball[row][col]);
+                 db1.updateOut(db1.getCurrPlayerName(match[flagBat], b));
+                 CelebrationAnimations.showBatOutDialog(MainActivity.this, db1.getCurrPlayerName(match[flagBat], b), rball[row][col], rball[row][col + 1], b6, b4);
+                 rball[row][col] = 0;
+                 cfb = 0;
+                 chb = 0;
                  db1.updateCurrGame("batter_run", rball[row][col]);
                  rball[row][col + 1] = 0;
                  db1.updateCurrGame("batter_ball", rball[row][col + 1]);
@@ -167,15 +306,19 @@ public class MainActivity extends AppCompatActivity {
                  b6 = 0;
                  db1.updateCurrGame("bat_six", b6);
                  b = Math.max(b, r) + 1;
+                 blimit = db1.getSixLimit(match[flagBat], b);
+                 lb = 3;
                  db1.updateCurrGame("batter", b);
              } else {
                  rball[row + 1][col + 1] += 1;
                  db1.updateCurrGame("runner_ball", rball[row + 1][col + 1]);
-                 db1.updateBalls(db1.getCurrPlayerName(match[flagBat],r),rball[row + 1][col + 1]);
-                     db1.updateRuns(db1.getCurrPlayerName(match[flagBat], r), rball[row + 1][col]);
-                     db1.updateOut(db1.getCurrPlayerName(match[flagBat], r));
-                     CelebrationAnimations.showBatOutDialog(MainActivity.this,db1.getCurrPlayerName(match[flagBat], r), rball[row + 1][col], rball[row + 1][col + 1], r6, r4);
-               rball[row + 1][col] = 0;cfr=0;chr=0;
+                 db1.updateBalls(db1.getCurrPlayerName(match[flagBat], r), rball[row + 1][col + 1]);
+                 db1.updateRuns(db1.getCurrPlayerName(match[flagBat], r), rball[row + 1][col]);
+                 db1.updateOut(db1.getCurrPlayerName(match[flagBat], r));
+                 CelebrationAnimations.showBatOutDialog(MainActivity.this, db1.getCurrPlayerName(match[flagBat], r), rball[row + 1][col], rball[row + 1][col + 1], r6, r4);
+                 rball[row + 1][col] = 0;
+                 cfr = 0;
+                 chr = 0;
                  db1.updateCurrGame("runner_run", rball[row + 1][col]);
                  rball[row + 1][col + 1] = 0;
                  db1.updateCurrGame("runner_ball", rball[row + 1][col + 1]);
@@ -184,20 +327,24 @@ public class MainActivity extends AppCompatActivity {
                  r6 = 0;
                  db1.updateCurrGame("run_six", r6);
                  r = Math.max(b, r) + 1;
+                 rlimit = db1.getSixLimit(match[flagBat], r);
+                 lr = 3;
                  db1.updateCurrGame("Runner", r);
              }
              run = 0;
              db1.updateCurrGame("run", run);
          } else if (s == 0) {
              runs = runs + 0;
-             thisover.setText(""+thisover.getText()+" 0");
+             thover=thover+" "+"0";
+             thisover.setText(getFloatThisOverText(i8));
+             float_fig.setText(getFloatText(i7));
              //CelebrationAnimations.ShowThat(MainActivity.this);
              db1.updateCurrGame("runs", runs);
              run = 0;
              db1.updateCurrGame("run", run);
              //updating the dots of the bowler
-             bowl_dots = db1.getBowlStats("bmaiden", (String) bowler.getText()) + 1;
-             db1.updateBowlStats("bmaiden", (String) bowler.getText(), 1);
+             bowl_dots = db1.getBowlStats("bmaiden", (String) bowl_name.getText()) + 1;
+             db1.updateBowlStats("bmaiden", (String) bowl_name.getText(), 1);
 
              if (strike == 0) {
                  rball[row][col + 1] += 1;
@@ -216,301 +363,464 @@ public class MainActivity extends AppCompatActivity {
              }
              if (s == 5 && n >= 5) {
                  run = 0;
-                // thisover.setText(""+thisover.getText()+""+run);
+                 // thisover.setText(""+thisover.getText()+""+run);
              }
              if (s == 5 && n < 5) {
                  run = 1;
                  //thisover.setText(""+thisover.getText()+""+run);
              }
-             if(run==5 || run==6) run=6;
-             thisover.setText(""+thisover.getText()+" "+run);
-             db1.updateCurrGame("run", run);
-             if (run == 5 || run == 6) {
-                 run = 6;
-                 Log.d("SIXES_STRIKE::", "" + strike);
+             if (run == 5 || run == 6) run = 6;
+             //code for limiting sixes
+             if (strike == 0 && run >= 5) {
+                 if (b6 == blimit) {
+                     lb = lb - 1;
+                     if (lb < 0) run = 2;
+                     else run = 4;
+                 }
+             }
+             else if (strike == 1 && run >= 5) {
+                     if (r6 == rlimit) {
+                         lr = lr - 1;
+                         if (lr < 0) run = 2;
+                         else run = 4;
+                     }
+             }
+             thover=thover+" "+run;
+             thisover.setText(getFloatThisOverText(i8));
+                 db1.updateCurrGame("run", run);
+                 if (run == 5 || run == 6) {
+                     run = 6;
+                     Log.d("SIXES_STRIKE::", "" + strike);
+                     if (strike == 0) {
+                         b6 += 1;
+                         Log.d("BAT_SIXES::", "" + b6);
+                         db1.updateCurrGame("bat_six", b6);
+                         db1.updateSixes(db1.getCurrPlayerName(match[flagBat], b), b6);
+                         CelebrationAnimations.ShowThatSix(MainActivity.this, db1.getCurrPlayerName(match[flagBat], b));
+                     } else {
+                         r6 += 1;
+                         Log.d("RUN_SIXES::", "" + r6);
+                         db1.updateCurrGame("run_six", r6);
+                         db1.updateSixes(db1.getCurrPlayerName(match[flagBat], r), r6);
+                         CelebrationAnimations.ShowThatSix(MainActivity.this, db1.getCurrPlayerName(match[flagBat], r));
+                     }
+                 }
+                 if (run == 4) {
+
+                     if (strike == 0) {
+                         b4 += 1;
+                         Log.d("BAT_FOURS::", "" + b4);
+                         db1.updateCurrGame("bat_four", b4);
+                         db1.updateFours(db1.getCurrPlayerName(match[flagBat], b), b4);
+                         CelebrationAnimations.ShowThat(MainActivity.this, db1.getCurrPlayerName(match[flagBat], b));
+                     } else {
+                         r4 += 1;
+                         Log.d("RUN_FOURS::", "" + r4);
+                         db1.updateCurrGame("run_four", r4);
+                         db1.updateFours(db1.getCurrPlayerName(match[flagBat], r), r4);
+                         CelebrationAnimations.ShowThat(MainActivity.this, db1.getCurrPlayerName(match[flagBat], r));
+                     }
+                 }
+                 runs = runs + run;
+                 db1.updateCurrGame("runs", runs);
                  if (strike == 0) {
-                     b6 += 1;
-                     Log.d("BAT_SIXES::", "" + b6);
-                     db1.updateCurrGame("bat_six", b6);
-                     db1.updateSixes(db1.getCurrPlayerName(match[flagBat], b), b6);
-                     CelebrationAnimations.ShowThatSix(MainActivity.this,db1.getCurrPlayerName(match[flagBat], b));
+                     rball[row][col] += run;
+                     db1.updateCurrGame("batter_run", rball[row][col]);
+                     rball[row][col + 1] += 1;
+                     //show fifty menu
+                     if (rball[row][col] > 49) {
+                         cfb = cfb + 1;
+                     }
+                     if (rball[row][col] > 99) {
+                         chb = chb + 1;
+                     }
+                     if (cfb == 1) {
+                         float strRate = (float) rball[row][col] / rball[row][col + 1];
+                         strRate = strRate * 100;
+                         int rew[] = new int[3];
+                         rew = db1.getMatchRew(db1.getCurrPlayerName(match[flagBat], b));
+                         CelebrationAnimations.ShowThatFifty(MainActivity.this, db1.getCurrPlayerName(match[flagBat], b), rew[1], rball[row][col], rball[row][col + 1], b6, b4, strRate);
+                     }
+                     if (chb == 1) {
+                         float strRate = (float) rball[row][col] / rball[row][col + 1];
+                         strRate = strRate * 100;
+                         int rew[] = new int[3];
+                         rew = db1.getMatchRew(db1.getCurrPlayerName(match[flagBat], b));
+                         CelebrationAnimations.ShowThatHundred(MainActivity.this, db1.getCurrPlayerName(match[flagBat], b), rew[2], rball[row][col], rball[row][col + 1], b6, b4, strRate);
+                     }
+                     db1.updateCurrGame("batter_ball", rball[row][col + 1]);
+                     db1.updateRuns(db1.getCurrPlayerName(match[flagBat], b), rball[row][col]);
+                     db1.updateBalls(db1.getCurrPlayerName(match[flagBat], b), rball[row][col + 1]);
+
                  } else {
-                     r6 += 1;
-                     Log.d("RUN_SIXES::", "" + r6);
-                     db1.updateCurrGame("run_six", r6);
-                     db1.updateSixes(db1.getCurrPlayerName(match[flagBat], r), r6);
-                     CelebrationAnimations.ShowThatSix(MainActivity.this,db1.getCurrPlayerName(match[flagBat], r));
+                     rball[row + 1][col] += run;
+                     db1.updateCurrGame("runner_run", rball[row + 1][col]);
+                     rball[row + 1][col + 1] += 1;
+                     //show that runner fifty
+                     if (rball[row + 1][col] > 49) {
+                         cfr = cfr + 1;
+                     }
+                     if (rball[row + 1][col] > 99) {
+                         chr = chr + 1;
+                     }
+                     if (cfr == 1) {
+                         float strRate = (float) rball[row + 1][col] / rball[row + 1][col + 1];
+                         strRate = strRate * 100;
+                         int rew[] = new int[3];
+                         rew = db1.getMatchRew(db1.getCurrPlayerName(match[flagBat], r));
+                         CelebrationAnimations.ShowThatFifty(MainActivity.this, db1.getCurrPlayerName(match[flagBat], r), rew[1], rball[row + 1][col], rball[row + 1][col + 1], r6, r4, strRate);
+                     }
+                     if (chr == 1) {
+                         float strRate = (float) rball[row + 1][col] / rball[row + 1][col + 1];
+                         strRate = strRate * 100;
+                         int rew[] = new int[3];
+                         rew = db1.getMatchRew(db1.getCurrPlayerName(match[flagBat], r));
+                         CelebrationAnimations.ShowThatHundred(MainActivity.this, db1.getCurrPlayerName(match[flagBat], r), rew[2], rball[row + 1][col], rball[row + 1][col + 1], r6, r4, strRate);
+                     }
+                     db1.updateCurrGame("runner_ball", rball[row + 1][col + 1]);
+                     db1.updateRuns(db1.getCurrPlayerName(match[flagBat], r), rball[row + 1][col]);
+                     db1.updateBalls(db1.getCurrPlayerName(match[flagBat], r), rball[row + 1][col + 1]);
                  }
-             }
-             if (run == 4) {
-
-                 if (strike == 0) {
-                     b4 += 1;
-                     Log.d("BAT_FOURS::", "" + b4);
-                     db1.updateCurrGame("bat_four", b4);
-                     db1.updateFours(db1.getCurrPlayerName(match[flagBat], b), b4);
-                     CelebrationAnimations.ShowThat(MainActivity.this,db1.getCurrPlayerName(match[flagBat], b));
-                 } else {
-                     r4 += 1;
-                     Log.d("RUN_FOURS::", "" + r4);
-                     db1.updateCurrGame("run_four", r4);
-                     db1.updateFours(db1.getCurrPlayerName(match[flagBat], r), r4);
-                     CelebrationAnimations.ShowThat(MainActivity.this,db1.getCurrPlayerName(match[flagBat], r));
-                 }
-             }
-             runs = runs + run;
-             db1.updateCurrGame("runs", runs);
-             if (strike == 0) {
-                 rball[row][col] += run;
-                 db1.updateCurrGame("batter_run", rball[row][col]);
-                 rball[row][col + 1] += 1;
-                 //show fifty menu
-                 if(rball[row][col] > 49)
-                 {cfb=cfb+1;}
-                 if(rball[row][col] > 99)
-                 {chb=chb+1;}
-                 if(cfb==1) {
-                     float strRate=(float)rball[row][col]/rball[row][col + 1];strRate=strRate*100;
-                     int rew[]=new int[3];
-                     rew=db1.getMatchRew(db1.getCurrPlayerName(match[flagBat], b));
-                     CelebrationAnimations.ShowThatFifty(MainActivity.this,db1.getCurrPlayerName(match[flagBat], b),rew[1],rball[row][col],rball[row][col + 1],b6, b4,strRate);
-                 }
-                 if(chb==1) {
-                     float strRate=(float)rball[row][col]/rball[row][col + 1];strRate=strRate*100;
-                     int rew[]=new int[3];
-                     rew=db1.getMatchRew(db1.getCurrPlayerName(match[flagBat], b));
-                     CelebrationAnimations.ShowThatHundred(MainActivity.this,db1.getCurrPlayerName(match[flagBat], b),rew[2],rball[row][col],rball[row][col + 1],b6, b4,strRate);
-                 }
-                 db1.updateCurrGame("batter_ball", rball[row][col + 1]);
-                 db1.updateRuns(db1.getCurrPlayerName(match[flagBat], b), rball[row][col]);
-                 db1.updateBalls(db1.getCurrPlayerName(match[flagBat], b), rball[row][col + 1]);
-
-             } else {
-                 rball[row + 1][col] += run;
-                 db1.updateCurrGame("runner_run", rball[row + 1][col]);
-                 rball[row + 1][col + 1] += 1;
-                 //show that runner fifty
-                 if(rball[row+1][col] > 49)
-                 {cfr=cfr+1;}
-                 if(rball[row+1][col] > 99)
-                 {chr=chr+1;}
-                 if(cfr==1) {
-                     float strRate=(float)rball[row+1][col]/rball[row+1][col + 1];strRate=strRate*100;
-                     int rew[]=new int[3];
-                     rew=db1.getMatchRew(db1.getCurrPlayerName(match[flagBat], r));
-                     CelebrationAnimations.ShowThatFifty(MainActivity.this,db1.getCurrPlayerName(match[flagBat], r),rew[1],rball[row+1][col],rball[row+1][col + 1],r6, r4,strRate);
-                 }
-                 if(chr==1) {
-                     float strRate=(float)rball[row+1][col]/rball[row+1][col + 1];strRate=strRate*100;
-                     int rew[]=new int[3];
-                     rew=db1.getMatchRew(db1.getCurrPlayerName(match[flagBat], r));
-                     CelebrationAnimations.ShowThatHundred(MainActivity.this,db1.getCurrPlayerName(match[flagBat], r),rew[2],rball[row+1][col],rball[row+1][col + 1],r6, r4,strRate);
-                 }
-                 db1.updateCurrGame("runner_ball", rball[row + 1][col + 1]);
-                 db1.updateRuns(db1.getCurrPlayerName(match[flagBat], r), rball[row + 1][col]);
-                 db1.updateBalls(db1.getCurrPlayerName(match[flagBat], r), rball[row + 1][col + 1]);
-             }
-             if ((run % 2 == 0) && (strike == 0)) {
-                 strike = 0;
-                 db1.updateCurrGame("Strike", strike);
-             } else if ((run % 2 == 0) && (strike == 1)) {
-                 strike = 1;
-                 db1.updateCurrGame("Strike", strike);
-             } else if ((run % 2 != 0) && (strike == 1)) {
-                 strike = 0;
-                 db1.updateCurrGame("Strike", strike);
-             } else if ((run % 2 != 0) && (strike == 0)) {
-                 strike = 1;
-                 db1.updateCurrGame("Strike", strike);
-             }
-             score.setText("" + runs + "-" + wick);
-             db1.setScores(match[flagBat], (String) score.getText());
-             //updating bowler stats
-             bowl_runs = db1.getBowlStats("bruns", (String) bowler.getText()) + run;
-             b_runs.setText("" + bowl_runs);
-             db1.updateBowlStats("bruns", (String) bowler.getText(), run);
-             rover=rover+run;
-             if (flagBat == 1) {
-                 Log.d("IND VARIABLE IS: ", "" + ind);
-                 Log.d("RUNS VARIABLE IS: ", "" + runs);
-                 if (runs > ind) {
-                     //finalB.setText("" + runs);
-                     Log.d("LAST BALL ANDAUS WON:", "" + runs);
-                     Toast.makeText(getApplicationContext(), match[1] + " WON!!", Toast.LENGTH_SHORT).show();
-                     winner = match[1];
-                     looser = match[0];
-                     AusWins();
-                     ind = 0;
-                     over = 0;
-                     aus = 0;//so that flow doesn't go into next conditions
-                     db1.updateCurrGame("ind", ind);
-                     db1.updateCurrGame("Overs", over);
-                     //db1.updateCurrGame("aus",aus);
-                 }
-             }
-         }
-         if (wick == maxWick) {
-             score.setText("" + runs);
-             //db1.updateScoreTable(runs);
-             Toast.makeText(getApplicationContext(), "Innings over", Toast.LENGTH_SHORT).show();
-             disableAll();
-             InningsBreak();
-             //activateAll();
-             Log.d("IND VARIABLE IS: ", "" + ind);
-             Log.d("RUNS VARIABLE IS: ", "" + runs);
-             Log.d("WICK VARIABLE IS: ", "" + wick);
-             Log.d("AUS VARIABLE IS: ", "" + aus);
-             Log.d("FlagBat VARIABLE IS: ", "" + flagBat);
-             Log.d("Over VARIABLE IS: ", "" + over);
-             Log.d("Ball VARIABLE IS: ", "" + ball);
-             //startActivity(new Intent(MainActivity.this, secondBat.class));
-             if (flagBat == 0)//if first batting
-             {
-                 //  finalA.setText("" + ind);
-                 flagBat = 1;
-                 db1.updateCurrGame("flagBat", flagBat);
-                 over2 = 1;
-                 db1.updateCurrGame("Over2", over2);
-                 Log.d("Now,FlagBat VARIABLE: ", "" + flagBat);
-             } else //if 2nd batting
-             {
-                 //finalB.setText("" + runs);
-                 aus = runs;
-                 //db1.updateCurrGame("aus",aus);
-                 Toast.makeText(getApplicationContext(), match[0] + " WON!!", Toast.LENGTH_SHORT).show();
-                 winner = match[0];
-                 looser = match[1];
-                 IndWins();//means 1stBatting Team Won
-             }
-             //Toast.makeText(getApplicationContext(),"Australian Batting Starts",Toast.LENGTH_SHORT).show();
-             flagBat = 1;
-             db1.updateCurrGame("flagBat", flagBat);
-             //ind=runs;
-             runs = 0;
-             db1.updateCurrGame("runs", runs);
-             wick = 0;
-             db1.updateCurrGame("Wickets", wick);
-             score.setText("" + runs + "-" + wick);
-             db1.setScores(match[flagBat], (String) score.getText());
-             //result.setText("NEW");
-
-         }
-         //code for updating overs
-         if (over2 == 1) {
-             over2 = 0;
-             db1.updateCurrGame("over2", over2);
-         } else {
-             ball = ball + 1;
-             db1.updateBowlStats("bovers", (String) bowler.getText(), 1);
-             db1.updateCurrGame("Balls", ball);
-             bowl_bowls = bowl_bowls + 1;
-             bowl_over = db1.getBowlStats("bovers", (String) bowler.getText());
-             bowl_over = bowl_over / 6;
-             b_overs.setText("" + bowl_over + "." + bowl_bowls);
-             //tballs=tballs+1;
-             if (ball > 5) {
-                 over = over + 1;
-                 disableAll();
-                 db1.updateCurrGame("Overs", over);
-                 thisover.setText("");
-                 thisover0.setText("LAST OVER : "+rover);
-                 rover=0;
-
-                 //db1.updateBowlStats("bovers", (String) bowler.getText(), 1);
-                 bowl_bowls = 0;
-                 bowl_runs = 0;
-                 bowl_wick = 0;
-                 bowl_dots = 0;
-                 ball = 0;
-                 db1.updateCurrGame("Balls", ball);
-                 if (strike == 0) {
-                     strike = 1;
-                     db1.updateCurrGame("Strike", strike);
-                 } else {
+                 if ((run % 2 == 0) && (strike == 0)) {
                      strike = 0;
                      db1.updateCurrGame("Strike", strike);
+                 } else if ((run % 2 == 0) && (strike == 1)) {
+                     strike = 1;
+                     db1.updateCurrGame("Strike", strike);
+                 } else if ((run % 2 != 0) && (strike == 1)) {
+                     strike = 0;
+                     db1.updateCurrGame("Strike", strike);
+                 } else if ((run % 2 != 0) && (strike == 0)) {
+                     strike = 1;
+                     db1.updateCurrGame("Strike", strike);
                  }
-                 switch(over) {
-                     case 4:case 12:cbowler = cbowler + 2;break;
-                     case 16:cbowler=0;break;
-                     case 39: case 41:case 43:case 45:Log.d("WE GOT:",""+over);for(int i0=0;i0<6;i0++)Log.d("ECO_BOWLERS:",ecoBowlrs[i0]); cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[3]);break;
-                     case 38: case 40:case 42:case 44:Log.d("WE GOT:",""+over);for(int i0=0;i0<6;i0++)Log.d("ECO_BOWLERS:",ecoBowlrs[i0]);  cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);break;
-                     case 46:case 48: ecoBowlrs=db1.getQuotaBowlers(match[afb],(String)bowler.getText());cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);break;
-                     case 47:case 49: ecoBowlrs=db1.getQuotaBowlers(match[afb],(String)bowler.getText());cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);break;
-                 }
-                 String bowlu = db1.getBowler(match[afb], cbowler);
-                 Log.d("CBOWLER is", "" + cbowler);
-                 if (bowlu.equalsIgnoreCase((String) bowler.getText())) {
-                     bowler.setText(db1.getBowler(match[afb], cbowler + 1));
-                     b_wick.setText("" + db1.getBowlStats("bwick", (String) bowler.getText()));
-                     b_runs.setText("" + db1.getBowlStats("bruns", (String) bowler.getText()));
-                     bowl_over = db1.getBowlStats("bovers", (String) bowler.getText());
-                     bowl_over = bowl_over / 6;
-                     b_overs.setText("" + bowl_over );
-                 } else {
-                     bowler.setText(db1.getBowler(match[afb], cbowler));
-                     b_wick.setText("" + db1.getBowlStats("bwick", (String) bowler.getText()));
-                     b_runs.setText("" + db1.getBowlStats("bruns", (String) bowler.getText()));
-                     bowl_over = db1.getBowlStats("bovers", (String) bowler.getText());
-                     bowl_over = bowl_over / 6;
-                     b_overs.setText("" + bowl_over);
-                 }
-                 Log.d("FlagBat in over is:", "" + flagBat);
-                 activateAll();
-             }
-             if (flagBat == 1) {
-                 runsLeft = runsLeft - run;
-                 db1.updateCurrGame("runsleft", runsLeft);
-                 tballs = tballs - 1;
-                 db1.updateCurrGame("tballs", tballs);
-                 Log.d("RUNS LEFT VARIABLE: ", "" + runsLeft);
-                 eq = "NEED " + runsLeft + " runs in " + tballs + "BALLS";
-             }
-
-             if (over == maxOvers) {
-                 disableAll();
-
-                 InningsBreak();
-                 //activateAll();
-                 // tballs=0;
-                 if (flagBat == 0) {
-                     System.out.println("");
-                     flagBat = 1;
-                     db1.updateCurrGame("flagBat", flagBat);
-                 }//if first batting
-                 //finalA.setText("" + runs);
-                 else //if 2nd batting
-                 {
-                     //finalB.setText("" + runs);
-                     aus = runs;
-                     //db1.updateCurrGame("aus",aus);
-                     if (aus > ind) {
-                         Log.d("Last Ball: ", "VICTORY");
+                 score.setText("" + runs + "-" + wick);
+             //updating floating text
+             float_fig.setText(getFloatText(i7));
+                 db1.setScores(match[flagBat], (String) score.getText());
+                 //updating bowler stats
+                 bowl_runs = db1.getBowlStats("bruns", (String) bowl_name.getText()) + run;
+                 b_runs.setText("" + bowl_runs);
+                 db1.updateBowlStats("bruns", (String) bowl_name.getText(), run);
+                 rover = rover + run;
+                 if (flagBat == 1) {
+                     Log.d("IND VARIABLE IS: ", "" + ind);
+                     Log.d("RUNS VARIABLE IS: ", "" + runs);
+                     if (runs > ind) {
+                         //finalB.setText("" + runs);
+                         Log.d("LAST BALL ANDAUS WON:", "" + runs);
                          Toast.makeText(getApplicationContext(), match[1] + " WON!!", Toast.LENGTH_SHORT).show();
                          winner = match[1];
                          looser = match[0];
                          AusWins();
-                     } else {
-                         Toast.makeText(getApplicationContext(), match[0] + " WON!!", Toast.LENGTH_SHORT).show();
-                         winner = match[0];
-                         looser = match[1];
-                         IndWins();
+                         ind = 0;
+                         over = 0;
+                         aus = 0;//so that flow doesn't go into next conditions
+                         db1.updateCurrGame("ind", ind);
+                         db1.updateCurrGame("Overs", over);
+                         //db1.updateCurrGame("aus",aus);
                      }
                  }
-                 over = 0;
-                 db1.updateCurrGame("Overs", over);
              }
+             if (wick == maxWick) {
+                 score.setText("" + runs);
+                 //db1.updateScoreTable(runs);
+                 Toast.makeText(getApplicationContext(), "Innings over", Toast.LENGTH_SHORT).show();
+                 disableAll();
+                 InningsBreak();
+                 //activateAll();
+                 Log.d("IND VARIABLE IS: ", "" + ind);
+                 Log.d("RUNS VARIABLE IS: ", "" + runs);
+                 Log.d("WICK VARIABLE IS: ", "" + wick);
+                 Log.d("AUS VARIABLE IS: ", "" + aus);
+                 Log.d("FlagBat VARIABLE IS: ", "" + flagBat);
+                 Log.d("Over VARIABLE IS: ", "" + over);
+                 Log.d("Ball VARIABLE IS: ", "" + ball);
+                 //startActivity(new Intent(MainActivity.this, secondBat.class));
+                 if (flagBat == 0)//if first batting
+                 {
+                     //  finalA.setText("" + ind);
+                     flagBat = 1;
+                     db1.updateCurrGame("flagBat", flagBat);
+                     over2 = 1;
+                     db1.updateCurrGame("Over2", over2);
+                     Log.d("Now,FlagBat VARIABLE: ", "" + flagBat);
+                 } else //if 2nd batting
+                 {
+                     //finalB.setText("" + runs);
+                     aus = runs;
+                     //db1.updateCurrGame("aus",aus);
+                     Toast.makeText(getApplicationContext(), match[0] + " WON!!", Toast.LENGTH_SHORT).show();
+                     winner = match[0];
+                     looser = match[1];
+                     IndWins();//means 1stBatting Team Won
+                 }
+                 //Toast.makeText(getApplicationContext(),"Australian Batting Starts",Toast.LENGTH_SHORT).show();
+                 flagBat = 1;
+                 db1.updateCurrGame("flagBat", flagBat);
+                 //ind=runs;
+                 runs = 0;
+                 db1.updateCurrGame("runs", runs);
+                 wick = 0;
+                 db1.updateCurrGame("Wickets", wick);
+                 score.setText("" + runs + "-" + wick);
+                 float_fig.setText(getFloatText(i7));
+                 db1.setScores(match[flagBat], (String) score.getText());
+                 //result.setText("NEW");
+
+             }
+             //code for updating overs
+             if (over2 == 1) {
+                 over2 = 0;
+                 db1.updateCurrGame("over2", over2);
+             } else {
+                 ball = ball + 1;
+                 bowl_fig.setText(""+db1.getBowlStats("bwick", (String) bowl_name.getText())+"-"+db1.getBowlStats("bruns", (String) bowl_name.getText()));
+                 db1.updateBowlStats("bovers", (String) bowl_name.getText(), 1);
+                 db1.updateCurrGame("Balls", ball);
+                 bowl_bowls = bowl_bowls + 1;
+                 bowl_over = db1.getBowlStats("bovers", (String) bowl_name.getText());
+                 bowl_over = bowl_over / 6;
+                 b_overs.setText("" + bowl_over + "." + bowl_bowls);
+                 //tballs=tballs+1;
+                 if (ball > 5) {
+                     over = over + 1;
+                     disableAll();
+                     db1.updateCurrGame("Overs", over);
+                     thover="";
+                     thisover.setText("LAST OVER : "+rover);
+                     //thisover.setText(getFloatThisOverText(i8));
+                    // thisover0.setText("LAST OVER : " + rover);
+                     rover = 0;
+
+                     //db1.updateBowlStats("bovers", (String) bowler.getText(), 1);
+                     bowl_bowls = 0;
+                     bowl_runs = 0;
+                     bowl_wick = 0;
+                     bowl_dots = 0;
+                     ball = 0;
+                     db1.updateCurrGame("Balls", ball);
+                     if (strike == 0) {
+                         strike = 1;
+                         db1.updateCurrGame("Strike", strike);
+                     } else {
+                         strike = 0;
+                         db1.updateCurrGame("Strike", strike);
+                     }
+                     if (maxOvers == 50) {
+                         switch (over) {
+                             case 8:
+                             case 20:
+                                 cbowler = cbowler + 2;
+                                 break;
+                             case 30:
+                                 ecoBowlrs = db1.getEconomicBowlers(match[afb]);
+                                 cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[1]);
+                                 break;
+                             case 31:
+                             case 33:
+                             case 35:
+                             case 37:
+                                 for (int i0 = 0; i0 < 6; i0++)
+                                     Log.d("ECO_BOWLERS 38:", ecoBowlrs[i0]);
+                                 cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[2]);
+                                 break;
+                             case 32:
+                             case 34:
+                             case 36:
+                                 for (int i0 = 0; i0 < 6; i0++)
+                                     Log.d("ECO_BOWLERS 38:", ecoBowlrs[i0]);
+                                 cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[1]);
+                                 break;
+                             case 39:
+                             case 41:
+                             case 43:
+                             case 45:
+                                 Log.d("WE GOT:", "" + over);
+                                 for (int i0 = 0; i0 < 6; i0++)
+                                     Log.d("ECO_BOWLERS:", ecoBowlrs[i0]);
+                                 cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[3]);
+                                 break;
+                             case 38:
+                             case 40:
+                             case 42:
+                             case 44:
+                                 Log.d("WE GOT:", "" + over);
+                                 for (int i0 = 0; i0 < 6; i0++)
+                                     Log.d("ECO_BOWLERS:", ecoBowlrs[i0]);
+                                 cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);
+                                 break;
+                             case 46:
+                             case 48:
+                                 ecoBowlrs = db1.getQuotaBowlers(match[afb], (String) bowl_name.getText());
+                                 cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);
+                                 break;
+                             case 47:
+                             case 49:
+                                 ecoBowlrs = db1.getQuotaBowlers(match[afb], (String) bowl_name.getText());
+                                 cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);
+                                 break;
+                             //case 38:case 40: cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[3]);break;
+                             //case 39:case 41: cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);break;
+                         }
+                         String bowlu = db1.getBowler(match[afb], cbowler);
+                         Log.d("CBOWLER is", "" + cbowler);
+                         if (bowlu.equalsIgnoreCase((String) bowl_name.getText())) {
+                             if (over == 30 || over == 32 || over == 34 || over == 36) {
+                                 cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[2]);
+                                 bowl_name.setText(db1.getBowler(match[afb], cbowler));
+                             } else if (over == 31 || over == 33 || over == 35 || over == 37) {
+                                 cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[1]);
+                                 bowl_name.setText(db1.getBowler(match[afb], cbowler));
+                             } else if (over == 38) {
+                                 Log.d("THE_ERROR_BLOCK", ecoBowlrs[0]);
+                                 cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);
+                                 bowl_name.setText(db1.getBowler(match[afb], cbowler));
+                             } else {
+                                 bowl_name.setText(db1.getBowler(match[afb], cbowler + 1));
+                             }
+                         } else {
+                             bowl_name.setText(db1.getBowler(match[afb], cbowler));
+                         }
+                         bowl_fig.setText(""+db1.getBowlStats("bwick", (String) bowl_name.getText())+"-"+db1.getBowlStats("bruns", (String) bowl_name.getText()));
+                         b_wick.setText("" + db1.getBowlStats("bwick", (String) bowl_name.getText()));
+                         b_runs.setText("" + db1.getBowlStats("bruns", (String) bowl_name.getText()));
+                         bowl_over = db1.getBowlStats("bovers", (String) bowl_name.getText());
+                         bowl_over = bowl_over / 6;
+                         b_overs.setText("" + bowl_over);
+                     } else {
+                         switch (over) {
+                             case 4:
+                             case 12:
+                                 cbowler = cbowler + 2;
+                                 break;
+                             case 16:
+                                 cbowler = 0;
+                                 break;
+                             case 39:
+                             case 41:
+                             case 43:
+                             case 45:
+                                 Log.d("WE GOT:", "" + over);
+                                 for (int i0 = 0; i0 < 6; i0++)
+                                     Log.d("ECO_BOWLERS:", ecoBowlrs[i0]);
+                                 cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[3]);
+                                 break;
+                             case 38:
+                             case 40:
+                             case 42:
+                             case 44:
+                                 Log.d("WE GOT:", "" + over);
+                                 for (int i0 = 0; i0 < 6; i0++)
+                                     Log.d("ECO_BOWLERS:", ecoBowlrs[i0]);
+                                 cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);
+                                 break;
+                             case 46:
+                             case 48:
+                                 ecoBowlrs = db1.getQuotaBowlers(match[afb], (String) bowl_name.getText());
+                                 cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);
+                                 break;
+                             case 47:
+                             case 49:
+                                 ecoBowlrs = db1.getQuotaBowlers(match[afb], (String) bowl_name.getText());
+                                 cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);
+                                 break;
+                         }
+                         String bowlu = db1.getBowler(match[afb], cbowler);
+                         Log.d("CBOWLER is", "" + cbowler);
+                         if (bowlu.equalsIgnoreCase((String) bowl_name.getText())) {
+                             bowl_name.setText(db1.getBowler(match[afb], cbowler + 1));
+                             b_wick.setText("" + db1.getBowlStats("bwick", (String) bowl_name.getText()));
+                             b_runs.setText("" + db1.getBowlStats("bruns", (String) bowl_name.getText()));
+                             bowl_over = db1.getBowlStats("bovers", (String) bowl_name.getText());
+                             bowl_over = bowl_over / 6;
+                             b_overs.setText("" + bowl_over);
+                             bowl_fig.setText(""+db1.getBowlStats("bwick", (String) bowl_name.getText())+"-"+db1.getBowlStats("bruns", (String) bowl_name.getText()));
+                         } else {
+                             bowl_name.setText(db1.getBowler(match[afb], cbowler));
+                             b_wick.setText("" + db1.getBowlStats("bwick", (String) bowl_name.getText()));
+                             b_runs.setText("" + db1.getBowlStats("bruns", (String) bowl_name.getText()));
+                             bowl_over = db1.getBowlStats("bovers", (String) bowl_name.getText());
+                             bowl_over = bowl_over / 6;
+                             b_overs.setText("" + bowl_over);
+                             bowl_fig.setText(""+db1.getBowlStats("bwick", (String) bowl_name.getText())+"-"+db1.getBowlStats("bruns", (String) bowl_name.getText()));
+                         }
+                     }
+                     Log.d("FlagBat in over is:", "" + flagBat);
+                     //code for the powerplay
+                     if (p_mode == 0 && p_taken == 0) {
+                         PowerplayDecision.PowerplayMenu(MainActivity.this);
+                     }
+
+                     activateAll();
+                 }
+                 if (flagBat == 1) {
+                     runsLeft = runsLeft - run;
+                     db1.updateCurrGame("runsleft", runsLeft);
+                     tballs = tballs - 1;
+                     db1.updateCurrGame("tballs", tballs);
+                     Log.d("RUNS LEFT VARIABLE: ", "" + runsLeft);
+                     eq = "NEED " + runsLeft + " in " + tballs;
+                     getFloatThisOverText(i8);
+                 }
+
+                 if (over == maxOvers) {
+                     disableAll();
+
+                     InningsBreak();
+                     //activateAll();
+                     // tballs=0;
+                     if (flagBat == 0) {
+                         System.out.println("");
+                         flagBat = 1;
+                         db1.updateCurrGame("flagBat", flagBat);
+                     }//if first batting
+                     //finalA.setText("" + runs);
+                     else //if 2nd batting
+                     {
+                         //finalB.setText("" + runs);
+                         aus = runs;
+                         //db1.updateCurrGame("aus",aus);
+                         if (aus > ind) {
+                             Log.d("Last Ball: ", "VICTORY");
+                             Toast.makeText(getApplicationContext(), match[1] + " WON!!", Toast.LENGTH_SHORT).show();
+                             winner = match[1];
+                             looser = match[0];
+                             AusWins();
+                         } else {
+                             Toast.makeText(getApplicationContext(), match[0] + " WON!!", Toast.LENGTH_SHORT).show();
+                             winner = match[0];
+                             looser = match[1];
+                             IndWins();
+                         }
+                     }
+                     over = 0;
+                     db1.updateCurrGame("Overs", over);
+                 }
+             }
+             overs.setText("" + over + "." + ball);
+             db1.setOvers(match[flagBat], (String) overs.getText());
+         if(strike==0) {
+             bat1.setText(db1.getCurrPlayerName(match[flagBat], b));
+             bat1_run.setText(""+rball[row][col]+"("+rball[row][col + 1]+")*");
+             bat2.setText(db1.getCurrPlayerName(match[flagBat], r)) ;
+             bat2_run.setText(""+rball[row+1][col]+"("+rball[row+1][col + 1]+")");
          }
-         overs.setText("" + over + "." + ball);
-         db1.setOvers(match[flagBat], (String) overs.getText());
-             if (strike == 0)
-                 equation.setText("   *" + db1.getCurrPlayerName(match[flagBat], b) + " " + rball[row][col] + "(" + rball[row][col + 1] + ")" + "\t\t" + db1.getCurrPlayerName(match[flagBat], r) + " " + rball[row + 1][col] + "(" + rball[row + 1][col + 1] + ")\n\n" + eq);
-             else
-                 equation.setText("   " + db1.getCurrPlayerName(match[flagBat], b) + " " + rball[row][col] + "(" + rball[row][col + 1] + ")" + "\t\t" + db1.getCurrPlayerName(match[flagBat], r) + " " + rball[row + 1][col] + "(" + rball[row + 1][col + 1] + ")*\n\n" + eq);
-          }
-     else
+         else
+         {
+             bat1.setText(db1.getCurrPlayerName(match[flagBat], b));
+             bat1_run.setText(""+rball[row][col]+"("+rball[row][col + 1]+")");
+             bat2.setText(db1.getCurrPlayerName(match[flagBat], r)) ;
+             bat2_run.setText(""+rball[row+1][col]+"("+rball[row+1][col + 1]+")*");
+         }
+     }
+         //p_mode=0,p_taken=0
+     /*1 if powerplay is ON, 0 if off
+     * p_freq++ after each ball in the powerplay
+     * p_freq can be updated to max 24*/
+     else if(maxOvers==50 ||(maxOvers==20 && p_mode==1) )
      {
-         thisover0.setText("This Over");
+        // thisover0.setText("This Over");
          Random rand = new Random();
          n = rand.nextInt(6) + 0;
          bat.setText("" + s);
@@ -519,12 +829,14 @@ public class MainActivity extends AppCompatActivity {
 
              wick = wick + 1;
              db1.updateCurrGame("Wickets", wick);
-             thisover.setText(""+thisover.getText()+" W");
-             bowl_wick = db1.getBowlStats("bwick", (String) bowler.getText()) + 1;
+             thover=thover+" "+"W";
+             thisover.setText(getFloatThisOverText(i8));
+             bowl_wick = db1.getBowlStats("bwick", (String) bowl_name.getText()) + 1;
              b_wick.setText("" + bowl_wick);//For saving the gaem
-             db1.updateBowlStats("bwick", (String) bowler.getText(), 1);
+             db1.updateBowlStats("bwick", (String) bowl_name.getText(), 1);
              //result.setText("OUT");
              score.setText("" + runs + "-" + wick);
+             float_fig.setText(getFloatText(i7));
              db1.setScores(match[flagBat], (String) score.getText());
              if (strike == 0) {
                  rball[row][col + 1] += 1;cfb=0;chb=0;
@@ -543,6 +855,8 @@ public class MainActivity extends AppCompatActivity {
                  b6 = 0;
                  db1.updateCurrGame("bat_six", b6);
                  b = Math.max(b, r) + 1;
+                 blimit=db1.getSixLimit(match[flagBat],b);
+                 lb=3;
                  db1.updateCurrGame("batter", b);
              } else {
                  rball[row + 1][col + 1] += 1;
@@ -561,13 +875,17 @@ public class MainActivity extends AppCompatActivity {
                  r6 = 0;
                  db1.updateCurrGame("run_six", r6);
                  r = Math.max(b, r) + 1;
+                 rlimit=db1.getSixLimit(match[flagBat],r);
+                 lr=3;
                  db1.updateCurrGame("Runner", r);
              }
              run = 0;
              db1.updateCurrGame("run", run);
          } else if (s == 0 || n==0) {
              runs = runs + 0;
-             thisover.setText(""+thisover.getText()+" 0");
+             thover=thover+" "+"0";
+             thisover.setText(getFloatThisOverText(i8));
+             float_fig.setText(getFloatText(i7));
              if(s==5)
                  freq5++;
              if(freq5==4){disableThat(5);}
@@ -578,8 +896,8 @@ public class MainActivity extends AppCompatActivity {
              run = 0;
              db1.updateCurrGame("run", run);
              //updating the dots of the bowler
-             bowl_dots = db1.getBowlStats("bmaiden", (String) bowler.getText()) + 1;
-             db1.updateBowlStats("bmaiden", (String) bowler.getText(), 1);
+             bowl_dots = db1.getBowlStats("bmaiden", (String) bowl_name.getText()) + 1;
+             db1.updateBowlStats("bmaiden", (String) bowl_name.getText(), 1);
 
              if (strike == 0) {
                  rball[row][col + 1] += 1;
@@ -592,6 +910,7 @@ public class MainActivity extends AppCompatActivity {
               }
          } else {
              run = Math.abs(s - n);
+
              if (n == 7 && s == 2) {
                  run = 4;
              }
@@ -607,7 +926,25 @@ public class MainActivity extends AppCompatActivity {
              if(freq5==4){disableThat(5);}
              db1.updateCurrGame("run", run);
              if(run==5 || run==6) run=6;
-             thisover.setText(""+thisover.getText()+" "+run);
+             //code for limiting sixes
+             if(strike==0 && run>=5)
+             {
+                 if(b6==blimit) {
+                     lb = lb - 1;
+                     if (lb < 0) run = 2;
+                     else run = 4;
+                 }
+             }
+             else if(strike==1 && run>=5)
+             {
+                 if(r6==rlimit) {
+                     lr = lr - 1;
+                     if (lr < 0) run = 2;
+                     else run = 4;
+                 }
+             }
+             thover=thover+" "+run;
+             thisover.setText(getFloatThisOverText(i8));
              if (run == 5 || run == 6) {
                  run = 6;
                  {
@@ -667,11 +1004,12 @@ public class MainActivity extends AppCompatActivity {
                  db1.updateCurrGame("Strike", strike);
              }
              score.setText("" + runs + "-" + wick);
+             float_fig.setText(getFloatText(i7));
              db1.setScores(match[flagBat], (String) score.getText());
              //updating bowler stats
-             bowl_runs = db1.getBowlStats("bruns", (String) bowler.getText()) + run;
+             bowl_runs = db1.getBowlStats("bruns", (String) bowl_name.getText()) + run;
              b_runs.setText("" + bowl_runs);
-             db1.updateBowlStats("bruns", (String) bowler.getText(), run);
+             db1.updateBowlStats("bruns", (String) bowl_name.getText(), run);
              rover=rover+run;
 
              if (flagBat == 1) {
@@ -735,6 +1073,7 @@ public class MainActivity extends AppCompatActivity {
              wick = 0;
              db1.updateCurrGame("Wickets", wick);
              score.setText("" + runs + "-" + wick);
+             float_fig.setText(getFloatText(i7));
              db1.setScores(match[flagBat], (String) score.getText());
          }
          //code for updating overs
@@ -743,10 +1082,11 @@ public class MainActivity extends AppCompatActivity {
              db1.updateCurrGame("over2", over2);
          } else {
              ball = ball + 1;
-             db1.updateBowlStats("bovers", (String) bowler.getText(), 1);
+             bowl_fig.setText(""+bowl_wick+"-"+bowl_runs);
+             db1.updateBowlStats("bovers", (String) bowl_name.getText(), 1);
              db1.updateCurrGame("Balls", ball);
              bowl_bowls = bowl_bowls + 1;
-             bowl_over = db1.getBowlStats("bovers", (String) bowler.getText());
+             bowl_over = db1.getBowlStats("bovers", (String) bowl_name.getText());
              bowl_over = bowl_over / 6;
              b_overs.setText("" + bowl_over + "." + bowl_bowls);
              //tballs=tballs+1;
@@ -755,8 +1095,8 @@ public class MainActivity extends AppCompatActivity {
                  disableAll();
                  db1.updateCurrGame("Overs", over);
                  //db1.updateBowlStats("bovers", (String) bowler.getText(), 1);
-                 thisover.setText("");
-                 thisover0.setText("LAST OVER : "+rover);
+                 thisover.setText("LAST OVER : "+rover);
+                 thover="";
                  rover=0;
                  bowl_bowls = 0;
                  bowl_runs = 0;
@@ -774,47 +1114,111 @@ public class MainActivity extends AppCompatActivity {
                      strike = 0;
                      db1.updateCurrGame("Strike", strike);
                  }
+if(maxOvers==20)
+{
+    switch(over) {
+        case 4:case 12:cbowler = cbowler + 2;break;
+        case 16:cbowler=0;break;
+        case 39: case 41:case 43:case 45:Log.d("WE GOT:",""+over);for(int i0=0;i0<6;i0++)Log.d("ECO_BOWLERS:",ecoBowlrs[i0]); cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[3]);break;
+        case 38: case 40:case 42:case 44:Log.d("WE GOT:",""+over);for(int i0=0;i0<6;i0++)Log.d("ECO_BOWLERS:",ecoBowlrs[i0]);  cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);break;
+        case 46:case 48: ecoBowlrs=db1.getQuotaBowlers(match[afb],(String)bowl_name.getText());cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);break;
+        case 47:case 49: ecoBowlrs=db1.getQuotaBowlers(match[afb],(String)bowl_name.getText());cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);break;
+    }
+    String bowlu = db1.getBowler(match[afb], cbowler);
+    Log.d("CBOWLER is", "" + cbowler);
+    if (bowlu.equalsIgnoreCase((String) bowl_name.getText())) {
+        bowl_name.setText(db1.getBowler(match[afb], cbowler + 1));
+        b_wick.setText("" + db1.getBowlStats("bwick", (String) bowl_name.getText()));
+        b_runs.setText("" + db1.getBowlStats("bruns", (String) bowl_name.getText()));
+        bowl_over = db1.getBowlStats("bovers", (String) bowl_name.getText());
+        bowl_over = bowl_over / 6;
+        b_overs.setText("" + bowl_over );
+        bowl_fig.setText(""+db1.getBowlStats("bwick", (String) bowl_name.getText())+"-"+db1.getBowlStats("bruns", (String) bowl_name.getText()));
+    } else {
+        bowl_name.setText(db1.getBowler(match[afb], cbowler));
+        b_wick.setText("" + db1.getBowlStats("bwick", (String) bowl_name.getText()));
+        b_runs.setText("" + db1.getBowlStats("bruns", (String) bowl_name.getText()));
+        bowl_over = db1.getBowlStats("bovers", (String) bowl_name.getText());
+        bowl_over = bowl_over / 6;
+        b_overs.setText("" + bowl_over);
+        bowl_fig.setText(""+db1.getBowlStats("bwick", (String) bowl_name.getText())+"-"+db1.getBowlStats("bruns", (String) bowl_name.getText()));
+    }
+}
+else {
+    switch (over) {
+        case 8:
+        case 20:
+            cbowler = cbowler + 2;
+            break;
+        case 30:
+            ecoBowlrs = db1.getEconomicBowlers(match[afb]);
+            cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[1]);
+            break;
+        case 31:
+        case 33:
+        case 35:
+        case 37:
+            for (int i0 = 0; i0 < 6; i0++) Log.d("ECO_BOWLERS 38:", ecoBowlrs[i0]);
+            cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[2]);
+            break;
+        case 32:
+        case 34:
+        case 36:
+            for (int i0 = 0; i0 < 6; i0++) Log.d("ECO_BOWLERS 38:", ecoBowlrs[i0]);
+            cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[1]);
+            break;
 
-                 switch(over)
-                 {
-                     case 8:case 20: cbowler = cbowler + 2; break;
-                     case 30: ecoBowlrs=db1.getEconomicBowlers(match[afb]);
-                              cbowler=db1.getBowlerNo(match[afb],ecoBowlrs[1]);break;
-                     case 31:case 33:case 35:case 37:for(int i0=0;i0<6;i0++)Log.d("ECO_BOWLERS 38:",ecoBowlrs[i0]); cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[2]);break;
-                     case 32:case 34:case 36:for(int i0=0;i0<6;i0++)Log.d("ECO_BOWLERS 38:",ecoBowlrs[i0]);  cbowler=db1.getBowlerNo(match[afb],ecoBowlrs[1]);break;
-                     //case 38:case 40: cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[3]);break;
-                     //case 39:case 41: cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);break;
+        case 38:
+        case 40:
+        case 42:
+        case 44:
+            Log.d("WE GOT:", "" + over);
+            for (int i0 = 0; i0 < 6; i0++) Log.d("ECO_BOWLERS:", ecoBowlrs[i0]);
+            cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);
+            break;
+        case 46:
+        case 48:
+            ecoBowlrs = db1.getQuotaBowlers(match[afb], (String) bowl_name.getText());
+            cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);
+            break;
+        case 47:
+        case 49:
+            ecoBowlrs = db1.getQuotaBowlers(match[afb], (String) bowl_name.getText());
+            cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);
+            break;
+    }
+    String bowlu = db1.getBowler(match[afb], cbowler);
+    Log.d("CBOWLER is", "" + cbowler);
+    if (bowlu.equalsIgnoreCase((String) bowl_name.getText())) {
+        if (over == 30 || over == 32 || over == 34 || over == 36) {
+            cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[2]);
+            bowl_name.setText(db1.getBowler(match[afb], cbowler));
+        } else if (over == 31 || over == 33 || over == 35 || over == 37) {
+            cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[1]);
+            bowl_name.setText(db1.getBowler(match[afb], cbowler));
+        } else if (over == 38) {
+            Log.d("THE_ERROR_BLOCK", ecoBowlrs[0]);
+            cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);
+            bowl_name.setText(db1.getBowler(match[afb], cbowler));
+        } else {
+            bowl_name.setText(db1.getBowler(match[afb], cbowler + 1));
+        }
+    } else {
+        bowl_name.setText(db1.getBowler(match[afb], cbowler));
+    }
+    b_wick.setText("" + db1.getBowlStats("bwick", (String) bowl_name.getText()));
+    b_runs.setText("" + db1.getBowlStats("bruns", (String) bowl_name.getText()));
+    bowl_over = db1.getBowlStats("bovers", (String) bowl_name.getText());
+    bowl_over = bowl_over / 6;
+    b_overs.setText("" + bowl_over);
+    bowl_fig.setText(""+db1.getBowlStats("bwick", (String) bowl_name.getText())+"-"+db1.getBowlStats("bruns", (String) bowl_name.getText()));
+}
+    Log.d("FlagBat in over is:", "" + flagBat);
+    activateAll();
+                 if(p_mode==0 && p_taken<2){
+                     PowerplayDecision.PowerplayMenu(MainActivity.this);
                  }
-                String bowlu = db1.getBowler(match[afb], cbowler);
-                 Log.d("CBOWLER is", "" + cbowler);
-                 if (bowlu.equalsIgnoreCase((String) bowler.getText())) {
-                     if(over==30||over==32||over==34||over==36)
-                     {
-                        cbowler=db1.getBowlerNo(match[afb], ecoBowlrs[2]);
-                        bowler.setText(db1.getBowler(match[afb], cbowler));
-                     }
-                     else if(over==31||over==33||over==35||over==37)
-                     {
-                         cbowler=db1.getBowlerNo(match[afb], ecoBowlrs[1]);
-                         bowler.setText(db1.getBowler(match[afb], cbowler));
-                     }
-                     else if(over==38){Log.d("THE_ERROR_BLOCK",ecoBowlrs[0]);cbowler=db1.getBowlerNo(match[afb], ecoBowlrs[0]);
-                         bowler.setText(db1.getBowler(match[afb], cbowler));}
-                     else{
-                         bowler.setText(db1.getBowler(match[afb], cbowler+1));
-                     }
-                 }
-                 else{
-                         bowler.setText(db1.getBowler(match[afb], cbowler));
-                 }
-                 b_wick.setText("" + db1.getBowlStats("bwick", (String) bowler.getText()));
-                 b_runs.setText("" + db1.getBowlStats("bruns", (String) bowler.getText()));
-                 bowl_over = db1.getBowlStats("bovers", (String) bowler.getText());
-                 bowl_over = bowl_over / 6;
-                 b_overs.setText("" + bowl_over);
-                 Log.d("FlagBat in over is:", "" + flagBat);
-                 activateAll();
-             }
+    }
              //rpo=runs*6/(tballs);
              if (flagBat == 1) {
                  runsLeft = runsLeft - run;
@@ -822,7 +1226,8 @@ public class MainActivity extends AppCompatActivity {
                  tballs = tballs - 1;
                  db1.updateCurrGame("tballs", tballs);
                  Log.d("RUNS LEFT VARIABLE: ", "" + runsLeft);
-                 eq = "NEED " + runsLeft + " runs in " + tballs + "BALLS";
+                 eq = "NEED " + runsLeft + " in " + tballs;
+                 getFloatThisOverText(i8);
              }
 
              if (over == maxOvers) {
@@ -860,10 +1265,19 @@ public class MainActivity extends AppCompatActivity {
          }
          overs.setText("" + over + "." + ball);
          db1.setOvers(match[flagBat], (String) overs.getText());
-         if (strike == 0)
-                 equation.setText("   *" + db1.getCurrPlayerName(match[flagBat], b) + " " + rball[row][col] + "(" + rball[row][col + 1] + ")" + "\t\t" + db1.getCurrPlayerName(match[flagBat], r) + " " + rball[row + 1][col] + "(" + rball[row + 1][col + 1] + ")\n\n" + eq);
+         if(strike==0) {
+             bat1.setText(db1.getCurrPlayerName(match[flagBat], b));
+             bat1_run.setText(""+rball[row][col]+"("+rball[row][col + 1]+")*");
+             bat2.setText(db1.getCurrPlayerName(match[flagBat], r)) ;
+             bat2_run.setText(""+rball[row+1][col]+"("+rball[row+1][col + 1]+")");
+         }
          else
-                 equation.setText("   " + db1.getCurrPlayerName(match[flagBat], b) + " " + rball[row][col] + "(" + rball[row][col + 1] + ")" + "\t\t" + db1.getCurrPlayerName(match[flagBat], r) + " " + rball[row + 1][col] + "(" + rball[row + 1][col + 1] + ")*\n\n" + eq);
+         {
+             bat1.setText(db1.getCurrPlayerName(match[flagBat], b));
+             bat1_run.setText(""+rball[row][col]+"("+rball[row][col + 1]+")");
+             bat2.setText(db1.getCurrPlayerName(match[flagBat], r)) ;
+             bat2_run.setText(""+rball[row+1][col]+"("+rball[row+1][col + 1]+")*");
+         }
      }
     }
     void setOnClickListeneronButtons(Button b,final int i)
@@ -953,6 +1367,7 @@ public class MainActivity extends AppCompatActivity {
     void InningsBreak()
     {
         cbowler=0;
+        p_mode=0;p_taken=0;p_freq=0;
         final Dialog dialog = new Dialog(MainActivity.this);
         dialog.setContentView(R.layout.match_summary);
         dialog.setTitle("INNINGS BREAK");
@@ -1056,13 +1471,13 @@ public class MainActivity extends AppCompatActivity {
                 //Intent myIntent = new Intent(getBaseContext(),MainActivity.class);
                 //startActivity(myIntent);
                 score.setText(""+MainActivity.runs+"-"+MainActivity.wick);
-                result.setText("TARGET "+ind2);
+            //    result.setText("TARGET "+ind2);
                 //Log.d("IND VARIABLE IS: ",""+ind);
                 activateAll();
-                ImageView img=(ImageView)findViewById(R.id.imageView3);
+                /*ImageView img=(ImageView)findViewById(R.id.imageView3);
                 img.setImageResource(drid2);
                 ImageView img2=(ImageView)findViewById(R.id.imageView4);
-                img2.setImageResource(drid);
+                img2.setImageResource(drid);*/
                 startActivity(new Intent(MainActivity.this, Bowling.class));
                 dialog.dismiss();  //australia dialog exits
             }
@@ -1071,9 +1486,10 @@ public class MainActivity extends AppCompatActivity {
     }
     void IndWins()
     {
-        float rr1=db1.setRunRate(winner);
-        float rr2=db1.setRunRate(looser);
+        double rr1=db1.setRunRate(winner);
+        double rr2=db1.setRunRate(looser);
         cbowler=0;
+        p_mode=0;p_taken=0;p_freq=0;
         nrr=rr1-rr2;
         nrr2=rr2-rr1;
         final Dialog dialog = new Dialog(MainActivity.this);
@@ -1298,9 +1714,10 @@ public class MainActivity extends AppCompatActivity {
     }
     void AusWins()
     {
-        float rr1=db1.setRunRate(winner);
-        float rr2=db1.setRunRate(looser);
+        double rr1=db1.setRunRate(winner);
+        double rr2=db1.setRunRate(looser);
         cbowler=0;
+        p_mode=0;p_taken=0;p_freq=0;
         cfb=0;chb=0;cfr=0;chr=0;
         nrr=rr1-rr2;
         nrr2=rr2-rr1;

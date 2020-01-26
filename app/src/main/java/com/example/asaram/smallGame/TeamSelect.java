@@ -5,11 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
+import android.media.PlaybackParams;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,9 +33,10 @@ import java.util.Random;
 public class TeamSelect extends AppCompatActivity {
     DatabaseHandler db1;
     Intent music;
-    static int t;
+    static int t,vw,vh;
     private TextView b1,t2;
     public Button b4,b7,b8,b9,b25;
+    public static VideoView mVideoView;
     public Button b70;
     //public static int tms[];
     private Spinner add_desc,add_desc2;
@@ -68,6 +74,11 @@ public class TeamSelect extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.select_team);
+        //video content code in the background
+
+        mVideoView = (VideoView) findViewById(R.id.vv);
+        startVideo(mVideoView);
+
         //doBindService();
         music = new Intent();
         music.setClass(this,MusicService.class);
@@ -80,25 +91,67 @@ public class TeamSelect extends AppCompatActivity {
             Log.d("ADD_EXPENSES:", e.getMessage());
         }
         db1 = new DatabaseHandler(this, getFilesDir().getAbsolutePath());
-        loadSpinnerData();
+       // loadSpinnerData();
         Typeface custom_font = Typeface.createFromAsset(getAssets(), "zippo.ttf");
         t2=(TextView)findViewById(R.id.textV10);
         t2.setTypeface(custom_font);
         blink();
-        setOnClicktoButton();
+        //setOnClicktoButton();
         setOnClicktoButton2();
         setOnClicktoButton4();
-        setOnClicktoResume();
+        //setOnClicktoResume();
         startTournament();
-        startRoundRobin();
+        /*startRoundRobin();
         showStats();
         ResumeTournament();
-        ResumeRR();
-        startIpl();
-        ResumeIpl();
+        ResumeRR();*/
+        clickIndianPremier();
+        clickMixedCup();
+        //ResumeIpl();
+    }
+    public void startVideo(final VideoView mVideoView)
+    {
+        int ar[]=new int[9];
+        ar[0]=R.raw.bgvid1;ar[1]=R.raw.bgvid2;ar[2]=R.raw.bgvid3;
+        ar[3]=R.raw.bgvid4;ar[4]=R.raw.bgvid5;ar[5]=R.raw.bgvid6;
+        ar[6]=R.raw.bgvid7;ar[7]=R.raw.bgvid8;ar[8]=R.raw.bgvid9;
+        Random rand = new Random();
+        int n = rand.nextInt(9);
+        Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+ar[n]);
+        mVideoView.setVideoURI(uri);
+        mVideoView.start();
+        mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                vw = mediaPlayer.getVideoWidth();
+                vh = mediaPlayer.getVideoHeight();
+                float videoProportion = (float) vw / (float) vh;
+                DisplayMetrics mDisplayMetrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
+                int screenWidth = mDisplayMetrics.widthPixels;
+                int screenHeight = mDisplayMetrics.heightPixels;
+                float screenProportion = (float) screenWidth / (float) screenHeight;
+                android.view.ViewGroup.LayoutParams lp = mVideoView.getLayoutParams();
+                if (videoProportion > screenProportion) {
+                    lp.width = screenWidth;
+                    lp.height = (int) ((float) screenWidth / videoProportion);
+                } else {
+                    lp.width = (int) (videoProportion * (float) screenHeight);
+                    lp.height = screenHeight;
+                }
+                mVideoView.setLayoutParams(lp);
+                mediaPlayer.setLooping(true);
+                /*PlaybackParams playbackParams = new PlaybackParams();
+                playbackParams.setSpeed(2);
+                playbackParams.setPitch(1);
+                playbackParams.setAudioFallbackMode(
+                        PlaybackParams.AUDIO_FALLBACK_MODE_DEFAULT);
+                mediaPlayer.setPlaybackParams(playbackParams);*/
+            }
+        });
     }
 
-    private void loadSpinnerData() {
+    /*private void loadSpinnerData() {
         // database handler
         // Spinner Drop down elements
         List<String> lables = db1.getAllTeams();
@@ -112,12 +165,12 @@ public class TeamSelect extends AppCompatActivity {
                 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // attaching data adapter to spinner
-        add_desc=(Spinner)findViewById(R.id.spinner);
-        add_desc.setAdapter(dataAdapter);
-        add_desc2=(Spinner)findViewById(R.id.spinner2);
-        add_desc2.setAdapter(dataAdapter);
-    }
-    void setOnClicktoButton()
+       // add_desc=(Spinner)findViewById(R.id.spinner);
+//        add_desc.setAdapter(dataAdapter);
+       // add_desc2=(Spinner)findViewById(R.id.spinner2);
+  //      add_desc2.setAdapter(dataAdapter);
+    }*/
+    /*void setOnClicktoButton()
     {
         b1=(TextView) findViewById(R.id.button);
         //add_desc.setOnItemSelectedListener();
@@ -142,10 +195,42 @@ public class TeamSelect extends AppCompatActivity {
                 }
 
             }});
+    }*/
+    void clickMixedCup()
+    {
+        Button bz4=(Button) findViewById(R.id.button7);
+        //add_desc.setOnItemSelectedListener();
+        bz4.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                Log.d("CLicked the button: ", "Yes its not null");
+                setContentView(R.layout.second_wc);
+                mVideoView = (VideoView) findViewById(R.id.vv);
+                startVideo(mVideoView);
+                startTournament();
+                ResumeTournament();
+            }});
+    }
+    void clickIndianPremier()
+    {
+        Button bz4=(Button) findViewById(R.id.but5);
+        //add_desc.setOnItemSelectedListener();
+        bz4.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                Log.d("CLicked the button: ", "Yes its not null");
+                setContentView(R.layout.second_wc);
+                mVideoView = (VideoView) findViewById(R.id.vv);
+                startVideo(mVideoView);
+                startIpl();
+                ResumeIpl();
+            }});
     }
     void setOnClicktoButton2()
     {
-        ImageButton bz4=(ImageButton) findViewById(R.id.b7);
+        Button bz4=(Button) findViewById(R.id.b7);
         //add_desc.setOnItemSelectedListener();
         bz4.setOnClickListener(new View.OnClickListener(){
 
@@ -156,9 +241,10 @@ public class TeamSelect extends AppCompatActivity {
                 //startActivity(new Intent(TeamSelect.this, TourWinner.class));
             }});
     }
+
     void setOnClicktoButton4()
     {
-        Button bz4=(Button) findViewById(R.id.but4);
+        Button bz4=(Button) findViewById(R.id.butt4);
         //add_desc.setOnItemSelectedListener();
         bz4.setOnClickListener(new View.OnClickListener(){
 
@@ -169,6 +255,7 @@ public class TeamSelect extends AppCompatActivity {
                 //startActivity(new Intent(TeamSelect.this, TourWinner.class));
             }});
     }
+    /*
     void setOnClicktoResume()
     {
         b4=(Button) findViewById(R.id.button4);
@@ -189,7 +276,7 @@ public class TeamSelect extends AppCompatActivity {
                   //  startActivity(new Intent(TeamSelect.this, Bowling.class));
                 //startActivity(new Intent(TeamSelect.this, TourWinner.class));
             }});
-    }
+    }*/
     void startTournament()
     {
         b70=(Button) findViewById(R.id.button7);
@@ -260,7 +347,7 @@ public class TeamSelect extends AppCompatActivity {
         }
         return temp;
     }
-    void showStats()
+    /*void showStats()
     {
 //      Put in your Activity that CODE:
         b8=(Button) findViewById(R.id.b8);
@@ -272,7 +359,7 @@ public class TeamSelect extends AppCompatActivity {
                 startActivity(new Intent(TeamSelect.this, StatsBatting.class));
 
             }});
-    }
+    }*/
     void ResumeTournament()
     {
         b9=(Button) findViewById(R.id.b9);
@@ -285,6 +372,7 @@ public class TeamSelect extends AppCompatActivity {
                 startActivity(new Intent(TeamSelect.this, MixedCupHome.class));
             }});
     }
+    /*
     void ResumeRR()
     {
         b25=(Button) findViewById(R.id.button25);
@@ -319,7 +407,7 @@ public class TeamSelect extends AppCompatActivity {
 
             }});
     }
-
+*/
     public void InitTourDataMC() {
         List<String> teams = db1.getAllTeams();
         int tms[]=new int[45];
@@ -458,7 +546,7 @@ public class TeamSelect extends AppCompatActivity {
     }
     void ResumeIpl()
     {
-        b7=(Button) findViewById(R.id.but6);
+        b7=(Button) findViewById(R.id.b9);
         //add_desc.setOnItemSelectedListener(5);
         b7.setOnClickListener(new View.OnClickListener(){
 

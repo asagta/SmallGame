@@ -150,7 +150,7 @@ public class PlayersSelect extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                Log.d("Foreign::",""+checkForeignCount());
+                //Log.d("Foreign::",""+checkForeignCount());
                 if(IPLCentral.tour_flag.equalsIgnoreCase("I") && checkForeignCount()>4)
                 {
                     Toast.makeText(getApplicationContext(),"You can select max of 4 foreign Players",Toast.LENGTH_SHORT).show();
@@ -166,7 +166,7 @@ public class PlayersSelect extends AppCompatActivity {
                         //insert players into curr_match
                         db1.deleteCurrPlayers();
                         for (int z = 0; z < 11; z++) {
-                            db1.insertCurrPlayers(db1.getCurrTeamName(0), (String) pid[z].getText(), z + 1, db1.getCanBowlStatus((String) pid[z].getText()));
+                            db1.insertCurrPlayers(db1.getCurrTeamName(0), (String) pid[z].getText(), z + 1, db1.getCanBowlStatus((String) pid[z].getText()),db1.getLimitSix((String) pid[z].getText()));
                         }
                         res[0] = 0;
                         res[1] = 0;
@@ -183,7 +183,7 @@ public class PlayersSelect extends AppCompatActivity {
                     }
                     else {
                         for (int z = 0; z < 11; z++) {
-                            db1.insertCurrPlayers(db1.getCurrTeamName(1), (String) pid[z].getText(), z + 1, db1.getCanBowlStatus((String) pid[z].getText()));
+                            db1.insertCurrPlayers(db1.getCurrTeamName(1), (String) pid[z].getText(), z + 1, db1.getCanBowlStatus((String) pid[z].getText()),db1.getLimitSix((String) pid[z].getText()));
                         }
                         flag = 0;
                         startActivity(new Intent(PlayersSelect.this, TossTeams.class));

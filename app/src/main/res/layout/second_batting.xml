@@ -61,8 +61,13 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:weightSum="6">
+            android:layout_height="match_parent">
+            <Button
+                android:id="@+id/vt10"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="0.2"
+                android:background="@drawable/prev" />
             <TextView
                 android:id="@+id/vt2"
                 android:layout_width="wrap_content"
@@ -70,9 +75,15 @@
                 android:textSize="10dp"
                 android:gravity="center"
                 android:background="#0B0B3B"
-                android:layout_weight="6"
+                android:layout_weight="0.6"
                 android:textColor="@color/white"
                 android:text="Batting Scorecard" />
+            <Button
+                android:id="@+id/vt11"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_weight="0.2"
+                android:background="@drawable/next" />
         </TableRow>
 
         <TableRow
