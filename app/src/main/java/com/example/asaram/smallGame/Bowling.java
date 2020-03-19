@@ -792,7 +792,7 @@ public class Bowling extends AppCompatActivity {
             }*/
 
         }
-        else{
+        else{//if other than 0
             Random rand = new Random();
             n = rand.nextInt(9);
            // thisover0.setText("This Over");

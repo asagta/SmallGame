@@ -107,6 +107,7 @@ public class TeamSelect extends AppCompatActivity {
         ResumeRR();*/
         clickIndianPremier();
         clickMixedCup();
+        startTest();
         //ResumeIpl();
     }
     public void startVideo(final VideoView mVideoView)
@@ -525,7 +526,7 @@ public class TeamSelect extends AppCompatActivity {
     }
     void startIpl()
     {
-        b7=(Button) findViewById(R.id.but5);
+        b7=(Button) findViewById(R.id.button7);
         //add_desc.setOnItemSelectedListener(5);
         b7.setOnClickListener(new View.OnClickListener(){
 
@@ -542,6 +543,19 @@ public class TeamSelect extends AppCompatActivity {
                 db1.setTourMatchSno(0);
                 //startActivity(new Intent(TeamSelect.this, TournamentCentral.class));
 
+            }});
+    }
+    void startTest()
+    {
+        b7=(Button) findViewById(R.id.but5a);
+        //add_desc.setOnItemSelectedListener(5);
+        b7.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getBaseContext(), QuickPlay.class);
+                intent.putExtra("format", "test");
+                startActivity(intent);
             }});
     }
     void ResumeIpl()

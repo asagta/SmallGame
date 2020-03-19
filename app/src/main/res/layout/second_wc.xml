@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    >
+    <include layout="@layout/video_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="0dp"
+        android:layout_marginBottom="433dp"
+        android:background="#20FFFCFC">
+</include>
+
+    <Button
+        android:id="@+id/button7"
+        android:layout_width="229dp"
+        android:layout_height="76dp"
+        android:layout_marginLeft="241dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/round_sqre2"
+        android:elevation="44dp"
+        android:text="Start New"
+        android:textColor="#FFBACB"
+        android:textSize="25dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/b9" />
+
+    <Button
+        android:id="@+id/b9"
+        android:layout_width="229dp"
+        android:layout_height="76dp"
+        android:textColor="#FFBACB"
+        android:textSize="25dp"
+        android:text="Resume"
+        android:background="@drawable/round_sqre2"
+        android:layout_marginLeft="241dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+       />
+</android.support.constraint.ConstraintLayout>

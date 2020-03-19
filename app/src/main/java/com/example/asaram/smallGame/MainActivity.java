@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     while (!isInterrupted()) {
-                        Thread.sleep(12000);
+                        Thread.sleep(8000);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -677,7 +677,14 @@ public class MainActivity extends AppCompatActivity {
                                  cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);
                                  bowl_name.setText(db1.getBowler(match[afb], cbowler));
                              } else {
-                                 bowl_name.setText(db1.getBowler(match[afb], cbowler + 1));
+                                 if(cbowler==5)
+                                 {
+                                     cbowler=4;
+                                     bowl_name.setText(db1.getBowler(match[afb], cbowler + 1));
+                                 }
+                                 else {
+                                     bowl_name.setText(db1.getBowler(match[afb], cbowler + 1));
+                                 }
                              }
                          } else {
                              bowl_name.setText(db1.getBowler(match[afb], cbowler));
@@ -1201,8 +1208,15 @@ else {
             cbowler = db1.getBowlerNo(match[afb], ecoBowlrs[0]);
             bowl_name.setText(db1.getBowler(match[afb], cbowler));
         } else {
+            if(cbowler==5)
+            {
+                cbowler=4;
+                bowl_name.setText(db1.getBowler(match[afb], cbowler + 1));
+            }
+            else {
             bowl_name.setText(db1.getBowler(match[afb], cbowler + 1));
         }
+     }
     } else {
         bowl_name.setText(db1.getBowler(match[afb], cbowler));
     }

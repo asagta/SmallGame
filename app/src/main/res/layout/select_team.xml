@@ -78,6 +78,20 @@ android:layout_height="fill_parent"
                 android:textColor="#FFFB00"
                 android:textSize="35dp"
                 android:textStyle="bold"/>
+            <Button
+                android:id="@+id/but5a"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="240dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="70dp"
+                android:layout_marginLeft="30dp"
+                android:background="@drawable/rounded_square"
+                android:elevation="24dp"
+                android:text="TEST MATCH"
+                android:textAlignment="center"
+                android:textColor="#EEAB00"
+                android:textSize="35dp"
+                android:textStyle="bold"/>
             <!--<Button
                 android:id="@+id/but6"
                 android:layout_width="wrap_content"

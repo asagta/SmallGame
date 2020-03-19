@@ -165,8 +165,16 @@ public class PlayersSelect extends AppCompatActivity {
                     else {
                         //insert players into curr_match
                         db1.deleteCurrPlayers();
+                        db1.deleteCurrPlayersTest();
                         for (int z = 0; z < 11; z++) {
-                            db1.insertCurrPlayers(db1.getCurrTeamName(0), (String) pid[z].getText(), z + 1, db1.getCanBowlStatus((String) pid[z].getText()),db1.getLimitSix((String) pid[z].getText()));
+                            if(QuickPlay.testFlag==1)
+                            {
+
+                                db1.insertCurrTestPlayers(db1.getCurrTeamName(0), (String) pid[z].getText(), z + 1, db1.getCanBowlStatus((String) pid[z].getText()), db1.getLimitSix((String) pid[z].getText()));
+                            }
+                            else {
+                                db1.insertCurrPlayers(db1.getCurrTeamName(0), (String) pid[z].getText(), z + 1, db1.getCanBowlStatus((String) pid[z].getText()), db1.getLimitSix((String) pid[z].getText()));
+                            }
                         }
                         res[0] = 0;
                         res[1] = 0;
@@ -183,7 +191,12 @@ public class PlayersSelect extends AppCompatActivity {
                     }
                     else {
                         for (int z = 0; z < 11; z++) {
-                            db1.insertCurrPlayers(db1.getCurrTeamName(1), (String) pid[z].getText(), z + 1, db1.getCanBowlStatus((String) pid[z].getText()),db1.getLimitSix((String) pid[z].getText()));
+                            if(QuickPlay.testFlag==1)//if it is a test match
+                            {
+                                db1.insertCurrTestPlayers(db1.getCurrTeamName(1), (String) pid[z].getText(), z + 1, db1.getCanBowlStatus((String) pid[z].getText()),db1.getLimitSix((String) pid[z].getText()));
+                            }
+                            else
+                              db1.insertCurrPlayers(db1.getCurrTeamName(1), (String) pid[z].getText(), z + 1, db1.getCanBowlStatus((String) pid[z].getText()),db1.getLimitSix((String) pid[z].getText()));
                         }
                         flag = 0;
                         startActivity(new Intent(PlayersSelect.this, TossTeams.class));

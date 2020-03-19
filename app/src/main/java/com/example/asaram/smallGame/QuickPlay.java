@@ -26,7 +26,7 @@ public class QuickPlay extends AppCompatActivity {
     DatabaseHandler db1;
     public TextView t1,t2;
     static int maxovers;
-
+    static int testFlag=0;
     // Array of Image IDs to Show In ImageSwitcher
     String imageIds[] = {"ind","eng","nzl","saf","aus","pak","ban","win","slk","afg"};
     int count = imageIds.length;
@@ -57,27 +57,37 @@ public class QuickPlay extends AppCompatActivity {
         setTeams(btnNext,btnPrev,swc1,t1);setTeams(btnNext2,btnPrev2,swc2,t2);
         setGo();
         setOvers();
+
     }
   public void setOvers()
   {
      final TextView t20=(TextView)findViewById(R.id.t20);
      final TextView t50=(TextView)findViewById(R.id.t50);
-      t20.setOnClickListener(new View.OnClickListener() {
-          public void onClick(View v) {
-           maxovers=20;
-           bgo.setEnabled(true);
-           t20.setBackgroundResource(R.color.grey);
-              t50.setBackgroundResource(R.color.blue);
-          }
-      });
-      t50.setOnClickListener(new View.OnClickListener() {
-          public void onClick(View v) {
-              maxovers=50;
-              bgo.setEnabled(true);
-              t50.setBackgroundResource(R.color.grey);
-              t20.setBackgroundResource(R.color.blue);
-          }
-      });
+      if(getIntent().hasExtra("format"))
+      {
+          t20.setVisibility(View.GONE);
+          t50.setVisibility(View.GONE);
+          testFlag=1;
+          bgo.setEnabled(true);
+      }
+      else {
+          t20.setOnClickListener(new View.OnClickListener() {
+              public void onClick(View v) {
+                  maxovers = 20;
+                  bgo.setEnabled(true);
+                  t20.setBackgroundResource(R.color.grey);
+                  t50.setBackgroundResource(R.color.blue);
+              }
+          });
+          t50.setOnClickListener(new View.OnClickListener() {
+              public void onClick(View v) {
+                  maxovers = 50;
+                  bgo.setEnabled(true);
+                  t50.setBackgroundResource(R.color.grey);
+                  t20.setBackgroundResource(R.color.blue);
+              }
+          });
+      }
   }
     public void setGo()
     {
@@ -93,7 +103,10 @@ public class QuickPlay extends AppCompatActivity {
                 else if(value1.equalsIgnoreCase(value2))
                 {Toast.makeText(getApplicationContext(),"PLEASE SELECT 2 Different TEAMS TO MATCH",Toast.LENGTH_SHORT).show();}
                 else{
-                    db1.insertCurrMatch(value1,value2,"N",maxovers);
+                    if(getIntent().hasExtra("format"))
+                    {db1.insertCurrMatch(value1,value2,"T",maxovers);}
+                    else
+                     db1.insertCurrMatch(value1,value2,"N",maxovers);
                     startActivity(new Intent(QuickPlay.this, PlayersSelect.class));
                 }
             }

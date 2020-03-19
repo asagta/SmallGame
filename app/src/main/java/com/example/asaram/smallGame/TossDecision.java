@@ -99,13 +99,27 @@ public class TossDecision extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d("CHOOSE",""+choose);
                 if(choose==2)
-                {db1.reverseTeams();
-                    db1.setToss(2);
-                    startActivity(new Intent(TossDecision.this, Bowling.class));
+                {
+                    if(QuickPlay.testFlag==1) {
+                        db1.setTossTest(1);
+                        startActivity(new Intent(TossDecision.this, Bowling_Test.class));
+                    }
+                    else
+                    {
+                        db1.reverseTeams();
+                        db1.setToss(2);
+                        startActivity(new Intent(TossDecision.this, Bowling.class));
+                    }
+
                 }
                 else{
                     db1.setToss(1);
-                startActivity(new Intent(TossDecision.this, MainActivity.class));
+                    if(QuickPlay.testFlag==1) {
+                        db1.setTossTest(0);
+                        startActivity(new Intent(TossDecision.this, MainActivity_Test.class));
+                    }
+                        else
+                        startActivity(new Intent(TossDecision.this, MainActivity.class));
                 }
                 b3.setEnabled(true);
             }

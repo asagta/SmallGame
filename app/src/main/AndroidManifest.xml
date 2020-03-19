@@ -63,12 +63,11 @@
         </activity>
         <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.CelebrationAnimations">
         </activity>
-        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.IplAuction"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.IplAuction">
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.MainActivity_Test">
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.Bowling_Test">
         </activity>
         <service android:name="MusicService" android:enabled="true"></service>
 

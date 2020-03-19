@@ -140,6 +140,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         return i;
     }
+    public String getCurrTestPlayerName(String team_id,int order)
+    {
+        //SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        order=order+1;
+        String selectQuery = "SELECT player_name FROM curr_players_test where team_id like '%"+team_id+"%' and border="+order;
+        Log.d("QUERY::",selectQuery);
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        String i=cursor.getString(0);
+        db.close();
+        cursor.close();
+        return i;
+    }
     public int getSixLimit(String team_id,int order)
     {
         //SQLiteDatabase db = this.getWritableDatabase();
@@ -155,6 +169,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         catch(Exception ex)
         {
            i=2;
+        }
+        db.close();
+        cursor.close();
+        return i;
+    }
+    public int getSixLimitTest(String team_id,int order)
+    {
+        //SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        order=order+1;
+        String selectQuery = "SELECT sixlimit FROM curr_players_test where team_id like '%"+team_id+"%' and border="+order;
+        Log.d("QUERY::",selectQuery);
+        Cursor cursor= db.rawQuery(selectQuery, null);;int i=2;
+        try{
+            cursor = db.rawQuery(selectQuery, null);
+            cursor.moveToFirst();
+            i=cursor.getInt(0);}
+        catch(Exception ex)
+        {
+            i=2;
         }
         db.close();
         cursor.close();
@@ -236,7 +270,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.execSQL("insert into curr_game values(0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,"+maxBalls+","+maxOvers+",0,2,0)");
         else if(tf.equalsIgnoreCase("I"))
             db.execSQL("insert into curr_game values(0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,"+maxBalls+","+maxOvers+",0,3,0)");
-        else
+        else if(tf.equalsIgnoreCase("T")) {
+            db.execSQL("DELETE FROM curr_game_test");
+            db.execSQL("insert into curr_game_test values(0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0," + maxBalls + "," + maxOvers + ",0,0,0,0,0,1)");
+        }
+            else
             db.execSQL("insert into curr_game values(0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,"+maxBalls+","+maxOvers+",0,0,0)");
         db.close();
         cursor.close();
@@ -252,10 +290,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("update curr_players set bmaiden=0");
         db.close();
     }
+    public void insertCurrTestPlayers(String tname,String pid,int o,String cb,int sl)
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        db.execSQL("insert into curr_players_test('player_name','team_id','border','can_bowl','sixlimit','sixlimit_2') values('"+pid+"','"+tname+"',"+o+",'"+cb+"',"+sl+","+sl+")");
+        db.execSQL("update curr_players_test set bovers=0");
+        db.execSQL("update curr_players_test set bovers_2=0");
+        db.execSQL("update curr_players_test set bruns=0");
+        db.execSQL("update curr_players_test set bruns_2=0");
+        db.execSQL("update curr_players_test set bwick=0");
+        db.execSQL("update curr_players_test set bwick_2=0");
+        db.execSQL("update curr_players_test set bmaiden=0");
+        db.execSQL("update curr_players_test set bmaiden_2=0");
+        db.close();
+    }
     public void deleteCurrPlayers()
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
         db.execSQL("DELETE FROM curr_players");
+        db.execSQL("DELETE FROM curr_scores");
+        db.close();
+    }
+    public void deleteCurrPlayersTest()
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        db.execSQL("DELETE FROM curr_players_test");
         db.execSQL("DELETE FROM curr_scores");
         db.close();
     }
@@ -315,6 +374,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
         db.execSQL("UPDATE curr_players"  + " SET '6s'=" + b + " where player_name='"+p+"'");
         //2nd argument is String containing nullColumnHack
+        db.close(); // Closing database connection
+    }
+
+    public void updateCurrPlayerTest(String col,String p,int b)
+    {
+
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        db.execSQL("UPDATE curr_players_test"  + " SET `"+col+"` =" + b + " where player_name='"+p+"'");
+        String bls="UPDATE curr_players_test"  + " SET `"+col+"` =" + b + " where player_name='"+p+"'";
+        Log.d("UPDATED BALLS::",bls);
         db.close(); // Closing database connection
     }
 
@@ -683,11 +752,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         return mtch;
     }
+    public int getCurrDataTest(String var)
+    {
+        int mtch;
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "SELECT "+var+" FROM curr_game_test ";
+        Log.d("QUERY::",selectQuery);
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        mtch=cursor.getInt(0);
+        db.close();
+        cursor.close();
+        return mtch;
+    }
     public void updateCurrGame(String col,int val)
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
         db.execSQL("UPDATE curr_game SET "+col+"=" + val);
         String qry="UPDATE curr_game SET "+col+"=" + val;
+        Log.d("CURRENT GAME Query::",qry);
+        db.close(); // Closing database connection
+    }
+    public void updateCurrGameTest(String col,int val)
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        db.execSQL("UPDATE curr_game_test SET "+col+"=" + val);
+        String qry="UPDATE curr_game_test SET "+col+"=" + val;
         Log.d("CURRENT GAME Query::",qry);
         db.close(); // Closing database connection
     }
@@ -1022,21 +1112,54 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         {db.execSQL("UPDATE curr_game SET you=1");}
         db.close();
     }
+
+    public void resetCurrGameTest(int runsL,int flag)
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        db.execSQL("UPDATE curr_game_test SET Wickets=" + 0);
+        db.execSQL("UPDATE curr_game_test SET Overs=" + 0);
+        db.execSQL("UPDATE curr_game_test SET Balls=" + 0);
+        db.execSQL("UPDATE curr_game_test SET row=" + 0);
+        db.execSQL("UPDATE curr_game_test SET col=" + 0);
+        db.execSQL("UPDATE curr_game_test SET Strike=" + 0);
+        db.execSQL("UPDATE curr_game_test SET batter=" + 0);
+        db.execSQL("UPDATE curr_game_test SET Runner=" + 1);
+        db.execSQL("UPDATE curr_game_test SET flagBat=" + flag);
+        db.execSQL("UPDATE curr_game_test SET batter_run=" + 0);
+        db.execSQL("UPDATE curr_game_test SET batter_ball=" + 0);
+        db.execSQL("UPDATE curr_game_test SET runner_run=" + 0);
+        db.execSQL("UPDATE curr_game_test SET runner_ball=" + 0);
+        db.execSQL("UPDATE curr_game_test SET runs=" + 0);
+        db.execSQL("UPDATE curr_game_test SET runsleft=" + runsL);
+        db.execSQL("UPDATE curr_game_test SET bat_four=" + 0);
+        db.execSQL("UPDATE curr_game_test SET bat_six=" + 0);
+        db.execSQL("UPDATE curr_game_test SET run_four=" + 0);
+        db.execSQL("UPDATE curr_game_test SET run_six=" + 0);
+        int tballs=500;
+        db.execSQL("UPDATE curr_game_test SET tballs=" + tballs);
+        int ind=runsL-1;
+        String selectQuery = "SELECT you FROM curr_game_test";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        int you=cursor.getInt(0);
+        if(you==1)
+        {db.execSQL("UPDATE curr_game_test SET you=0");}
+        else
+        {db.execSQL("UPDATE curr_game_test SET you=1");}
+        db.close();
+    }
+
     public void setToss(int i)
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
         db.execSQL("UPDATE curr_game SET you=" + i);
         db.close();
     }
-    public int getToss()
+    public void setTossTest(int i)
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
-        String selectQuery = "SELECT you FROM curr_game";
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        cursor.moveToFirst();
-        int you=cursor.getInt(0);
+        db.execSQL("UPDATE curr_game_test SET you=" + i);
         db.close();
-        return you;
     }
     public void reverseTeams()
     {
@@ -1104,11 +1227,45 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();cursor.close();
         return str;
     }
+
+    public String getBowlerTest(String mtch,int j)
+    {
+        String str;
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "SELECT player_name from curr_players_test where team_id='"+mtch+"' and can_bowl='Y' order by border desc";
+        Log.d("QUERY::",selectQuery);
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        try{
+            cursor.moveToPosition(j);
+            str=cursor.getString(0);}
+        catch(Exception ex){str="";}
+        db.close();cursor.close();
+        return str;
+    }
+
     public int getBowlStats(String att_name,String pname)
     {
         String bowls;int b2;
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
         String selectQuery = "SELECT " +att_name+" from curr_players where player_name='"+pname+"'";
+        Log.d("QUERY::",selectQuery);
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        try {
+            cursor.moveToFirst();
+            bowls = cursor.getString(0);
+            if(bowls==null){b2=0;}
+            else{b2=cursor.getInt(0);}
+        }
+        catch(Exception ex){b2=0;}
+
+        db.close();cursor.close();
+        return b2;
+    }
+    public int getBowlStatsTest(String att_name,String pname)
+    {
+        String bowls;int b2;
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "SELECT " +att_name+" from curr_players_test where player_name='"+pname+"'";
         Log.d("QUERY::",selectQuery);
         Cursor cursor = db.rawQuery(selectQuery, null);
         try {
@@ -1190,6 +1347,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         else{}
         db.execSQL("UPDATE curr_players SET "+att_name+"=" +att_name+"+"+k+" where player_name='"+pname+"'");
         Log.d("UP_BOWL","UPDATE curr_players SET "+att_name+"=" +att_name+"+"+k+" where player_name='"+pname+"'");
+        db.close();cursor.close();
+    }
+    public void updateBowlStatsTest(String att_name,String pname,int k)
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "SELECT " +att_name+" from curr_players_test where player_name='"+pname+"'";
+        Log.d("QUERY::",selectQuery);
+        int b2=0;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        String bowls=cursor.getString(0);
+        if(bowls==null){b2=0;db.execSQL("UPDATE curr_players_test SET "+att_name+"=" +b2+" where player_name='"+pname+"'");}
+        else{}
+        db.execSQL("UPDATE curr_players_test SET "+att_name+"=" +att_name+"+"+k+" where player_name='"+pname+"'");
+        Log.d("UP_BOWL","UPDATE curr_players_test SET "+att_name+"=" +att_name+"+"+k+" where player_name='"+pname+"'");
         db.close();cursor.close();
     }
     public String[] getTopPlayersBowler(String team,int pos)
@@ -1767,6 +1939,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         return data;
     }
+
+    public String[] getWicketBowlersTest(int fb,String teamID)
+    {
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery;
+        if(fb==0)
+         selectQuery = "select player_name from curr_players_test where team_id='"+teamID+"' and can_bowl='Y' and bovers > 0 order by bwick desc,bruns/(bovers/6)";
+        else
+         selectQuery = "select player_name from curr_players_test where team_id='"+teamID+"' and can_bowl='Y' and bovers_2 > 0 order by bwick_2 desc,bruns_2/(bovers_2/6)";
+        Log.d("QUERY::",selectQuery);
+        String data[]=new String[6];
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        for(int i=0;i<6;i++){
+            try
+            {data[i]=""+cursor.getString(0);}
+            catch(Exception e)
+            {data[i]="";}
+            cursor.moveToNext();
+        }
+        Log.d("PLAYERS ",data[0]+" "+data[1]+" "+data[2]+" "+data[3]);
+        db.close();
+        cursor.close();
+        return data;
+    }
+
     public String[] getQuotaBowlers(String tname,String bname)
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
@@ -1804,6 +2002,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         return i;
     }
+    public int getBowlerNoTest(String tname,String bname)
+    {
+        int i;
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "SELECT player_name from curr_players_test where team_id='"+tname+"' and can_bowl='Y' order by border desc";
+        Log.d("QUERY::",selectQuery);
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        for(i=0;i<6;i++){
+            if(cursor.getString(0).equalsIgnoreCase(bname))
+            {Log.d("FOUND AT I=::",""+i);
+                break;}
+            else
+                cursor.moveToNext();
+        }
+        return i;
+    }
+
     public String getSquadPlayer(int j,String team)
     {
         String str=new String();
@@ -1831,7 +2047,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         int z=cursor.getInt(0)+1;
         String pid=tm+""+z;
         cursor.close();
-        db.execSQL("insert into players values('"+tm+"','"+pid+"','"+p+"',0,0,0.0,0,0,0,0,0,0,0,0,'"+b+"',0,0,0,0,0,0,'0/0',0)");
+        db.execSQL("insert into players values('"+tm+"','"+pid+"','"+p+"',0,0,0.0,0,0,0,0,0,0,0,0,'"+b+"',0,0,0,0,0,0,'0/0',0,4,0)");
         db.execSQL("insert into players_pool values('"+p+"','"+tm+"','"+b+"','','','','','','')");
         db.close();
     }
