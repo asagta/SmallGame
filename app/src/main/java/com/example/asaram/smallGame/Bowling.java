@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar.LayoutParams;
@@ -26,6 +27,7 @@ import java.util.Random;
 import android.view.Window;
 public class Bowling extends AppCompatActivity {
     DatabaseHandler db1;
+    ConstraintLayout l1;
     private Button zero;
     private Button one;
     private Button two;
@@ -58,10 +60,21 @@ public class Bowling extends AppCompatActivity {
         int screenWidthDp = configuration.screenWidthDp; //The current width of the available screen space, in dp units, corresponding to screen width resource qualifier.
         int sm = configuration.smallestScreenWidthDp;
         Log.d("CURR & SMALL WIDTH IS",""+screenWidthDp+" "+sm);
-        if(screenWidthDp>700)
+        String tvID;int resID;
+        if(screenWidthDp>720) {
             setContentView(R.layout.main_activity2);
-        else
+            l1 = (ConstraintLayout) findViewById(R.id.lay2);
+            tvID = "st" + TossDecision.rno;
+            resID = getResources().getIdentifier(tvID, "drawable", getPackageName());
+            l1.setBackgroundResource(resID);
+        }
+        else {
             setContentView(R.layout.activity_main);
+            l1 = (ConstraintLayout) findViewById(R.id.lay1);
+            tvID = "st" + TossDecision.rno;
+            resID = getResources().getIdentifier(tvID, "drawable", getPackageName());
+            l1.setBackgroundResource(resID);
+        }
         eq="";rover=0;
         bat=(TextView)findViewById(R.id.textView22);
         bowl=(TextView)findViewById(R.id.textView23);
@@ -266,7 +279,7 @@ public class Bowling extends AppCompatActivity {
         return ftext2;
     }
     void updateScoreCard(int s) {
-        if (maxOvers == 20 || over > 32) {
+        if (maxOvers == 20 || over > 30) {
 
             Random rand = new Random();
             n = rand.nextInt(8) + 1;

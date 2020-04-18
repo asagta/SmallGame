@@ -186,6 +186,7 @@ public void showOtherTeams()
                     pl1 = (TextView) findViewById(res[0]);
                     pl2 = (TextView) findViewById(res[1]);
                     db1.updatePlayerID((String) pl1.getText(), (String) pl2.getText());
+                    //db1.updatePlayerIDTest((String) pl1.getText(), (String) pl2.getText());
                     String tmp = (String) pl1.getText();
                     pl1.setText(pl2.getText());
                     pl2.setText(tmp);

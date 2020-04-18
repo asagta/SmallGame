@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import java.util.TimerTask;
 import android.view.Window;
 public class MainActivity extends AppCompatActivity {
     DatabaseHandler db1;
+    ConstraintLayout l1;
     private Button zero,one,two,three,four,five,six,ib,prevTeam,nextTeam;
     private TextView team,bat,bowl,score,result,overs,bat1,bat2,bat1_run,bat2_run,teamName,bowler,b_overs,b_runs,b_wick;
     private TextView thisover,thisover0,bowl_name,bowl_fig,float_fig;
@@ -48,11 +50,22 @@ public class MainActivity extends AppCompatActivity {
         Configuration configuration = getResources().getConfiguration();
         int screenWidthDp = configuration.screenWidthDp; //The current width of the available screen space, in dp units, corresponding to screen width resource qualifier.
         int sm = configuration.smallestScreenWidthDp;
+        String tvID;int resID;
         Log.d("CURR & SMALL WIDTH IS",""+screenWidthDp+" "+sm);
-        if(screenWidthDp>720)
-          setContentView(R.layout.main_activity2);
-        else
+        if(screenWidthDp>720) {
+            setContentView(R.layout.main_activity2);
+            l1 = (ConstraintLayout) findViewById(R.id.lay2);
+            tvID = "st" + TossDecision.rno;
+            resID = getResources().getIdentifier(tvID, "drawable", getPackageName());
+            l1.setBackgroundResource(resID);
+        }
+            else {
             setContentView(R.layout.activity_main);
+            l1 = (ConstraintLayout) findViewById(R.id.lay1);
+            tvID = "st" + TossDecision.rno;
+            resID = getResources().getIdentifier(tvID, "drawable", getPackageName());
+            l1.setBackgroundResource(resID);
+        }
         eq="";
         rover=0;lb=3;lr=3;
         bat=(TextView)findViewById(R.id.textView22);
@@ -272,7 +285,10 @@ public class MainActivity extends AppCompatActivity {
     }
      if((maxOvers==20 && p_mode==0) || (maxOvers==50 && p_mode==1)) {
          Random rand = new Random();
-         n = rand.nextInt(7) + 1;
+         if(over>5)
+           n = rand.nextInt(7) + 1;
+         else
+             n = rand.nextInt(6) + 1;
          bat.setText("" + s);
          bowl.setText("" + n);
          if (s == n && s != 5) {

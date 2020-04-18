@@ -104,10 +104,13 @@ public class QuickPlay extends AppCompatActivity {
                 {Toast.makeText(getApplicationContext(),"PLEASE SELECT 2 Different TEAMS TO MATCH",Toast.LENGTH_SHORT).show();}
                 else{
                     if(getIntent().hasExtra("format"))
-                    {db1.insertCurrMatch(value1,value2,"T",maxovers);}
-                    else
+                    {db1.insertCurrMatch(value1,value2,"T",maxovers);
+                        startActivity(new Intent(QuickPlay.this, PlayersSelect_Test.class));
+                    }
+                    else{
                      db1.insertCurrMatch(value1,value2,"N",maxovers);
                     startActivity(new Intent(QuickPlay.this, PlayersSelect.class));
+                    }
                 }
             }
         });

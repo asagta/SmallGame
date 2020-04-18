@@ -21,7 +21,7 @@ public class PlayersSelect extends AppCompatActivity {
     DatabaseHandler db1;
     private TextView t1[];
     static TextView tv,pl1,pl2,match,runs,fifty,fuur,hs,srate,avg;
-    static TextView t2,t3,t4,t5,t6;
+    static TextView t2,t3,t4,t5,t6,vt;
     private Button bt;
     static Button next,prev;
     static TextView pid[];
@@ -47,6 +47,7 @@ public class PlayersSelect extends AppCompatActivity {
         setClickonButton();
         clickOnNext();
         Log.d("TOUR_fLAG::",TournamentCentral.tour_flag);
+        vt = ((TextView) findViewById(R.id.vt1));
     }
    void loadPlayers(int a)
    {
@@ -179,7 +180,10 @@ public class PlayersSelect extends AppCompatActivity {
                         res[0] = 0;
                         res[1] = 0;
                         flag = flag + 1;
-                        db1.initializeScores(db1.getCurrTeamName(0), db1.getCurrTeamName(1));
+                        if(QuickPlay.testFlag==1)
+                            db1.initializeScoresTest(db1.getCurrTeamName(0), db1.getCurrTeamName(1));
+                        else
+                            db1.initializeScores(db1.getCurrTeamName(0), db1.getCurrTeamName(1));
                         loadPlayers(flag);
                     }
                 }
@@ -199,7 +203,7 @@ public class PlayersSelect extends AppCompatActivity {
                               db1.insertCurrPlayers(db1.getCurrTeamName(1), (String) pid[z].getText(), z + 1, db1.getCanBowlStatus((String) pid[z].getText()),db1.getLimitSix((String) pid[z].getText()));
                         }
                         flag = 0;
-                        startActivity(new Intent(PlayersSelect.this, TossTeams.class));
+                        startActivity(new Intent(PlayersSelect.this, PlayersFaces.class));
                     }
                 }
                 }
@@ -227,6 +231,11 @@ public class PlayersSelect extends AppCompatActivity {
     }
  public void updateStats(String pName)
  {
+     prev=(Button)findViewById(R.id.vt0);next=(Button)findViewById(R.id.vt01);
+     updateLast5(pName);
+     vt.setText("BATTING");
+     updateBowlStats(prev, pName);
+     updateBowlStats(next, pName);
      match = ((TextView) findViewById(R.id.p31));
      match.setText(""+db1.getMatches(pName));
      //runs,fifty,fuur,hs,srate,avg;
@@ -254,9 +263,6 @@ public class PlayersSelect extends AppCompatActivity {
      int bls=db1.getMatchBalls(pName);
      float strRate=(float)r/bls;strRate=strRate*100;
      srate.setText(""+strRate);
-     prev=(Button)findViewById(R.id.vt0);next=(Button)findViewById(R.id.vt01);
-     updateLast5(pName);
-     updateBowlStats(prev,pName);updateBowlStats(next,pName);
  }
  public void updateBowlStats(final Button b, final String pName)
  {
@@ -267,7 +273,7 @@ public class PlayersSelect extends AppCompatActivity {
              if(z==0)
              {
                  z=1;
-                 TextView vt = ((TextView) findViewById(R.id.vt1));
+                 vt = ((TextView) findViewById(R.id.vt1));
                  vt.setText("BOWLING");
                  t2.setText("Wickets");t3.setText("4WI");t4.setText("5WI");t5.setText("Best");t6.setText(" ");
                  String str[]=db1.getBowlStatsPlayer(pName);

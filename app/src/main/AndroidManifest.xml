@@ -69,6 +69,10 @@
         </activity>
         <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.Bowling_Test">
         </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.PlayersSelect_Test">
+        </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.PlayersFaces">
+        </activity>
         <service android:name="MusicService" android:enabled="true"></service>
 
 </application>

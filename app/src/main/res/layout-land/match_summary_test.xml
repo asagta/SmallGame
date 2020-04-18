@@ -226,7 +226,7 @@
                 android:layout_height="20dp"
                 android:layout_weight="3"
                 android:gravity="left"
-                android:text="Team1"
+                android:text="Team2"
                 android:textColor="@color/white"
                 android:textSize="15dp" />
             <TextView
@@ -357,7 +357,7 @@
                 android:layout_height="20dp"
                 android:layout_weight="3"
                 android:gravity="left"
-                android:text="Team1"
+                android:text="Team3"
                 android:textColor="@color/white"
                 android:textSize="15dp" />
             <TextView
@@ -488,7 +488,7 @@
                 android:layout_height="20dp"
                 android:layout_weight="3"
                 android:gravity="left"
-                android:text="Team1"
+                android:text="Team4"
                 android:textColor="@color/white"
                 android:textSize="15dp" />
             <TextView

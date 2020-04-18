@@ -16,7 +16,7 @@ import java.util.Random;
 
 
 public class TossDecision extends AppCompatActivity {
- static int s1,s2,choose;
+ static int s1,s2,choose,rno;
     private TextView tv,tv2,tv3;
     private Button b1,b2,b3;
     DatabaseHandler db1;
@@ -36,6 +36,7 @@ public class TossDecision extends AppCompatActivity {
         tv2=(TextView)findViewById(R.id.textView3);
         tv3=(TextView)findViewById(R.id.textView7);
         s1 = rand.nextInt(2) + 1;
+        rno=rand.nextInt(19) + 1;
         Log.d("TOSS_TAKEN",""+TossTeams.res);
         Log.d("TOSS_GOT",""+s1);
         b1=(Button)findViewById(R.id.button19);
