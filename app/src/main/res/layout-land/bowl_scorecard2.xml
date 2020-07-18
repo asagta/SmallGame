@@ -3,11 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/blueTransparent"
+    android:background="@color/greenTransparent"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ScrollView
-        android:layout_width="667dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fillViewport="true"
         android:layout_weight="1"
@@ -26,6 +26,8 @@
         android:layout_marginRight="3dp"
         android:layout_marginStart="3dp"
         android:layout_marginTop="2dp"
+        android:stretchColumns="*"
+        android:shrinkColumns="*"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@+id/scrollView4"
         app:layout_constraintRight_toRightOf="@+id/scrollView4"
@@ -53,19 +55,71 @@
 
         </TableRow>
 
-
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="12dp"
+            android:weightSum="10"
+            android:background="@drawable/row_borderdown"
+            >
+
+            <TextView
+                android:id="@+id/vt01"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="6"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:layout_marginLeft="7dp"
+                android:text="BOWLER" />
+
+            <TextView
+                android:id="@+id/vt02"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:text="OVERS" />
+
+            <TextView
+                android:id="@+id/vt03"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:text="DOTS"/>
+            <TextView
+                android:id="@+id/vt04"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:text="RUNS"/>
+            <TextView
+                android:id="@+id/vt05"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:text="WICK"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="7dp"
+            android:weightSum="10"
             android:background="@drawable/row_borderdown"
             >
 
             <TextView
                 android:id="@+id/vt11"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.4"
+                android:layout_weight="6"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
                 android:layout_marginLeft="7dp"
@@ -73,34 +127,51 @@
 
             <TextView
                 android:id="@+id/vt12"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.4"
+                android:layout_weight="1"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
-                android:text="b C.deGrandhomme" />
+                android:text="10" />
 
             <TextView
                 android:id="@+id/vt13"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.2"
+                android:layout_weight="1"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
-                android:text="100(102)"/>
+                android:text="15" />
+            <TextView
+                android:id="@+id/vt14"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/blblue"
+                android:textSize="18dp"
+                android:text="38" />
+            <TextView
+                android:id="@+id/vt15"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/red"
+                android:textSize="18dp"
+                android:text="8" />
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="7dp"
+            android:weightSum="10"
             android:background="@drawable/row_borderdown"
             >
 
             <TextView
                 android:id="@+id/vt21"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.4"
+                android:layout_weight="6"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
                 android:layout_marginLeft="7dp"
@@ -108,34 +179,51 @@
 
             <TextView
                 android:id="@+id/vt22"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.4"
+                android:layout_weight="1"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
-                android:text="b C.deGrandhomme" />
+                android:text="10" />
 
             <TextView
                 android:id="@+id/vt23"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.2"
+                android:layout_weight="1"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
-                android:text="100(102)"/>
+                android:text="15" />
+            <TextView
+                android:id="@+id/vt24"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/blblue"
+                android:textSize="18dp"
+                android:text="38" />
+            <TextView
+                android:id="@+id/vt25"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/red"
+                android:textSize="18dp"
+                android:text="8" />
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="7dp"
+            android:weightSum="10"
             android:background="@drawable/row_borderdown"
             >
 
             <TextView
                 android:id="@+id/vt31"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.4"
+                android:layout_weight="6"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
                 android:layout_marginLeft="7dp"
@@ -143,34 +231,51 @@
 
             <TextView
                 android:id="@+id/vt32"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.4"
+                android:layout_weight="1"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
-                android:text="b C.deGrandhomme" />
+                android:text="10" />
 
             <TextView
                 android:id="@+id/vt33"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.2"
+                android:layout_weight="1"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
-                android:text="100(102)"/>
+                android:text="15" />
+            <TextView
+                android:id="@+id/vt34"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/blblue"
+                android:textSize="18dp"
+                android:text="38" />
+            <TextView
+                android:id="@+id/vt35"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/red"
+                android:textSize="18dp"
+                android:text="8" />
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="7dp"
+            android:weightSum="10"
             android:background="@drawable/row_borderdown"
             >
 
             <TextView
                 android:id="@+id/vt41"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.4"
+                android:layout_weight="6"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
                 android:layout_marginLeft="7dp"
@@ -178,34 +283,51 @@
 
             <TextView
                 android:id="@+id/vt42"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.4"
+                android:layout_weight="1"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
-                android:text="b C.deGrandhomme" />
+                android:text="10" />
 
             <TextView
                 android:id="@+id/vt43"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.2"
+                android:layout_weight="1"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
-                android:text="100(102)"/>
+                android:text="15" />
+            <TextView
+                android:id="@+id/vt44"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/blblue"
+                android:textSize="18dp"
+                android:text="38" />
+            <TextView
+                android:id="@+id/vt45"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/red"
+                android:textSize="18dp"
+                android:text="8" />
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="7dp"
+            android:weightSum="10"
             android:background="@drawable/row_borderdown"
             >
 
             <TextView
                 android:id="@+id/vt51"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.4"
+                android:layout_weight="6"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
                 android:layout_marginLeft="7dp"
@@ -213,34 +335,51 @@
 
             <TextView
                 android:id="@+id/vt52"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.4"
+                android:layout_weight="1"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
-                android:text="b C.deGrandhomme" />
+                android:text="10" />
 
             <TextView
                 android:id="@+id/vt53"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.2"
+                android:layout_weight="1"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
-                android:text="100(102)"/>
+                android:text="15" />
+            <TextView
+                android:id="@+id/vt54"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/blblue"
+                android:textSize="18dp"
+                android:text="38" />
+            <TextView
+                android:id="@+id/vt55"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/red"
+                android:textSize="18dp"
+                android:text="8" />
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="7dp"
+            android:weightSum="10"
             android:background="@drawable/row_borderdown"
             >
 
             <TextView
                 android:id="@+id/vt61"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.4"
+                android:layout_weight="6"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
                 android:layout_marginLeft="7dp"
@@ -248,34 +387,51 @@
 
             <TextView
                 android:id="@+id/vt62"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.4"
+                android:layout_weight="1"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
-                android:text="b C.deGrandhomme" />
+                android:text="10" />
 
             <TextView
                 android:id="@+id/vt63"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.2"
+                android:layout_weight="1"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
-                android:text="100(102)"/>
+                android:text="15" />
+            <TextView
+                android:id="@+id/vt64"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/blblue"
+                android:textSize="18dp"
+                android:text="38" />
+            <TextView
+                android:id="@+id/vt65"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/red"
+                android:textSize="18dp"
+                android:text="8" />
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="7dp"
+            android:weightSum="10"
             android:background="@drawable/row_borderdown"
             >
 
             <TextView
                 android:id="@+id/vt71"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.4"
+                android:layout_weight="6"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
                 android:layout_marginLeft="7dp"
@@ -283,162 +439,39 @@
 
             <TextView
                 android:id="@+id/vt72"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.4"
+                android:layout_weight="1"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
-                android:text="b C.deGrandhomme" />
+                android:text="10" />
 
             <TextView
                 android:id="@+id/vt73"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.2"
+                android:layout_weight="1"
                 android:textColor="@color/blblue"
                 android:textSize="18dp"
-                android:text="100(102)"/>
+                android:text="15" />
+            <TextView
+                android:id="@+id/vt74"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/blblue"
+                android:textSize="18dp"
+                android:text="38" />
+            <TextView
+                android:id="@+id/vt75"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:textColor="@color/red"
+                android:textSize="18dp"
+                android:text="8" />
         </TableRow>
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/row_borderdown"
-            >
 
-            <TextView
-                android:id="@+id/vt81"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_weight="0.4"
-                android:textColor="@color/blblue"
-                android:textSize="18dp"
-                android:layout_marginLeft="7dp"
-                android:text="K.Williamson" />
-
-            <TextView
-                android:id="@+id/vt82"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_weight="0.4"
-                android:textColor="@color/blblue"
-                android:textSize="18dp"
-                android:text="b C.deGrandhomme" />
-
-            <TextView
-                android:id="@+id/vt83"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_weight="0.2"
-                android:textColor="@color/blblue"
-                android:textSize="18dp"
-                android:text="100(102)"/>
-        </TableRow>
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/row_borderdown"
-            >
-
-            <TextView
-                android:id="@+id/vt91"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_weight="0.4"
-                android:textColor="@color/blblue"
-                android:textSize="18dp"
-                android:layout_marginLeft="7dp"
-                android:text="K.Williamson" />
-
-            <TextView
-                android:id="@+id/vt92"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_weight="0.4"
-                android:textColor="@color/blblue"
-                android:textSize="18dp"
-                android:text="b C.deGrandhomme" />
-
-            <TextView
-                android:id="@+id/vt93"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_weight="0.2"
-                android:textColor="@color/blblue"
-                android:textSize="18dp"
-                android:text="100(102)"/>
-        </TableRow>
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/row_borderdown"
-            >
-
-            <TextView
-                android:id="@+id/vt101"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_weight="0.4"
-                android:textColor="@color/blblue"
-                android:textSize="18dp"
-                android:layout_marginLeft="7dp"
-                android:text="K.Williamson" />
-
-            <TextView
-                android:id="@+id/vt102"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_weight="0.4"
-                android:textColor="@color/blblue"
-                android:textSize="18dp"
-                android:text="b C.deGrandhomme" />
-
-            <TextView
-                android:id="@+id/vt103"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_weight="0.2"
-                android:textColor="@color/blblue"
-                android:textSize="18dp"
-                android:text="100(102)"/>
-        </TableRow>
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/row_borderdown"
-            >
-
-            <TextView
-                android:id="@+id/vt111"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_weight="0.4"
-                android:textColor="@color/blblue"
-                android:textSize="18dp"
-                android:layout_marginLeft="7dp"
-                android:text="K.Williamson" />
-
-            <TextView
-                android:id="@+id/vt112"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_weight="0.4"
-                android:textColor="@color/blblue"
-                android:textSize="18dp"
-                android:text="b C.deGrandhomme" />
-
-            <TextView
-                android:id="@+id/vt113"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_weight="0.2"
-                android:textColor="@color/blblue"
-                android:textSize="18dp"
-                android:text="100(102)"/>
-        </TableRow>
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"

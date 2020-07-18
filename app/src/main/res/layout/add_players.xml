@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/add_players"
+    android:layout_height="match_parent"
+    tools:context="com.example.asaram.smallGame.FilePicker">
 
     <EditText
         android:id="@+id/editText"
@@ -16,7 +18,8 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="199dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="199dp" />
 
     <Spinner
         android:id="@+id/spinner3"
@@ -27,7 +30,8 @@
         android:layout_marginTop="26dp"
         android:hint="Select_Team"
         android:entries="@array/TeamId"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/editText"
+        android:layout_marginStart="207dp" />
 
     <Spinner
         android:id="@+id/spinner4"
@@ -38,25 +42,50 @@
         android:layout_marginLeft="223dp"
         android:hint="Can_Bowl?"
         android:entries="@array/bowl"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="223dp" />
 
     <Button
         android:id="@+id/button33"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="27dp"
+        android:layout_marginBottom="5dp"
         android:layout_marginLeft="33dp"
         android:text="BACK"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/button35" />
+        app:layout_constraintLeft_toRightOf="@+id/button35"
+        android:layout_marginStart="33dp" />
 
     <Button
         android:id="@+id/button35"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="27dp"
+        android:layout_marginBottom="5dp"
         android:layout_marginLeft="207dp"
         android:text="ADD"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="207dp" />
+
+        <Button
+            android:id="@+id/btn_choose_file"
+            android:layout_width="88dp"
+            android:layout_height="48dp"
+            android:background="@drawable/round_view"
+            android:text="Choose FIle"
+            android:textColor="@color/black"
+            android:layout_marginLeft="87dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="102dp" />
+
+    <ImageView
+        android:id="@+id/tv_file_path"
+        android:layout_width="120dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="11dp"
+        app:srcCompat="@drawable/v_kohli"
+        app:layout_constraintTop_toBottomOf="@+id/spinner4"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="322dp" />
 </android.support.constraint.ConstraintLayout>

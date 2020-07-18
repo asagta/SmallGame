@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     DatabaseHandler db1;
     ConstraintLayout l1;
     private Button zero,one,two,three,four,five,six,ib,prevTeam,nextTeam;
-    private TextView team,bat,bowl,score,result,overs,bat1,bat2,bat1_run,bat2_run,teamName,bowler,b_overs,b_runs,b_wick;
+    private TextView team,bat,bowl,score,overs,bat1,bat2,bat1_run,bat2_run,teamName,bowler,b_overs,b_runs,b_wick;
     private TextView thisover,thisover0,bowl_name,bowl_fig,float_fig;
     public WindowManager.LayoutParams layoutParams;
     public static Dialog dialog;
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     static int cbowler,bowl_wick,bowl_runs,bowl_dots,bowl_over,bowl_bowls;
     static int b4,b6,r4,r6,nextScore,drid,drid2,freq6,freq5;
     static int i7,i8,rover,b,r,row,col,strike,runs,runsLeft,maxOvers,maxWick,n,run,wick,flagBat,afb,ind,aus,over,ball,ind2,over2,tballs,cfb,cfr,chb,chr;
-    static int p_mode,p_freq,p_taken,blimit,rlimit,lb,lr;
+    static int wick2,afb2,p_mode,p_freq,p_taken,blimit,rlimit,lb,lr,result;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
         five=(Button)findViewById(R.id.b5);
         six=(Button)findViewById(R.id.b6);
         thisover=(TextView)findViewById(R.id.tover);
-        result=(TextView)findViewById(R.id.textView18);
         overs=(TextView)findViewById(R.id.textView17);
         bat1=(TextView)findViewById(R.id.bat1);bat1_run=(TextView)findViewById(R.id.b1r);
         bat2=(TextView)findViewById(R.id.bat2);bat2_run=(TextView)findViewById(R.id.b2r);
@@ -261,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
     Log.d("P_MODE::",""+p_mode);
     //automatic powerplay code
     if(maxOvers==20&&over>13&&p_taken==0)
-            p_mode=1;
+        p_mode=1;
     else if((maxOvers==50&&over>13&&p_taken==0)||(maxOvers==50&&over>43&&p_taken==1))
         p_mode=1;
     if(p_mode==1 && maxOvers==20)
@@ -276,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
     }
     else if(p_mode==1 && maxOvers==50){
         p_freq++;
-        if(p_freq==36)
+        if(p_freq==24)
         {
             p_mode=0;
             p_taken=p_taken+1;
@@ -310,6 +309,8 @@ public class MainActivity extends AppCompatActivity {
                  db1.updateBalls(db1.getCurrPlayerName(match[flagBat], b), rball[row][col + 1]);
                  db1.updateRuns(db1.getCurrPlayerName(match[flagBat], b), rball[row][col]);
                  db1.updateOut(db1.getCurrPlayerName(match[flagBat], b));
+                 db1.updateCurrPlayer("fow",db1.getCurrPlayerName(match[flagBat], b),""+runs);
+                 db1.updateCurrPlayer("bowl_by",db1.getCurrPlayerName(match[flagBat], b),""+bowl_name.getText());
                  CelebrationAnimations.showBatOutDialog(MainActivity.this, db1.getCurrPlayerName(match[flagBat], b), rball[row][col], rball[row][col + 1], b6, b4);
                  rball[row][col] = 0;
                  cfb = 0;
@@ -331,6 +332,8 @@ public class MainActivity extends AppCompatActivity {
                  db1.updateBalls(db1.getCurrPlayerName(match[flagBat], r), rball[row + 1][col + 1]);
                  db1.updateRuns(db1.getCurrPlayerName(match[flagBat], r), rball[row + 1][col]);
                  db1.updateOut(db1.getCurrPlayerName(match[flagBat], r));
+                 db1.updateCurrPlayer("fow",db1.getCurrPlayerName(match[flagBat], r),""+runs);
+                 db1.updateCurrPlayer("bowl_by",db1.getCurrPlayerName(match[flagBat], r),""+bowl_name.getText());
                  CelebrationAnimations.showBatOutDialog(MainActivity.this, db1.getCurrPlayerName(match[flagBat], r), rball[row + 1][col], rball[row + 1][col + 1], r6, r4);
                  rball[row + 1][col] = 0;
                  cfr = 0;
@@ -378,7 +381,10 @@ public class MainActivity extends AppCompatActivity {
                  //thisover.setText(""+thisover.getText()+""+run);
              }
              if (s == 5 && n >= 5) {
-                 run = 0;
+                 if(s==5 && n==5)
+                     run=-2;
+                 else
+                   run = 0;
                  // thisover.setText(""+thisover.getText()+""+run);
              }
              if (s == 5 && n < 5) {
@@ -528,9 +534,11 @@ public class MainActivity extends AppCompatActivity {
                          Toast.makeText(getApplicationContext(), match[1] + " WON!!", Toast.LENGTH_SHORT).show();
                          winner = match[1];
                          looser = match[0];
-                         AusWins();
+                         result=2;
+                         BattingScorecard();
+                         //AusWins();
                          ind = 0;
-                         over = 0;
+                         //over = 0;
                          aus = 0;//so that flow doesn't go into next conditions
                          db1.updateCurrGame("ind", ind);
                          db1.updateCurrGame("Overs", over);
@@ -543,7 +551,8 @@ public class MainActivity extends AppCompatActivity {
                  //db1.updateScoreTable(runs);
                  Toast.makeText(getApplicationContext(), "Innings over", Toast.LENGTH_SHORT).show();
                  disableAll();
-                 InningsBreak();
+                 BattingScorecard();
+                 //InningsBreak();
                  //activateAll();
                  Log.d("IND VARIABLE IS: ", "" + ind);
                  Log.d("RUNS VARIABLE IS: ", "" + runs);
@@ -569,7 +578,9 @@ public class MainActivity extends AppCompatActivity {
                      Toast.makeText(getApplicationContext(), match[0] + " WON!!", Toast.LENGTH_SHORT).show();
                      winner = match[0];
                      looser = match[1];
-                     IndWins();//means 1stBatting Team Won
+                     result=1;
+                     BattingScorecard();
+                     //IndWins();//means 1stBatting Team Won
                  }
                  //Toast.makeText(getApplicationContext(),"Australian Batting Starts",Toast.LENGTH_SHORT).show();
                  flagBat = 1;
@@ -583,13 +594,13 @@ public class MainActivity extends AppCompatActivity {
                  float_fig.setText(getFloatText(i7));
                  db1.setScores(match[flagBat], (String) score.getText());
                  //result.setText("NEW");
-
              }
              //code for updating overs
              if (over2 == 1) {
                  over2 = 0;
                  db1.updateCurrGame("over2", over2);
              } else {
+                 Log.d("sboard",""+ball+" here");
                  ball = ball + 1;
                  bowl_fig.setText(""+db1.getBowlStats("bwick", (String) bowl_name.getText())+"-"+db1.getBowlStats("bruns", (String) bowl_name.getText()));
                  db1.updateBowlStats("bovers", (String) bowl_name.getText(), 1);
@@ -599,6 +610,7 @@ public class MainActivity extends AppCompatActivity {
                  bowl_over = bowl_over / 6;
                  b_overs.setText("" + bowl_over + "." + bowl_bowls);
                  //tballs=tballs+1;
+                 db1.setOvers(match[flagBat],""+over+"."+ball);
                  if (ball > 5) {
                      over = over + 1;
                      disableAll();
@@ -615,6 +627,7 @@ public class MainActivity extends AppCompatActivity {
                      bowl_wick = 0;
                      bowl_dots = 0;
                      ball = 0;
+                     db1.setOvers(match[flagBat],""+over+"."+ball);
                      db1.updateCurrGame("Balls", ball);
                      if (strike == 0) {
                          strike = 1;
@@ -789,8 +802,8 @@ public class MainActivity extends AppCompatActivity {
 
                  if (over == maxOvers) {
                      disableAll();
-
-                     InningsBreak();
+                     BattingScorecard();
+                    // InningsBreak();
                      //activateAll();
                      // tballs=0;
                      if (flagBat == 0) {
@@ -804,20 +817,27 @@ public class MainActivity extends AppCompatActivity {
                          //finalB.setText("" + runs);
                          aus = runs;
                          //db1.updateCurrGame("aus",aus);
+                         if(result==0)
+                         {
                          if (aus > ind) {
                              Log.d("Last Ball: ", "VICTORY");
                              Toast.makeText(getApplicationContext(), match[1] + " WON!!", Toast.LENGTH_SHORT).show();
                              winner = match[1];
                              looser = match[0];
-                             AusWins();
+                             result=2;
+                             BattingScorecard();
+                             //AusWins();
                          } else {
                              Toast.makeText(getApplicationContext(), match[0] + " WON!!", Toast.LENGTH_SHORT).show();
                              winner = match[0];
                              looser = match[1];
-                             IndWins();
+                             result=1;
+                             BattingScorecard();
+                             //IndWins();
                          }
                      }
-                     over = 0;
+                     }
+                     //over = 0;
                      db1.updateCurrGame("Overs", over);
                  }
              }
@@ -867,7 +887,9 @@ public class MainActivity extends AppCompatActivity {
                      db1.updateBalls(db1.getCurrPlayerName(match[flagBat], b), rball[row][col + 1]);
                      db1.updateRuns(db1.getCurrPlayerName(match[flagBat], b), rball[row][col]);
                      db1.updateOut(db1.getCurrPlayerName(match[flagBat], b));
-                     CelebrationAnimations.showBatOutDialog(MainActivity.this,db1.getCurrPlayerName(match[flagBat], b), rball[row][col], rball[row][col + 1], b6, b4);
+                     db1.updateCurrPlayer("fow",db1.getCurrPlayerName(match[flagBat], b),""+runs);
+                     db1.updateCurrPlayer("bowl_by",db1.getCurrPlayerName(match[flagBat], b),""+bowl_name.getText());
+                 CelebrationAnimations.showBatOutDialog(MainActivity.this,db1.getCurrPlayerName(match[flagBat], b), rball[row][col], rball[row][col + 1], b6, b4);
                  // batScore.setText(""+rball[row][col]+"("+ ++rball[row][col+1]+")  ");
                  rball[row][col] = 0;
                  db1.updateCurrGame("batter_run", rball[row][col]);
@@ -888,6 +910,8 @@ public class MainActivity extends AppCompatActivity {
                      db1.updateBalls(db1.getCurrPlayerName(match[flagBat], r), rball[row + 1][col + 1]);
                      db1.updateRuns(db1.getCurrPlayerName(match[flagBat], r), rball[row + 1][col]);
                      db1.updateOut(db1.getCurrPlayerName(match[flagBat], r));
+                 db1.updateCurrPlayer("fow",db1.getCurrPlayerName(match[flagBat], r),""+runs);
+                 db1.updateCurrPlayer("bowl_by",db1.getCurrPlayerName(match[flagBat], r),""+bowl_name.getText());
                  CelebrationAnimations.showBatOutDialog(MainActivity.this,db1.getCurrPlayerName(match[flagBat], r), rball[row + 1][col], rball[row + 1][col + 1], r6, r4);
                  rball[row + 1][col] = 0;cfr=0;chr=0;
                  db1.updateCurrGame("runner_run", rball[row + 1][col]);
@@ -1044,9 +1068,11 @@ public class MainActivity extends AppCompatActivity {
                      Toast.makeText(getApplicationContext(), match[1] + " WON!!", Toast.LENGTH_SHORT).show();
                      winner = match[1];
                      looser = match[0];
-                     AusWins();
+                     result=2;
+                     BattingScorecard();
+                     //AusWins();
                      ind = 0;
-                     over = 0;
+                     //over = 0;
                      aus = 0;//so that flow doesn't go into next conditions
                      db1.updateCurrGame("ind", ind);
                      db1.updateCurrGame("Overs", over);
@@ -1059,7 +1085,8 @@ public class MainActivity extends AppCompatActivity {
              //db1.updateScoreTable(runs);
              Toast.makeText(getApplicationContext(), "Innings over", Toast.LENGTH_SHORT).show();
              disableAll();
-             InningsBreak();
+             BattingScorecard();
+             //InningsBreak();
              //activateAll();
              Log.d("IND VARIABLE IS: ", "" + ind);
              Log.d("RUNS VARIABLE IS: ", "" + runs);
@@ -1085,7 +1112,9 @@ public class MainActivity extends AppCompatActivity {
                  Toast.makeText(getApplicationContext(), match[0] + " WON!!", Toast.LENGTH_SHORT).show();
                  winner = match[0];
                  looser = match[1];
-                 IndWins();//means 1stBatting Team Won
+                 result=1;
+                 BattingScorecard();
+                 //IndWins();//means 1stBatting Team Won
              }
              //Toast.makeText(getApplicationContext(),"Australian Batting Starts",Toast.LENGTH_SHORT).show();
              flagBat = 1;
@@ -1113,6 +1142,7 @@ public class MainActivity extends AppCompatActivity {
              bowl_over = bowl_over / 6;
              b_overs.setText("" + bowl_over + "." + bowl_bowls);
              //tballs=tballs+1;
+             db1.setOvers(match[flagBat],""+over+"."+ball);
              if (ball > 5) {
                  over = over + 1;
                  disableAll();
@@ -1126,6 +1156,7 @@ public class MainActivity extends AppCompatActivity {
                  bowl_wick = 0;
                  bowl_dots = 0;
                  ball = 0;
+                 db1.setOvers(match[flagBat],""+over+"."+ball);
                  freq6=0;
                  freq5=0;
                  enableBowls();
@@ -1262,7 +1293,8 @@ else {
 
              if (over == maxOvers) {
                  disableAll();
-                 InningsBreak();
+                 BattingScorecard();
+                 //InningsBreak();
                  //activateAll();
                  // tballs=0;
                  if (flagBat == 0) {
@@ -1276,20 +1308,27 @@ else {
                      //finalB.setText("" + runs);
                      aus = runs;
                      //db1.updateCurrGame("aus",aus);
+                     if(result==0)
+                     {
                      if (aus > ind) {
                          Log.d("Last Ball: ", "VICTORY");
                          Toast.makeText(getApplicationContext(), match[1] + " WON!!", Toast.LENGTH_SHORT).show();
                          winner = match[1];
                          looser = match[0];
-                         AusWins();
+                         result=2;
+                         BattingScorecard();
+                         // AusWins();
                      } else {
                          Toast.makeText(getApplicationContext(), match[0] + " WON!!", Toast.LENGTH_SHORT).show();
                          winner = match[0];
                          looser = match[1];
-                         IndWins();
+                         result=1;
+                         BattingScorecard();
+                         //IndWins();
                      }
                  }
-                 over = 0;
+                 }
+                 //over = 0;
                  db1.updateCurrGame("Overs", over);
              }
          }
@@ -1438,15 +1477,15 @@ else {
         Log.d("FlagBat VARIABLE IS: ",""+MainActivity.flagBat);
         Log.d("Over VARIABLE IS: ",""+MainActivity.over);
         Log.d("Ball VARIABLE IS: ",""+MainActivity.ball);
-        MainActivity.ind2=MainActivity.runs+1;
+        //MainActivity.ind2=MainActivity.runs+1;
         //scoreLine.setText("jaIt ko ilayao " + MainActivity.ind2 +" rna caaihyao");
-        MainActivity.ind=MainActivity.runs;
+        //MainActivity.ind=MainActivity.runs;
         //db1.updateCurrGame("ind",ind);
-        MainActivity.runs=0;row=0;col=0;strike=0;b=0;r=1;
+        /*MainActivity.runs=0;row=0;col=0;strike=0;b=0;r=1;
         b4=0;r4=0;b6=0;r6=0;
         rball[0][0]=0;rball[0][1]=0;rball[1][0]=0;rball[1][1]=0;
         MainActivity.wick=0;//db1.updateCurrGame("Wickets",MainActivity.wick);//flagBat=1;
-        MainActivity.over=0;MainActivity.ball=0;MainActivity.runsLeft=MainActivity.ind+1;
+        MainActivity.over=0;MainActivity.ball=0;MainActivity.runsLeft=MainActivity.ind+1;*/
         db1.resetCurrGame(MainActivity.runsLeft,MainActivity.maxOvers);
 
         //Populating match summary
@@ -1466,9 +1505,9 @@ else {
         while(j<4) {
             top = db1.getTopPlayers(summ[0], j);
             if(flagBat==0)
-             top2=db1.getTopPlayersBowler(match[flagBat+1], j);
+             top2=db1.getTopPlayersBowler(match[afb2], j);
             else
-             top2=db1.getTopPlayersBowler(match[flagBat-1], j);
+             top2=db1.getTopPlayersBowler(match[afb2], j);
             while (i < 3) {
                 String tvID = "vt" + ii + "" + jj;
                 String tvID2 = "vt" + ii + "" + jj1;
@@ -1500,6 +1539,8 @@ else {
                 //setContentView(R.layout.activity_main);
                 //Intent myIntent = new Intent(getBaseContext(),MainActivity.class);
                 //startActivity(myIntent);
+                db1.resetCurrGame(MainActivity.runsLeft,MainActivity.maxOvers);
+                activateAll();
                 score.setText(""+MainActivity.runs+"-"+MainActivity.wick);
             //    result.setText("TARGET "+ind2);
                 //Log.d("IND VARIABLE IS: ",""+ind);
@@ -1514,14 +1555,159 @@ else {
         });
         dialog.show();
     }
+    void BattingScorecard()
+    {
+        if(flagBat==0)
+            afb2=1;
+        else
+            afb2=0;
+        final Dialog dialog = new Dialog(MainActivity.this);
+        dialog.setContentView(R.layout.bowl_scorecard);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int displayWidth = displayMetrics.widthPixels;
+        int displayHeight = displayMetrics.heightPixels;
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        int dialogWindowWidth = (int) (displayWidth);
+        int dialogWindowHeight = (int) (displayHeight);
+        layoutParams.width = dialogWindowWidth;
+        layoutParams.height = dialogWindowHeight;
+        dialog.getWindow().setAttributes(layoutParams);
+        TextView tvs,tmname;
+
+        TextView tvl1,tvl2;
+        tvl1=(TextView)dialog.findViewById(R.id.lt12) ;
+        tvl2=(TextView)dialog.findViewById(R.id.lt13) ;
+        tvl1.setText(""+MainActivity.runs+"-"+MainActivity.wick);
+        tvl2.setText(""+MainActivity.over+"."+MainActivity.ball +" Overs");
+        wick2=wick;
+        ind2=runs+1;
+        //scoreLine.setText("jaIt ko ilayao " + MainActivity.ind2 +" rna caaihyao");
+        MainActivity.ind=MainActivity.runs;
+        //db1.updateCurrGame("ind",ind);
+        //MainActivity.runs=0;
+        row=0;col=0;strike=0;b=0;r=1;
+        b4=0;r4=0;b6=0;r6=0;
+        rball[0][0]=0;rball[0][1]=0;rball[1][0]=0;rball[1][1]=0;
+        //MainActivity.wick=0;//db1.updateCurrGame("Wickets",MainActivity.wick);//flagBat=1;
+        db1.resetCurrGame(MainActivity.runsLeft,MainActivity.maxOvers);
+        cbowler=0;
+        p_mode=0;p_taken=0;p_freq=0;
+
+        int j=1;int i=1;
+        String[] top=new String[4];
+        String[] summ=db1.getSummary(0);
+        tmname = ((TextView)dialog.findViewById(R.id.vt1));
+        tmname.setText(db1.getTeamNameFromId(match[flagBat]));
+        while(j<12) {
+            top = db1.getBatsmenScores(match[flagBat], j);
+            i=1;
+            while (i < 4) {
+                String tvID = "vt" + j + "" + i;
+                Log.d("PLAYERS TEXT::", tvID);
+                int resID = getResources().getIdentifier(tvID, "id", getPackageName());
+                tvs = ((TextView)dialog.findViewById(resID));
+                tvs.setText("" + top[i-1]);
+                if(i==2) {
+                    Log.d("TOP VALUE",top[i-1]);
+                    tvs.setText("b " + top[i - 1]);
+                    if(top[i-1].length()==0 || top[i-1]==null ||top[i-1].equals("null")||top[i-1].equals(null) )
+                        tvs.setText("NOT OUT");
+                }
+                if(i==3) {
+                    if(top[i].length()==0 || top[i]==null ||top[i].equals("null")||top[i].equals(null) ) {
+                        tvs.setText("");
+                        int t=i-1;
+                        tvID = "vt" + j + "" + t;
+                        resID = getResources().getIdentifier(tvID, "id", getPackageName());
+                        tvs = ((TextView)dialog.findViewById(resID));
+                        tvs.setText("DID NOT BAT");
+                    }
+                    else
+                        tvs.setText("" + tvs.getText() + "(" + top[i] + ")");
+                }
+                i++;
+            }
+            j++;
+        }
+        Button start2=(Button)dialog.findViewById(R.id.lt14);
+        start2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BowlingScorecard();
+                dialog.dismiss();  //australia dialog exits
+            }
+        });
+        dialog.show();
+    }
+    void BowlingScorecard()
+    {
+        final Dialog dialog = new Dialog(MainActivity.this);
+        dialog.setContentView(R.layout.bowl_scorecard2);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int displayWidth = displayMetrics.widthPixels;
+        int displayHeight = displayMetrics.heightPixels;
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        int dialogWindowWidth = (int) (displayWidth);
+        int dialogWindowHeight = (int) (displayHeight);
+        layoutParams.width = dialogWindowWidth;
+        layoutParams.height = dialogWindowHeight;
+        dialog.getWindow().setAttributes(layoutParams);
+        TextView tvs,tmname;
+
+        TextView tvl1,tvl2;
+        tvl1=(TextView)dialog.findViewById(R.id.lt12) ;
+        tvl2=(TextView)dialog.findViewById(R.id.lt13) ;
+        ind=ind2-1;
+        tvl1.setText(""+ind+"-"+wick2);
+        tvl2.setText(""+MainActivity.over+"."+MainActivity.ball);
+        db1.setScores(match[afb2], (String) tvl1.getText());
+        db1.setOvers(match[afb2], (String) tvl2.getText());
+        MainActivity.over=0;MainActivity.ball=0;MainActivity.runsLeft=MainActivity.ind+1;
+        int j=1;int i=1;
+        String[] top=new String[5];
+        String[] summ=db1.getSummary(1);
+        tmname = ((TextView)dialog.findViewById(R.id.vt1));
+        tmname.setText(db1.getTeamNameFromId(match[afb2]));
+        while(j<8) {
+            top = db1.getBowlerScores(match[afb2], j-1);
+            i=1;
+            while (i < 6) {
+                String tvID = "vt" + j + "" + i;
+                Log.d("PLAYERS TEXT::", tvID);
+                int resID = getResources().getIdentifier(tvID, "id", getPackageName());
+                tvs = ((TextView)dialog.findViewById(resID));
+                tvs.setText("" + top[i-1]);
+                i++;
+            }
+            j++;
+        }
+        Button start2=(Button)dialog.findViewById(R.id.lt14);
+        start2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(result==1)
+                    IndWins();
+                else if(result==2)
+                    AusWins();
+                else
+                    InningsBreak();
+                dialog.dismiss();  //australia dialog exits
+            }
+        });
+        dialog.show();
+    }
     void IndWins()
     {
+        disableAll();
         double rr1=db1.setRunRate(winner);
         double rr2=db1.setRunRate(looser);
         cbowler=0;
         p_mode=0;p_taken=0;p_freq=0;
         nrr=rr1-rr2;
         nrr2=rr2-rr1;
+        result=0;
         final Dialog dialog = new Dialog(MainActivity.this);
         dialog.setContentView(R.layout.match_summary);
         //dialog.setTitle("INDIA!!!INDIA!!!");
@@ -1529,8 +1715,18 @@ else {
         dialog.getWindow().setAttributes(layoutParams);
         for(int i=1;i<12;i++)
         {
-            db1.updatePlayersStat(match[0],i,"players");
-            db1.updatePlayersStat(match[1],i,"players");
+            if(db1.getCurrData("aus")==3)
+            {}
+            else {
+                if(maxOvers==20) {
+                    db1.updatePlayersStat(match[0], i, "players_t20");
+                    db1.updatePlayersStat(match[1], i, "players_t20");
+                }
+                else{
+                    db1.updatePlayersStat(match[0], i, "players_odi");
+                    db1.updatePlayersStat(match[1], i, "players_odi");
+                }
+            }
             db1.updatePrevPerf(match[1],match[0],i);
             db1.updatePrevPerf(match[0],match[1],i);
         }
@@ -1543,7 +1739,7 @@ else {
         TextView Tname2=(TextView)dialog.findViewById(R.id.vt81);
         TextView Tovers2=(TextView)dialog.findViewById(R.id.vt82);
 
-        cfb=0;chb=0;cfr=0;chr=0;
+        cfb=0;chb=0;cfr=0;chr=0;result=0;
         TextView Truns2=(TextView)dialog.findViewById(R.id.vt83);
         TextView Teq=(TextView)dialog.findViewById(R.id.vtl);
         Teq.setText(""+match[0]+" has won the match");
@@ -1667,36 +1863,14 @@ else {
                 {
                     for(int i=1;i<12;i++)
                     {
-                        db1.updatePlayersStat(match[0],i,"rr_stats");
-                        db1.updatePlayersStat(match[1],i,"rr_stats");
+                        db1.updatePlayersStat(match[0],i,"series_stats");
+                        db1.updatePlayersStat(match[1],i,"series_stats");
                     }
-                    if(db1.getTourMatchSno()==56)
-                    {
-                        //update for semi finals
-                        db1.updateRR(winner,db1.getTourMatchSno());
-                        db1.updateRRPointsTable(winner,looser,nrr,nrr2);
-                        db1.updateRRSemiFinals();
-                        startActivity(new Intent(MainActivity.this, RoundRobinCentral.class));
-                    }
-                    else if(db1.getTourMatchSno()==57)//final match
-                    {
-                        db1.updateRR(winner,db1.getTourMatchSno());
-                        db1.updateRRFinals();
-                        startActivity(new Intent(MainActivity.this, RoundRobinCentral.class));
-                    }
-                   /* else if(db1.getTourMatchSno()==58)//final match
-                    {
-                        db1.updateRR(winner,db1.getTourMatchSno());
-                        Intent intent = new Intent(getBaseContext(), RoundRobinWinner.class);
-                        intent.putExtra("winner", winner);
-                        startActivity(intent);
-                    }*/
-                    else {
-                        db1.updateRR(winner,db1.getTourMatchSno());
-                        db1.updateRRPointsTable(winner,looser,nrr,nrr2);
-                        startActivity(new Intent(MainActivity.this, RoundRobinCentral.class));
-                    }
-
+                    db1.updateRR(winner,db1.getSeriesMatchValue("mno"));
+                    db1.updateRRPointsTable(winner,looser,nrr,nrr2);
+                    Intent intent = new Intent(getBaseContext(), SeriesStart.class);
+                    intent.putExtra("resume", "yes");
+                    startActivity(intent);
                 }
                 else if(db1.getCurrData("aus")==3)
                 {
@@ -1704,6 +1878,8 @@ else {
                     {
                         db1.updatePlayersStat(match[0],i,"ipl_stats");
                         db1.updatePlayersStat(match[1],i,"ipl_stats");
+                        db1.updatePlayersStat(match[0],i,"ipl_records");
+                        db1.updatePlayersStat(match[1],i,"ipl_records");
                     }
                     //db1.updateRRMatches(winner);
                     if(db1.getTourMatchSno()==56)
@@ -1744,11 +1920,12 @@ else {
     }
     void AusWins()
     {
+        disableAll();
         double rr1=db1.setRunRate(winner);
         double rr2=db1.setRunRate(looser);
         cbowler=0;
         p_mode=0;p_taken=0;p_freq=0;
-        cfb=0;chb=0;cfr=0;chr=0;
+        cfb=0;chb=0;cfr=0;chr=0;result=0;
         nrr=rr1-rr2;
         nrr2=rr2-rr1;
         final Dialog dialog = new Dialog(MainActivity.this);
@@ -1757,8 +1934,19 @@ else {
         dialog.getWindow().setAttributes(layoutParams);
         for(int i=1;i<12;i++)
         {
-            db1.updatePlayersStat(match[0],i,"players");
-            db1.updatePlayersStat(match[1],i,"players");
+            if(db1.getCurrData("aus")==3)
+            {}
+            else {
+                if(maxOvers==20) {
+                    db1.updatePlayersStat(match[0], i, "players_t20");
+                    db1.updatePlayersStat(match[1], i, "players_t20");
+                }
+                else
+                {
+                    db1.updatePlayersStat(match[0], i, "players_odi");
+                    db1.updatePlayersStat(match[1], i, "players_odi");
+                }
+            }
             db1.updatePrevPerf(match[1],match[0],i);
             db1.updatePrevPerf(match[0],match[1],i);
         }
@@ -1850,6 +2038,7 @@ else {
                 finish();
                 startActivity(intent);
                 //Log.d("IND VARIABLE IS: ",""+ind);*/
+                activateAll();
                 if(db1.getCurrData("aus")==1)
                 {
                     for(int i=1;i<12;i++)
@@ -1894,36 +2083,14 @@ else {
                 {
                     for(int i=1;i<12;i++)
                     {
-                        db1.updatePlayersStat(match[0],i,"rr_stats");
-                        db1.updatePlayersStat(match[1],i,"rr_stats");
+                        db1.updatePlayersStat(match[0],i,"series_stats");
+                        db1.updatePlayersStat(match[1],i,"series_stats");
                     }
-                    //db1.updateRRMatches(winner);
-                    if(db1.getTourMatchSno()==56)
-                    {
-                        //update for semi finals
-                        db1.updateRR(winner,db1.getTourMatchSno());
-                        db1.updateRRPointsTable(winner,looser,nrr,nrr2);
-                        db1.updateRRSemiFinals();
-                        startActivity(new Intent(MainActivity.this, RoundRobinCentral.class));
-                    }
-                    else if(db1.getTourMatchSno()==57)//final match
-                    {
-                        db1.updateRR(winner,db1.getTourMatchSno());
-                        db1.updateRRFinals();
-                        startActivity(new Intent(MainActivity.this, RoundRobinCentral.class));
-                    }
-                    else if(db1.getTourMatchSno()==58)//final match
-                    {
-                        db1.updateRR(winner,db1.getTourMatchSno());
-                        Intent intent = new Intent(getBaseContext(), RoundRobinWinner.class);
-                        intent.putExtra("winner", winner);
-                        startActivity(intent);
-                    }
-                    else {
-                        db1.updateRR(winner,db1.getTourMatchSno());
-                        db1.updateRRPointsTable(winner,looser,nrr,nrr2);
-                        startActivity(new Intent(MainActivity.this, RoundRobinCentral.class));
-                    }
+                    db1.updateRR(winner,db1.getSeriesMatchValue("mno"));
+                    db1.updateRRPointsTable(winner,looser,nrr,nrr2);
+                    Intent intent = new Intent(getBaseContext(), SeriesStart.class);
+                    intent.putExtra("resume", "yes");
+                    startActivity(intent);
                 }
                 else if(db1.getCurrData("aus")==3)
                 {
@@ -1931,6 +2098,8 @@ else {
                     {
                         db1.updatePlayersStat(match[0],i,"ipl_stats");
                         db1.updatePlayersStat(match[1],i,"ipl_stats");
+                        db1.updatePlayersStat(match[0],i,"ipl_records");
+                        db1.updatePlayersStat(match[1],i,"ipl_records");
                     }
                     //db1.updateRRMatches(winner);
                     if(db1.getTourMatchSno()==56)

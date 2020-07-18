@@ -4,7 +4,12 @@ package com.example.asaram.smallGame;
  * Created by Asaram on 24-02-2019.
  */
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +28,7 @@ import java.io.IOException;
 public class QuickPlay extends AppCompatActivity {
     private ImageSwitcher swc1,swc2;
     Button btnNext,btnPrev,btnNext2,btnPrev2,bgo;
+    ConstraintLayout cl;
     DatabaseHandler db1;
     public TextView t1,t2;
     static int maxovers;
@@ -48,6 +54,11 @@ public class QuickPlay extends AppCompatActivity {
         btnPrev = (Button) findViewById(R.id.button29);
         btnNext2 = (Button) findViewById(R.id.button31);
         btnPrev2 = (Button) findViewById(R.id.button30);
+        cl = (ConstraintLayout) findViewById(R.id.cl);
+        String filepath= Environment.getExternalStorageDirectory()+"/"+"HomeCric/flowers.jpg";
+        Bitmap bitmap = BitmapFactory.decodeFile(filepath);
+        BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),bitmap);
+        cl.setBackground(bitmapDrawable);
         swc1 = (ImageSwitcher) findViewById(R.id.imageSwitcher);
         swc2 = (ImageSwitcher) findViewById(R.id.imageSwitcher2);
         t1=(TextView)findViewById(R.id.textView10);

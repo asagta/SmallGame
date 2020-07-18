@@ -280,7 +280,36 @@
                     android:textSize="15dp"
                     android:text="P1" />
             </TableRow>
-
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/p17"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/trape2"
+                    android:gravity="center"
+                    android:elevation="18dp"
+                    android:textColor="#0D0701"
+                    android:textSize="15dp"
+                    android:text="P1" />
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/p18"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/trape2"
+                    android:gravity="center"
+                    android:elevation="18dp"
+                    android:textColor="#0D0701"
+                    android:textSize="15dp"
+                    android:text="P1" />
+            </TableRow>
         </TableLayout>
 
     </ScrollView>

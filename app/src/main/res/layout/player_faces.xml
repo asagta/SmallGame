@@ -118,7 +118,7 @@
                 android:layout_weight="0.15"
                 android:layout_height="100dp"
 
-                app:srcCompat="@drawable/m_marsh"
+                app:srcCompat="@drawable/v_kohli"
                 android:background="@drawable/round_sqre2" />
             <ImageView
                 android:id="@+id/pl6"

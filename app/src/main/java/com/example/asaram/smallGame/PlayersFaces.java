@@ -1,7 +1,11 @@
 package com.example.asaram.smallGame;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -92,16 +96,23 @@ public class PlayersFaces extends AppCompatActivity {
            im=(ImageView)findViewById(resID);
            tv = ((TextView)findViewById(resID2));
            //tv.setText(db1.getPlayerName(teamName,k));
-           if(IPLCentral.tour_flag.equals("I"))
-              conv_pname=convertPlayer(db1.getPlayerNameIPL(teamName,k));
-           else
-               conv_pname=convertPlayer(db1.getPlayerName(teamName,k));
-           int resID3=getResources().getIdentifier(conv_pname, "drawable", getPackageName());
-           im.setImageResource(resID3);
-           if(IPLCentral.tour_flag.equals("I"))
-             tv.setText(db1.getPlayerNameIPL(teamName,k));
-           else
-              tv.setText(db1.getPlayerName(teamName,k));
+           if(IPLCentral.tour_flag.equals("I")) {
+               conv_pname = convertPlayer(db1.getPlayerNameIPL(teamName, k));
+               tv.setText(db1.getPlayerNameIPL(teamName,k));
+           }else {
+               if(QuickPlay.testFlag==1) {
+                   conv_pname = convertPlayer(db1.getPlayerNameFaces(teamName, k, "curr_players_test"));
+                   tv.setText(db1.getPlayerNameFaces(teamName,k,"curr_players_test"));
+               }else {
+                   conv_pname = convertPlayer(db1.getPlayerNameFaces(teamName, k, "curr_players"));
+                   tv.setText(db1.getPlayerNameFaces(teamName,k,"curr_players"));
+               }
+           }
+               //int resID3=getResources().getIdentifier(conv_pname, "drawable", getPackageName());
+           String filepath= Environment.getExternalStorageDirectory()+"/"+"HomeCric/Players/"+conv_pname+".png";
+           Bitmap bitmap = BitmapFactory.decodeFile(filepath);
+           //im.setImageResource(resID3);
+           im.setImageBitmap(bitmap);
            k++;
        }
        flag++;

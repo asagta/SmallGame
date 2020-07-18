@@ -122,7 +122,7 @@ public class PlayersSelect_Test extends AppCompatActivity {
                      Log.d("THvalueres when clickd:", "" + res[0] + " " + res[1]);
                      pl1 = (TextView) findViewById(res[0]);
                      pl2 = (TextView) findViewById(res[1]);
-                     db1.updatePlayerID((String)pl1.getText(),(String)pl2.getText());
+                     db1.updatePlayerID((String)pl1.getText(),(String)pl2.getText(),"players_test");
                      tmp = (String) pl1.getText();
                      pl1.setText(pl2.getText());
                      pl2.setText(tmp);
@@ -246,7 +246,7 @@ public class PlayersSelect_Test extends AppCompatActivity {
      int bls=db1.getMatchBalls(pName);
      float strRate=(float)r/bls;strRate=strRate*100;
      srate.setText(""+strRate);*/
-     updateLast5(pName);
+     try{updateLast5(pName);}catch(Exception ex){}
      prev=(Button)findViewById(R.id.vt0);next=(Button)findViewById(R.id.vt01);
      updateBowlStats(prev,pName);updateBowlStats(next,pName);
  }

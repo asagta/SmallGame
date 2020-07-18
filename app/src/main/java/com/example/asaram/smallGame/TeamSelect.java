@@ -1,15 +1,19 @@
 package com.example.asaram.smallGame;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.media.PlaybackParams;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -83,14 +87,7 @@ public class TeamSelect extends AppCompatActivity {
         music = new Intent();
         music.setClass(this,MusicService.class);
         //startService(music);
-        DatabaseHelper dbHelper = new DatabaseHelper(this, getFilesDir().getAbsolutePath());
-
-        try {
-            dbHelper.prepareDatabase();
-        } catch (IOException e) {
-            Log.d("ADD_EXPENSES:", e.getMessage());
-        }
-        db1 = new DatabaseHandler(this, getFilesDir().getAbsolutePath());
+        checkPermission();
        // loadSpinnerData();
         Typeface custom_font = Typeface.createFromAsset(getAssets(), "zippo.ttf");
         t2=(TextView)findViewById(R.id.textV10);
@@ -108,7 +105,26 @@ public class TeamSelect extends AppCompatActivity {
         clickIndianPremier();
         clickMixedCup();
         startTest();
+        startWorldSeries();
         //ResumeIpl();
+    }
+    public void checkPermission() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                DatabaseHelper dbHelper = new DatabaseHelper(this, getFilesDir().getAbsolutePath());
+                try {
+                    dbHelper.prepareDatabase();
+                } catch (IOException e) {
+                    Log.d("ADD_EXPENSES:", e.getMessage());
+                }
+                db1 = new DatabaseHandler(this, getFilesDir().getAbsolutePath());
+
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,}, 1);
+            }
+        }
     }
     public void startVideo(final VideoView mVideoView)
     {
@@ -213,6 +229,22 @@ public class TeamSelect extends AppCompatActivity {
                 ResumeTournament();
             }});
     }
+    void startWorldSeries()
+    {
+        Button bz4=(Button) findViewById(R.id.btser);
+        //add_desc.setOnItemSelectedListener();
+        bz4.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                Log.d("CLicked the button: ", "Yes its not null");
+                setContentView(R.layout.second_wc);
+                mVideoView = (VideoView) findViewById(R.id.vv);
+                startVideo(mVideoView);
+                startWS();
+                ResumeWS();
+            }});
+    }
     void clickIndianPremier()
     {
         Button bz4=(Button) findViewById(R.id.but5);
@@ -296,30 +328,32 @@ public class TeamSelect extends AppCompatActivity {
                 startActivity(new Intent(TeamSelect.this, MixedCupHome.class));
             }});
     }
-    public void InitTourData() {
-        // database handler
-        // Spinner Drop down elements
-        List<String> teams = db1.getAllTeams();
-        int tms[]=new int[8];
-        tms=randomNoReps(8);
-        int i = 0,j=1;
-        while (i < 8) {
-            /*String tvID = "t" + i;
-            int resID = getResources().getIdentifier(tvID, "id", getPackageName());
-            tv = ((TextView) findViewById(resID));
-            tv.setText(""+teams.get(tms[i]).toString());*/
-            db1.addTourTeams(teams.get(tms[i]).toString());
-            if(i%2==0)
-                db1.addtourMatches("T1",teams.get(tms[i]).toString(),j);
-            else {
-                db1.addtourMatches("T2", teams.get(tms[i]).toString(), j);
-                j=j+1;
-            }
-            i++;
-        }
-        //db1.addtourMatches("T1",teams.get(tms[0]).toString(),1);
+    void startWS()
+    {
+        b70=(Button) findViewById(R.id.button7);
+        //add_desc.setOnItemSelectedListener();
+        b70.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                Log.d("CLicked the button: ", "Yes its not null");
+                db1.deletePrevTourSeries();
+                startActivity(new Intent(TeamSelect.this, SeriesStart.class));
+            }});
     }
-    public int[] randomNoReps(int a) {
+    void ResumeWS()
+    {
+        b9=(Button) findViewById(R.id.b9);
+        //add_desc.setOnItemSelectedListener();
+        b9.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getBaseContext(), SeriesStart.class);
+                intent.putExtra("resume", "yes");
+                startActivity(intent);
+            }});
+    }
+    public static int[] randomNoReps(int a) {
         int tmp, n;
         int temp[];
         temp = new int[a];

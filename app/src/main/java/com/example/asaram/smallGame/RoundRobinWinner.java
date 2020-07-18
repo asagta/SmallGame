@@ -22,7 +22,6 @@ public class RoundRobinWinner extends AppCompatActivity {
         ImageView img=(ImageView)findViewById(R.id.ImageView3);
         img.setImageResource(drid);
         DatabaseHelper dbHelper = new DatabaseHelper(this, getFilesDir().getAbsolutePath());
-
         try {
             dbHelper.prepareDatabase();
         } catch (IOException e) {
@@ -30,11 +29,11 @@ public class RoundRobinWinner extends AppCompatActivity {
         }
         db1 = new DatabaseHandler(this, getFilesDir().getAbsolutePath());
         String data[]=new String[4];
-        data = db1.getPlayersStatsBat(0,"rr_stats");
+        data = db1.getPlayersStatsBat(0,"series_stats");
         tv6=(TextView)findViewById(R.id.textView6);
         tv7=(TextView)findViewById(R.id.textView9);
         tv6.setText(data[0]);
-        data = db1.getPlayersStatsBowl(0,"rr_stats");
+        data = db1.getPlayersStatsBowl(0,"series_stats");
         tv7.setText(data[0]);
     }
 }

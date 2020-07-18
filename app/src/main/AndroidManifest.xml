@@ -73,6 +73,8 @@
         </activity>
         <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.PlayersFaces">
         </activity>
+        <activity android:screenOrientation="landscape" android:name="com.example.asaram.smallGame.SeriesStart">
+        </activity>
         <service android:name="MusicService" android:enabled="true"></service>
 
 </application>

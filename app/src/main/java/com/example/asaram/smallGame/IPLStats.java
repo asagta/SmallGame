@@ -1,6 +1,9 @@
 package com.example.asaram.smallGame;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -79,8 +82,11 @@ public class IPLStats extends AppCompatActivity {
             i1=(ImageView)findViewById(resID);
             String conv_pname=PlayersFaces.convertPlayer(data[0]);
             Log.d("CONVERTED:",conv_pname);
-            int resID3=getResources().getIdentifier(conv_pname, "drawable", getPackageName());
-            i1.setImageResource(resID3);
+            String filepath= Environment.getExternalStorageDirectory()+"/"+"HomeCric/Players/"+conv_pname+".png";
+            Bitmap bitmap = BitmapFactory.decodeFile(filepath);
+            i1.setImageBitmap(bitmap);
+            //int resID3=getResources().getIdentifier(conv_pname, "drawable", getPackageName());
+            //i1.setImageResource(resID3);
             String tvID2 = data[1].toLowerCase()+"_logos";
             int resID2 = getResources().getIdentifier(tvID2, "drawable", getPackageName());
             i1=(ImageView)findViewById(imID);
@@ -134,8 +140,11 @@ public class IPLStats extends AppCompatActivity {
             i1=(ImageView)findViewById(resID);
             String conv_pname=PlayersFaces.convertPlayer(data[0]);
             Log.d("CONVERTED:",conv_pname);
-            int resID3=getResources().getIdentifier(conv_pname, "drawable", getPackageName());
-            i1.setImageResource(resID3);
+            String filepath= Environment.getExternalStorageDirectory()+"/"+"HomeCric/Players/"+conv_pname+".png";
+            Bitmap bitmap = BitmapFactory.decodeFile(filepath);
+            i1.setImageBitmap(bitmap);
+            // int resID3=getResources().getIdentifier(conv_pname, "drawable", getPackageName());
+            //i1.setImageResource(resID3);
             String tvID2 = data[1].toLowerCase()+"_logos";
             int resID2 = getResources().getIdentifier(tvID2, "drawable", getPackageName());
             i1=(ImageView)findViewById(imID);
@@ -210,8 +219,11 @@ public class IPLStats extends AppCompatActivity {
             i1=(ImageView)findViewById(resID);
             String conv_pname=PlayersFaces.convertPlayer(data[0]);
             Log.d("CONVERTED:",conv_pname);
-            int resID3=getResources().getIdentifier(conv_pname, "drawable", getPackageName());
-            i1.setImageResource(resID3);
+            String filepath= Environment.getExternalStorageDirectory()+"/"+"HomeCric/Players/"+conv_pname+".png";
+            Bitmap bitmap = BitmapFactory.decodeFile(filepath);
+            i1.setImageBitmap(bitmap);
+            //int resID3=getResources().getIdentifier(conv_pname, "drawable", getPackageName());
+            //i1.setImageResource(resID3);
             String tvID2 = data[1].toLowerCase()+"_logos";
             int resID2 = getResources().getIdentifier(tvID2, "drawable", getPackageName());
             i1=(ImageView)findViewById(imID);
@@ -265,8 +277,11 @@ public class IPLStats extends AppCompatActivity {
             i1=(ImageView)findViewById(resID);
             String conv_pname=PlayersFaces.convertPlayer(data[0]);
             Log.d("CONVERTED:",conv_pname);
-            int resID3=getResources().getIdentifier(conv_pname, "drawable", getPackageName());
-            i1.setImageResource(resID3);
+            String filepath= Environment.getExternalStorageDirectory()+"/"+"HomeCric/Players/"+conv_pname+".png";
+            Bitmap bitmap = BitmapFactory.decodeFile(filepath);
+            i1.setImageBitmap(bitmap);
+            //int resID3=getResources().getIdentifier(conv_pname, "drawable", getPackageName());
+            //i1.setImageResource(resID3);
             String tvID2 = data[1].toLowerCase()+"_logos";
             int resID2 = getResources().getIdentifier(tvID2, "drawable", getPackageName());
             i1=(ImageView)findViewById(imID);

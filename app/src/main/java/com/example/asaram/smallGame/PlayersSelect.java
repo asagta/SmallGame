@@ -56,7 +56,7 @@ public class PlayersSelect extends AppCompatActivity {
        String teamName;
        teamName=db1.getCurrTeamName(a);
        Log.d("CURRENT TEAMS::",db1.getCurrTeamName(0)+" "+db1.getCurrTeamName(1));
-       for(i=1;i<17;i++)
+       for(i=1;i<19;i++)
        {
            String tvID = "p" + i;
            int resID = getResources().getIdentifier(tvID, "id", getPackageName());
@@ -64,7 +64,10 @@ public class PlayersSelect extends AppCompatActivity {
            if(IPLCentral.tour_flag.equals("I"))
              tv.setText(db1.getPlayerNameIPL(teamName,k));
            else
-              tv.setText(db1.getPlayerName(teamName,k));
+              if(QuickPlay.maxovers==20)
+               tv.setText(db1.getPlayerName(teamName,k,"players_t20"));
+              else
+               tv.setText(db1.getPlayerName(teamName,k,"players_odi"));
            k++;
        }
    }
@@ -84,15 +87,39 @@ public class PlayersSelect extends AppCompatActivity {
                         pd.setBackgroundResource(R.color.greenTransparent);
                         if (res[0] == 0 ) {
                             res[0] = pd.getId();
-                            updateStats((String)pd.getText());
+                            if(IPLCentral.tour_flag.equalsIgnoreCase("I"))
+                            {updateStatsIPL((String)pd.getText());}
+                            else {
+                                if (QuickPlay.maxovers == 20) {
+                                    updateStats((String) pd.getText(), "players_t20");
+                                } else {
+                                    updateStats((String) pd.getText(), "players_odi");
+                                }
+                            }
                         } else if (res[1] == 0) {
                             res[1] = pd.getId();
-                            updateStats((String)pd.getText());
+                            if(IPLCentral.tour_flag.equalsIgnoreCase("I"))
+                            {updateStatsIPL((String)pd.getText());}
+                            else {
+                                if (QuickPlay.maxovers == 20) {
+                                    updateStats((String) pd.getText(), "players_t20");
+                                } else {
+                                    updateStats((String) pd.getText(), "players_odi");
+                                }
+                            }
                         } else {
                             TextView pd1 = ((TextView) findViewById(res[1]));
                             pd1.setBackgroundResource(R.drawable.trape);
                             res[1] = pd.getId();
-                            updateStats((String)pd.getText());
+                            if(IPLCentral.tour_flag.equalsIgnoreCase("I"))
+                            {updateStatsIPL((String)pd.getText());}
+                            else {
+                                if (QuickPlay.maxovers == 20) {
+                                    updateStats((String) pd.getText(), "players_t20");
+                                } else {
+                                    updateStats((String) pd.getText(), "players_odi");
+                                }
+                            }
                             //stats.setText()
                         }
 
@@ -105,7 +132,7 @@ public class PlayersSelect extends AppCompatActivity {
      {
          pid = new TextView[20];
          int k=0;
-         for(int i=1;i<17;i++) {
+         for(int i=1;i<19;i++) {
              String tvID = "p" + i;
              int resID = getResources().getIdentifier(tvID, "id", getPackageName());
              pid[k] = ((TextView) findViewById(resID));
@@ -131,7 +158,10 @@ public class PlayersSelect extends AppCompatActivity {
                      Log.d("THvalueres when clickd:", "" + res[0] + " " + res[1]);
                      pl1 = (TextView) findViewById(res[0]);
                      pl2 = (TextView) findViewById(res[1]);
-                     db1.updatePlayerID((String)pl1.getText(),(String)pl2.getText());
+                     if(QuickPlay.maxovers==20)
+                        db1.updatePlayerID((String)pl1.getText(),(String)pl2.getText(),"players_t20");
+                     else
+                         db1.updatePlayerID((String)pl1.getText(),(String)pl2.getText(),"players_odi");
                      tmp = (String) pl1.getText();
                      pl1.setText(pl2.getText());
                      pl2.setText(tmp);
@@ -229,42 +259,41 @@ public class PlayersSelect extends AppCompatActivity {
         }
         return i;
     }
- public void updateStats(String pName)
+ public void updateStats(String pName,String tabname)
  {
      prev=(Button)findViewById(R.id.vt0);next=(Button)findViewById(R.id.vt01);
      updateLast5(pName);
      vt.setText("BATTING");
-     updateBowlStats(prev, pName);
-     updateBowlStats(next, pName);
+     updateBowlStats(prev, pName,tabname);
+     updateBowlStats(next, pName,tabname);
      match = ((TextView) findViewById(R.id.p31));
-     match.setText(""+db1.getMatches(pName));
+     match.setText(""+db1.getStatsIntl("Matches",pName,tabname));
      //runs,fifty,fuur,hs,srate,avg;
      runs = ((TextView) findViewById(R.id.p32));
-     runs.setText(""+db1.getMatchRuns(pName));
+     runs.setText(""+db1.getStatsIntl("Runs",pName,tabname));
      avg = ((TextView) findViewById(R.id.p33));
-
      t2 = ((TextView) findViewById(R.id.p40));t3 = ((TextView) findViewById(R.id.p50));t4 = ((TextView) findViewById(R.id.p60));t5 = ((TextView) findViewById(R.id.p70));t6 = ((TextView) findViewById(R.id.p80));
      t2.setText("Runs");t3.setText("Average");t4.setText("30/50/100");t5.setText("Highest");t6.setText("StrikeRate");
-     int m=db1.getMatches(pName);int r=db1.getMatchRuns(pName);
-     int no=db1.getNotOuts(pName);
+     int m=db1.getStatsIntl("Matches",pName,tabname);int r=db1.getStatsIntl("Runs",pName,tabname);
+     int no=db1.getStatsIntl("nouts",pName,tabname);
      float averag=(float)r/(m-no);
      avg.setText(""+averag);
      fifty = ((TextView) findViewById(R.id.p34));
      int rew[]=new int[3];
-     rew=db1.getMatchRew(pName);
+     rew=db1.getMatchRew(pName,tabname);
      fifty.setText(""+rew[0]+"/"+rew[1]+"/"+rew[2]);
      hs = ((TextView) findViewById(R.id.p35));
-     hs.setText(""+db1.getMatchHS(pName));
+     hs.setText(""+db1.getStatsIntl("Highest",pName,tabname));
      /*fuur = ((TextView) findViewById(R.id.p36));
      int fsix[]=new int[2];
      fsix=db1.getMatchFsix(pName);
      fuur.setText(""+fsix[0]+"/"+fsix[1]);*/
      srate = ((TextView) findViewById(R.id.p36));
-     int bls=db1.getMatchBalls(pName);
+     int bls=db1.getStatsIntl("Balls",pName,tabname);
      float strRate=(float)r/bls;strRate=strRate*100;
      srate.setText(""+strRate);
  }
- public void updateBowlStats(final Button b, final String pName)
+ public void updateBowlStats(final Button b, final String pName,final String tabname)
  {
      b.setOnClickListener(new View.OnClickListener(){
 
@@ -276,7 +305,7 @@ public class PlayersSelect extends AppCompatActivity {
                  vt = ((TextView) findViewById(R.id.vt1));
                  vt.setText("BOWLING");
                  t2.setText("Wickets");t3.setText("4WI");t4.setText("5WI");t5.setText("Best");t6.setText(" ");
-                 String str[]=db1.getBowlStatsPlayer(pName);
+                 String str[]=db1.getBowlStatsPlayer(pName,tabname);
                  runs.setText(str[0]);
                  srate.setText("");
                  fifty.setText(str[2]);
@@ -288,10 +317,74 @@ public class PlayersSelect extends AppCompatActivity {
                  z=0;
                  TextView vt = ((TextView) findViewById(R.id.vt1));
                  vt.setText("BATTING");
-                 updateStats(pName);
+                 updateStats(pName,tabname);
              }
          }});
  }
+
+    public void updateStatsIPL(String pName)
+    {
+        prev=(Button)findViewById(R.id.vt0);next=(Button)findViewById(R.id.vt01);
+        updateLast5(pName);
+        vt.setText("BATTING");
+        updateBowlStatsIPL(prev, pName);
+        updateBowlStatsIPL(next, pName);
+        match = ((TextView) findViewById(R.id.p31));
+        match.setText(""+db1.getStatsIPL("Matches",pName));
+        //runs,fifty,fuur,hs,srate,avg;
+        runs = ((TextView) findViewById(R.id.p32));
+        runs.setText(""+db1.getStatsIPL("Runs",pName));
+        avg = ((TextView) findViewById(R.id.p33));
+        t2 = ((TextView) findViewById(R.id.p40));t3 = ((TextView) findViewById(R.id.p50));t4 = ((TextView) findViewById(R.id.p60));t5 = ((TextView) findViewById(R.id.p70));t6 = ((TextView) findViewById(R.id.p80));
+        t2.setText("Runs");t3.setText("Average");t4.setText("30/50/100");t5.setText("Highest");t6.setText("StrikeRate");
+        int m=db1.getStatsIPL("Matches",pName);int r=db1.getStatsIPL("Runs",pName);
+        int no=db1.getStatsIPL("nouts",pName);
+        float averag=(float)r/(m-no);
+        avg.setText(""+averag);
+        fifty = ((TextView) findViewById(R.id.p34));
+        int rew[]=new int[3];
+        rew=db1.getMatchRewIPL(pName);
+        fifty.setText(""+rew[0]+"/"+rew[1]+"/"+rew[2]);
+        hs = ((TextView) findViewById(R.id.p35));
+        hs.setText(""+db1.getStatsIPL("Highest",pName));
+     /*fuur = ((TextView) findViewById(R.id.p36));
+     int fsix[]=new int[2];
+     fsix=db1.getMatchFsix(pName);
+     fuur.setText(""+fsix[0]+"/"+fsix[1]);*/
+        srate = ((TextView) findViewById(R.id.p36));
+        int bls=db1.getMatchBalls(pName);
+        float strRate=(float)r/bls;strRate=strRate*100;
+        srate.setText(""+strRate);
+    }
+    public void updateBowlStatsIPL(final Button b, final String pName)
+    {
+        b.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                if(z==0)
+                {
+                    z=1;
+                    vt = ((TextView) findViewById(R.id.vt1));
+                    vt.setText("BOWLING");
+                    t2.setText("Wickets");t3.setText("4WI");t4.setText("5WI");t5.setText("Best");t6.setText(" ");
+                    String str[]=db1.getBowlStatsPlayerIPL(pName);
+                    runs.setText(str[0]);
+                    srate.setText("");
+                    fifty.setText(str[2]);
+                    hs.setText(str[3]);
+                    avg.setText(str[1]);
+                }
+                else
+                {
+                    z=0;
+                    TextView vt = ((TextView) findViewById(R.id.vt1));
+                    vt.setText("BATTING");
+                    updateStatsIPL(pName);
+                }
+            }});
+    }
+
  public void updateLast5(String pname) {
      TextView vs;
      TextView bat;
