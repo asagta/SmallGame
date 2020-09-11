@@ -33,8 +33,9 @@ public class MainActivity_Test extends AppCompatActivity {
     static double nrr,nrr2;
     static int[][] rball;static String match[];
     static int cbowler,bowl_wick,bowl_runs,bowl_dots,bowl_over,bowl_bowls;
-    static int b4,b6,r4,r6,nextScore,drid,drid2,freq6,freq1,freq5,freq0,freq3,you;
-    static int ref,i7,i8,rover,b,r,row,col,day,strike,runs,runsLeft,maxOvers,maxWick,n,run,wick,flagBat,afb,teem1,teem2,opp1,opp2,over,ball,ind2,over2,tballs,cfb,cfr,chb,chr;
+    static int decl,b4,b6,r4,r6,nextScore,drid,drid2,freq6,freq1,freq5,freq0,freq3,you;
+    public static int day_over,day;
+    static int ref,i7,i8,rover,b,r,row,col,strike,runs,runsLeft,maxOvers,maxWick,n,run,wick,flagBat,afb,teem1,teem2,opp1,opp2,over,ball,ind2,over2,tballs,cfb,cfr,chb,chr;
     static int target,ttm1,topp,p_mode,p_freq,p_taken,blimit,rlimit,lb,lr,ind,aus;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +89,8 @@ public class MainActivity_Test extends AppCompatActivity {
         setOnClickListeneronButtons(four,4);
         setOnClickListeneronButtons(five,5);
         setOnClickListeneronButtons(six,6);
-        setOnClickListeneronButton(ib);
+        ib.setText("DECLARE");
+        declareInnings(ib);
         DatabaseHelper dbHelper = new DatabaseHelper(this, getFilesDir().getAbsolutePath());
         try {
             dbHelper.prepareDatabase();
@@ -378,8 +380,8 @@ public class MainActivity_Test extends AppCompatActivity {
              if (run == -1 ) run = 0;
              if (run == -3|| run == -2) run = 1;
              if (run < -3) run = 2;
-             if (s == 5 && n == 5) run = 0;
-             if (s == 3 && n == 3) run = -1;
+             if (s == 5 && n == 5) run = db1.getConfigValue("TEST_MATCH_EXCESS_5");
+             if (s == 3 && n == 3) run = db1.getConfigValue("TEST_MATCH_EXCESS_3");
              //code for limiting sixes
              if (strike == 0 && run >= 5) {
                  if (b6 == blimit) {
@@ -547,8 +549,11 @@ public class MainActivity_Test extends AppCompatActivity {
                  InningsBreak();
              }
          }
-             if (wick == maxWick) {
-                 score.setText("" + runs);
+             if (wick == maxWick || decl == 1) {
+                 if(decl == 1)
+                  score.setText("" + runs+"-"+wick+" decl");
+                 else
+                  score.setText("" + runs);
                  if(flagBat==0)
                      db1.setOversTest(match[0], (String) overs.getText(),1);
                  else
@@ -600,6 +605,7 @@ public class MainActivity_Test extends AppCompatActivity {
                  //tballs=tballs+1;
                  if (ball > 5) {
                      over = over + 1;
+                     day_over=day_over+1;
                      //disableAll();
                      db1.updateCurrGameTest("Overs", over);
                      thover = "";
@@ -718,6 +724,23 @@ public class MainActivity_Test extends AppCompatActivity {
                      bat2.setText(db1.getCurrTestPlayerName(match[you], r));
                      bat2_run.setText("" + rball[row + 1][col] + "(" + rball[row + 1][col + 1] + ")*");
                  }
+      if(day_over == db1.getConfigValue("TEST_MATCH_DAY_OVERS"))
+      {
+          //if all overs in a day has been bowled then day will be incremented and day_over will be 0
+          day=db1.getCurrDataTest("day");
+          day=day+1;
+          db1.updateCurrGameTest("day", day);
+          if(day==5)
+          {
+              //match drawn screen flashes
+              InningsBreak();
+          }
+          else {
+              //Day over innings break Flashes
+              InningsBreak();
+          }
+          day_over=0;
+      }
     }
     void setOnClickListeneronButtons(Button b,final int i)
     {
@@ -833,6 +856,10 @@ public class MainActivity_Test extends AppCompatActivity {
         MainActivity_Test.ind= MainActivity_Test.runs;
         String which;
         teem1=db1.getCurrDataTest("teem_1");teem2=db1.getCurrDataTest("teem_2");
+        if(day_over == db1.getConfigValue("TEST_MATCH_DAY_OVERS"))
+        {}
+        else
+        {
         if(teem1==0) {
             db1.updateCurrGameTest("teem_1", MainActivity_Test.ind);
             which="teem_1";
@@ -840,23 +867,37 @@ public class MainActivity_Test extends AppCompatActivity {
         else {
             db1.updateCurrGameTest("teem_2", MainActivity_Test.ind);
             which="teem_2";
+         }
         }
         //db1.updateCurrGame("ind",ind);
-        MainActivity_Test.runs=0;row=0;col=0;strike=0;b=0;r=1;
-        b4=0;r4=0;b6=0;r6=0;
-        rball[0][0]=0;rball[0][1]=0;rball[1][0]=0;rball[1][1]=0;
-        MainActivity_Test.wick=0;//db1.updateCurrGame("Wickets",MainActivity.wick);//flagBat=1;
-        MainActivity_Test.over=0;
-        MainActivity_Test.ball=0;
-        MainActivity_Test.runsLeft= MainActivity_Test.ind+1;
+        if(day_over == db1.getConfigValue("TEST_MATCH_DAY_OVERS") && day!=5)
+        {}
+        else {
+            MainActivity_Test.runs = 0;
+            row = 0;
+            col = 0;
+            strike = 0;
+            b = 0;
+            r = 1;
+            b4 = 0;
+            r4 = 0;
+            b6 = 0;
+            r6 = 0;
+            rball[0][0] = 0;
+            rball[0][1] = 0;
+            rball[1][0] = 0;
+            rball[1][1] = 0;
+            MainActivity_Test.wick = 0;//db1.updateCurrGame("Wickets",MainActivity.wick);//flagBat=1;
+            MainActivity_Test.over = 0;
+            MainActivity_Test.ball = 0;
+            MainActivity_Test.runsLeft = MainActivity_Test.ind + 1;
+        }
         TextView Tname=(TextView)dialog.findViewById(R.id.vt31);
         TextView Tovers=(TextView)dialog.findViewById(R.id.vt32);
         TextView Truns=(TextView)dialog.findViewById(R.id.vt33);
-
         TextView Tname2=(TextView)dialog.findViewById(R.id.vt91);
         TextView Tovers2=(TextView)dialog.findViewById(R.id.vt92);
         TextView Truns2=(TextView)dialog.findViewById(R.id.vt93);
-
         String summ[]=new String[4];String summ2[]=new String[4];
         String summ3[]=new String[4];String summ4[]=new String[4];
         summ=db1.getSummaryTest(match[0],flagBat+1);
@@ -1050,11 +1091,11 @@ public class MainActivity_Test extends AppCompatActivity {
                 Tovers2.setText(summ[1]);
                 Truns2.setText(summ[2]);
                 Log.d("opp1&opp2&&teem1&teem2",""+opp1+" "+opp2+" "+teem1+" "+teem2);
-                if((opp1+opp2 < teem1) && opp2!=0)
+                if((opp1+opp2 < teem1) && opp2!=0 && (day_over != db1.getConfigValue("TEST_MATCH_DAY_OVERS")))
                 {
                     winner="teem1";
                 }
-                else if((teem1+teem2 < opp1) && teem2!=0)
+                else if((teem1+teem2 < opp1) && teem2!=0 && (day_over != db1.getConfigValue("TEST_MATCH_DAY_OVERS")))
                 {
                     winner="opp1";
                 }
@@ -1131,14 +1172,16 @@ public class MainActivity_Test extends AppCompatActivity {
             }
         }
         TextView Teq=(TextView)dialog.findViewById(R.id.vtl);
-
-        db1.resetCurrGameTest(MainActivity_Test.runsLeft, flagBat);
+        if((day_over != db1.getConfigValue("TEST_MATCH_DAY_OVERS"))) {
+            Log.d("DAY VALUE::",""+day_over);
+            db1.resetCurrGameTest(MainActivity_Test.runsLeft, flagBat);
+        }
         //Populating match summary
         teem1=db1.getCurrDataTest("teem_1");teem2=db1.getCurrDataTest("teem_2");
         opp1=db1.getCurrDataTest("opp_1");opp2=db1.getCurrDataTest("opp_2");
         int ttm=teem1+teem2;int topp=opp1+opp2;
-        if(ttm<topp ) {
-            if(teem1!=0 && teem2!=0 && opp1!=0 && opp2!=0)
+        if(ttm<topp && (day_over != db1.getConfigValue("TEST_MATCH_DAY_OVERS"))) {
+            if(teem1!=0 && teem2!=0 && opp1!=0 && opp2!=0 && (day_over != db1.getConfigValue("TEST_MATCH_DAY_OVERS")))
             {
                 Teq.setText("" + match[1] + " Won the Match");
                 start2.setEnabled(false);
@@ -1158,8 +1201,34 @@ public class MainActivity_Test extends AppCompatActivity {
                     }
                 });
             }
-            else
-              Teq.setText("" + match[1] + " Lead by " + (topp - ttm) + " runs");
+            else {
+                if(day==5)
+                {
+                    Teq.setText("Match Drawn");
+                    start2.setEnabled(false);
+                    Button start3=(Button)dialog.findViewById(R.id.button10);
+                    start3.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            for(int i=1;i<12;i++)
+                            {
+                                db1.updatePlayersStatTest(match[0],i,"players_test");
+                                db1.updatePlayersStatTest(match[1],i,"players_test");
+                                db1.updatePrevPerfTest(match[1],match[0],i);
+                                db1.updatePrevPerfTest(match[0],match[1],i);
+                            }
+                            startActivity(new Intent(MainActivity_Test.this, TeamSelect.class));
+                            dialog.dismiss();  //australia dialog exits
+                        }
+                    });
+                }
+                else {
+                    if((topp - ttm) < 0)
+                        Teq.setText("" + match[1] + " Trail by " + (ttm - topp) + " runs");
+                    else
+                        Teq.setText("" + match[1] + " Lead by " + (topp - ttm) + " runs");
+                }
+            }
             if(winner.equals("opp1")) {
                 Teq.setText("" + match[1] + " Won by An Innings and " + (topp - ttm) + " runs");
                 start2.setEnabled(false);
@@ -1181,7 +1250,7 @@ public class MainActivity_Test extends AppCompatActivity {
             }
         }
             else {
-            if(teem1!=0 && teem2!=0 && opp1!=0 && opp2!=0)
+            if(teem1!=0 && teem2!=0 && opp1!=0 && opp2!=0 && (day_over != db1.getConfigValue("TEST_MATCH_DAY_OVERS")))
             {
                 Teq.setText("" + match[0] + " Won the Match");
                 start2.setEnabled(false);
@@ -1202,7 +1271,35 @@ public class MainActivity_Test extends AppCompatActivity {
                 });
             }
             else
-              Teq.setText("" + match[0] + " Lead by " + (ttm - topp) + " runs");
+            {
+                if(day==5)
+                {
+                    Teq.setText("Match Drawn");
+                    start2.setEnabled(false);
+                    Button start3=(Button)dialog.findViewById(R.id.button10);
+                    start3.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            for(int i=1;i<12;i++)
+                            {
+                                db1.updatePlayersStatTest(match[0],i,"players_test");
+                                db1.updatePlayersStatTest(match[1],i,"players_test");
+                                db1.updatePrevPerfTest(match[1],match[0],i);
+                                db1.updatePrevPerfTest(match[0],match[1],i);
+                            }
+                            startActivity(new Intent(MainActivity_Test.this, TeamSelect.class));
+                            dialog.dismiss();  //australia dialog exits
+                        }
+                    });
+                }
+                else{
+                    if((ttm-topp) < 0)
+                        Teq.setText("" + match[0] + " Trail by " + (topp - ttm) + " runs");
+                    else
+                        Teq.setText("" + match[0] + " Lead by " + (ttm - topp) + " runs");
+                }
+            }
+
             if(winner.equals("teem1")) {
                 Teq.setText("" + match[0] + " Won by An Innings and " + (ttm - topp) + " runs");
                 start2.setEnabled(false);
@@ -1237,7 +1334,8 @@ public class MainActivity_Test extends AppCompatActivity {
                 img.setImageResource(drid2);
                 ImageView img2=(ImageView)findViewById(R.id.imageView4);
                 img2.setImageResource(drid);*/
-                startActivity(new Intent(MainActivity_Test.this, Bowling_Test.class));
+                if(day_over != 0)
+                 startActivity(new Intent(MainActivity_Test.this, Bowling_Test.class));
                 dialog.dismiss();  //australia dialog exits
             }
         });
@@ -1254,7 +1352,16 @@ public class MainActivity_Test extends AppCompatActivity {
         zero.setClickable(false);one.setClickable(false);two.setClickable(false);three.setClickable(false);
         four.setClickable(false);five.setClickable(false);six.setClickable(false);
     }
-
+    public void declareInnings(Button bt)
+    {
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                decl=1;
+                updateScoreCard(0);
+            }
+        });
+    }
     void updateScoreBoard(int zed) {
         TextView tv,tv1,tv2;
        // teamName.setText(match[0]);

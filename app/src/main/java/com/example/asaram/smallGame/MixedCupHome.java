@@ -244,9 +244,15 @@ public class MixedCupHome extends AppCompatActivity {
                 tour_flag="M";
                 //db1.insertCurrMatch(value1,value2,"N",maxovers);
                 if(db1.getTourMatchSno()>45)
-                    match_over=50;
+                {
+                    match_over = 50;
+                    QuickPlay.maxovers=50;
+                }
                 else
-                    match_over=20;
+                {
+                    match_over = 20;
+                    QuickPlay.maxovers=20;
+                }
                 db1.insertCurrMatch(values[0],values[1],tour_flag,match_over);
                 startActivity(new Intent(MixedCupHome.this, PlayersSelect.class));
             }});

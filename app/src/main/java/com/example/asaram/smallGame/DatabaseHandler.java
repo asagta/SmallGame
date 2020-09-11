@@ -2182,7 +2182,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void setMCStats()
     {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
-        db.execSQL("INSERT INTO mc_stats(player_name,team_id)SELECT player_name,team_id FROM players");
+        db.execSQL("INSERT INTO mc_stats(player_name,team_id)SELECT player_name,team_id FROM players_odi");
         db.execSQL("update mc_stats set matches=0");
         db.execSQL("update mc_stats set Runs=0");
         db.execSQL("update mc_stats set `30s`=0");
@@ -2528,6 +2528,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             else
                 cursor.moveToNext();
         }
+        return i;
+    }
+    public int getConfigValue(String config)
+    {
+        int i;
+        SQLiteDatabase db = SQLiteDatabase.openDatabase(pathToSaveDBFile, null, SQLiteDatabase.OPEN_READWRITE);
+        String selectQuery = "SELECT config_value from game_configs where config_name='"+config+"'";
+        Log.d("QUERY::",selectQuery);
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        i=cursor.getInt(0);
         return i;
     }
     public int getBowlerNoTest(String tname,String bname)
